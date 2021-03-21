@@ -1,0 +1,76 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-width: 400px;    
+    height: 100%;
+}
+
+.layout-light {
+    background-color: #f0f2f5;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.layout-dark {
+    background-color: #0d1117;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.layout-light .header,
+.layout-light .header .ant-btn-text
+.layout-light .ant-btn-circle,
+.layout-light .ant-card,
+.layout-light .ant-pagination-item,
+.layout-light .ant-pagination-item a,
+.layout-light .ant-pagination-item-link {
+    background: #fff;
+    color:  rgba(0, 0, 0, 0.85);
+}
+
+.layout-dark .header,
+.layout-dark .header .ant-btn-text,
+.layout-dark .footer .ant-btn-circle,
+.layout-dark .ant-card,
+.layout-dark .ant-pagination-item,
+.layout-dark .ant-pagination-item a,
+.layout-dark .ant-pagination-item-link {
+    background-color: #161b22;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.layout-light .ant-btn-ghost {
+    color:  rgba(0, 0, 0, 0.85);
+    border-color: rgba(0, 0, 0, 0.85);
+}
+
+.layout-dark .ant-btn-ghost {
+    color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.85);
+}
+
+.layout-light .ant-btn-ghost:hover {    
+    background:rgba(24, 144, 255, 0.5);
+}
+
+.layout-dark .ant-btn-ghost:hover {
+    background:rgba(24, 144, 255, 0.5);
+}
+
+.layout-light .ant-typography,
+.layout-light .ant-card-meta-title,
+.layout-light .ant-card-meta-description,
+.layout-light .ant-card-head-title,
+.layout-light .ant-list-item-meta-title a,
+.layout-light .ant-list-item-meta-description {    
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.layout-dark .ant-typography,
+.layout-dark .ant-card-meta-title,
+.layout-dark .ant-card-meta-description,
+.layout-dark .ant-card-head-title,
+.layout-dark .ant-list-item-meta-title a,
+.layout-dark .ant-list-item-meta-description {
+    color: rgba(255, 255, 255, 0.85);
+}
