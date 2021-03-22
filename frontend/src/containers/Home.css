@@ -1,0 +1,10 @@
+.carousel .ant-btn-ghost {
+    margin-right: 8px;
+    background: transparent;
+    border-color: #fff;
+    color: #fff;
+}
+
+.carousel .ant-btn-ghost:hover {
+    background: rgba(255, 77, 79, 0.7);    
+}

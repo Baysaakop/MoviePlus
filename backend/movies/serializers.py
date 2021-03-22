@@ -35,7 +35,7 @@ class MemberSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'members', 'views', 'likes', 'watched', 'watchlisted', 'score', 'score_count', 'poster', 'trailer', 'created_by', 'created_at')  
+        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'members', 'views', 'likes', 'watched', 'watchlisted', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

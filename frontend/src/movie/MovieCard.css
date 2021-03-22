@@ -1,0 +1,28 @@
+.cover-container {
+    position: relative;
+}
+
+.cover-overlay-top-left {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+
+.cover-overlay-bot-right {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cover-overlay-bot-right .ant-btn-ghost {
+    margin-bottom: 4px;
+    background: transparent;
+    border-color: #fff;
+    color: #fff;
+}
+
+.cover-overlay-bot-right .ant-btn-ghost:hover {
+    background: rgba(255, 77, 79, 0.7);    
+}

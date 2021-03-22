@@ -71,6 +71,7 @@ class Movie(models.Model):
     score = models.IntegerField(default=0)
     score_count = models.IntegerField(default=0)
     poster = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
+    landscape = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     trailer = models.CharField(max_length=200, null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='movie_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)            

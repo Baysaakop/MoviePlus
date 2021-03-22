@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Menu.css';
 import { Button, Grid } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import { DesktopOutlined, MenuOutlined } from '@ant-design/icons';
@@ -17,7 +18,7 @@ function CustomMenu (props) {
         setCollapsed(!collapsed);
     }     
 
-    const styleHeaderWeb = {
+    const styleHeaderWeb = {        
         display: 'flex',
         justifyContent: 'space-around', 
         alignItems: 'center',
@@ -44,19 +45,23 @@ function CustomMenu (props) {
     }    
     
     const styleMenuItemWeb = {    
-        marginRight: '8px'      
+        marginRight: '8px',        
+        color: 'inherit',      
+        borderColor: 'inherit'
     }
 
     const styleMenuItemMobile = {    
         width: '100%',
-        height: '25%',
+        height: '20%',
         margin: '0',
         padding: '0',
-        alignItems: 'center'       
+        alignItems: 'center',
+        color: 'inherit',      
+        borderColor: 'inherit'
     }    
 
     return (
-        <div>              
+        <div className="menu">              
             {screens.xs ? (
                 <div>
                     <div style={styleHeaderMobile}>
@@ -64,9 +69,9 @@ function CustomMenu (props) {
                             <Link to="/">
                                 <div style={styleLogo}>         
                                     <div style={{ display: 'flex', alignItems: 'center' }}>                                        
-                                        <DesktopOutlined style={{ fontSize: '24px', color: props.darkMode ? '#fff' : '#000' }} />
+                                        <DesktopOutlined style={{ fontSize: '24px', color: props.scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
                                     </div>
-                                    <div style={{ fontSize: '24px', marginLeft: '8px', color: props.darkMode ? '#fff' : '#000' }}>                        
+                                    <div style={{ fontSize: '24px', marginLeft: '8px', color: props.scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }}>                        
                                         Movie+                        
                                     </div>                        
                                 </div>       
@@ -76,10 +81,10 @@ function CustomMenu (props) {
                             <Button 
                                 size="large"
                                 shape="circle" 
-                                type="primary" 
+                                type="ghost" 
                                 icon={<MenuOutlined />} 
                                 onClick={handleMenuCollapsed} 
-                                style={ props.darkMode ? { background: 'transparent', color: '#fff', border: '1px solid #fff' } : { background: 'transparent', color: '#000', border: '1px solid #000' }} 
+                                style={{ background: 'transparent', color: 'inherit', borderColor: 'inherit' }} 
                             />
                         </div>        
                     </div>   
@@ -88,17 +93,20 @@ function CustomMenu (props) {
                     ) : (
                         <div style={{ width: '100%', height: '90vh', background: props.darkMode ? "#161b22" : "#fff" }}>                            
                             <Button type="text" size="large" style={styleMenuItemMobile}>
-                                Trees
+                                Кино
                             </Button> 
                             <Button type="text" size="large" style={styleMenuItemMobile}>
-                                News
+                                Цуврал
                             </Button>                            
                             <Button type="text" size="large" style={styleMenuItemMobile}>
-                                Members
+                                Уран бүтээлч
                             </Button>
                             <Button type="text" size="large" style={styleMenuItemMobile}>
-                                Sign In
+                                Нийтлэл
                             </Button>
+                            <Button type="text" size="large" style={styleMenuItemMobile}>
+                                Нэвтрэх
+                            </Button>                            
                         </div>
                     )}                             
                 </div>
@@ -108,32 +116,32 @@ function CustomMenu (props) {
                         <Link to="/">
                             <div style={styleLogo}>         
                                 <div style={{ display: 'flex', alignItems: 'center' }}>                                    
-                                    <DesktopOutlined style={{ fontSize: '24px', color: props.darkMode ? '#fff' : '#000' }} />
+                                    <DesktopOutlined style={{ fontSize: '24px', color: props.scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
                                 </div>
-                                <div style={{ fontSize: '24px', marginLeft: '8px', color: props.darkMode ? '#fff' : '#000' }}>                        
+                                <div style={{ fontSize: '24px', marginLeft: '8px', color: props.scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }}>                        
                                     Movie+                    
                                 </div>                        
                             </div>       
                         </Link>
                     </div>
                     <div style={{ width: '60%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Button type="ghost" shape="round" size="large" style={styleMenuItemWeb}>
+                        <Button type="ghost" shape="round" size="large" style={styleMenuItemWeb} href="/movies">
                             Кино
                         </Button>
-                        <Button type="ghost" shape="round" size="large" style={styleMenuItemWeb}>
+                        <Button type="ghost" shape="round" size="large" style={styleMenuItemWeb} href="/series">
+                            Цуврал
+                        </Button>
+                        <Button type="ghost" shape="round" size="large" style={styleMenuItemWeb} href="/artists">
                             Уран бүтээлч
                         </Button>
-                        <Button type="ghost" shape="round" size="large" style={styleMenuItemWeb}>
+                        <Button type="ghost" shape="round" size="large" style={styleMenuItemWeb} href="/posts">
                             Нийтлэл
                         </Button>
                     </div>
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <Button type="primary" shape="round" size="large" style={styleMenuItemWeb}>
+                        <Button danger type="primary" shape="round" size="large">
                             Нэвтрэх
                         </Button>
-                        {/* <Button type="primary" shape="round" size="large">
-                            Бүртгүүлэх
-                        </Button> */}
                     </div>                   
                 </div>
             )}                        

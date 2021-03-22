@@ -9,10 +9,12 @@ import MoonIcon from '../icons/MoonIcon';
 const { Header, Content, Footer } = Layout;
 
 function CustomLayout (props) {        
-    const [darkMode, setDarkMode] = useState(getInitialMode());    
+    const [darkMode, setDarkMode] = useState(getInitialMode());
+    const [scrollTop, setScrollTop] = useState(true);
 
     useEffect(() => {
-        localStorage.setItem('dark', JSON.stringify(darkMode))        
+        localStorage.setItem('dark', JSON.stringify(darkMode));        
+        window.addEventListener('scroll', onScroll, true);
     }, [darkMode])
 
     function getInitialMode() {
@@ -34,17 +36,17 @@ function CustomLayout (props) {
         return window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
 
-    // function onScroll() {        
-    //     if (window.scrollY > 0) {
-    //         setScrollTop(false)
-    //     } else {
-    //         setScrollTop(true)
-    //     }        
-    // }
+    function onScroll() {        
+        if (window.scrollY > 0) {
+            setScrollTop(false)
+        } else {
+            setScrollTop(true)
+        }        
+    }
 
     const styleHeader = {
-        // background: scrollTop ? 'transparent' : '',    
-        background: darkMode ? '#161b22' : '#fff',
+        background: scrollTop ? 'rgba(0, 0, 0, 0.5)' : darkMode ? '#161b22' : '#fff',    
+        color: scrollTop ? 'rgb(255, 255, 255)' : darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',            
         display: 'inline-block',
         zIndex: '99', 
         position: 'fixed',      
@@ -74,11 +76,11 @@ function CustomLayout (props) {
     }
 
     return(
-        <Layout className={darkMode ? "layout-dark" : "layout-light"} style={{ padding: 0, margin: 0, width: '100%' }}>
+        <Layout className={darkMode ? "layout-dark" : "layout-light"} style={{ padding: 0, margin: 0, width: '100%' }} onScroll={onScroll}>
             <Header className="header" style={styleHeader}>
-                <CustomMenu {...props} darkMode={darkMode} />                
+                <CustomMenu {...props} darkMode={darkMode} scrollTop={scrollTop} />                
             </Header>
-            <Content className="content" style={{ padding: '0', marginTop: '80px', width: '100%' }}>                                     
+            <Content className="content" style={{ padding: '0',  margin: '0', width: '100%' }}>                                     
                 <div className="content-item" style={{ padding: '0', margin: '0', width: '100%' }}>                    
                     {props.children} 
                 </div>                
@@ -88,7 +90,7 @@ function CustomLayout (props) {
                             type={darkMode ? "primary" : "default"}                
                             size="large"
                             shape="circle"                         
-                            style={{ background: 'rgba(0, 0, 0, 0.5)' }}                
+                            style={{ background: 'rgba(0, 0, 0, 0.3)' }}                
                             icon={darkMode ? <MoonIcon style={{ color: '#F4F1C9' }} /> : <SunIcon style={{ color: '#FFD347' }} />} 
                             onClick={() => 
                                 setDarkMode(prevMode => !prevMode)                                
