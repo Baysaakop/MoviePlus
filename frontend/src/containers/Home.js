@@ -121,8 +121,8 @@ function Home (props) {
                                     <div>
                                         <div style={{ margin: 0, padding: 0, width: '100%', height: '70vh', position: 'relative' }}>
                                             <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: 'auto', objectFit: 'fill' }} />                                    
-                                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', padding: '16px' }}>
-                                                <Typography.Title level={1} style={{ color: '#fff' }}>ТА СОНИРХСОН КИНОГОО ХАЙНА УУ</Typography.Title>
+                                            <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translate(-50%, 0%)', padding: '16px' }}>
+                                                <Typography.Title level={1} style={{ color: '#fff' }}>СОНИРХСОН КИНОГОО ХАЙНА УУ</Typography.Title>
                                                 <Search placeholder="Кино эсвэл цувралын нэрийг бичнэ үү" onSearch={onSearch} size="large" enterButton={<Button danger type="primary" size="large" icon={<SearchOutlined />} />} allowClear />
                                             </div>
                                             <div style={{ position: 'absolute', left: '15%', bottom: '10%', background: 'rgba(0, 0, 0, 0.6)', padding: '16px' }}>
