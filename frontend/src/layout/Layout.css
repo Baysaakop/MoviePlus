@@ -25,25 +25,30 @@ body {
 .layout-light .ant-pagination-item a,
 .layout-light .ant-pagination-item-link,
 .layout-light .ant-table,
-.layout-light .ant-table-thead > tr > th {
-    background: #fff;
+.layout-light .ant-table-thead > tr > th,
+.layout-light .ant-input,
+.layout-light .ant-input-group,
+.layout-light .ant-select,
+.layout-light .ant-select:not(.ant-select-customize-input) .ant-select-selector,
+.layout-light .ant-select-selection-item {
+    background-color: #fff;
     color:  rgba(0, 0, 0, 0.85);
 }
 
 /* .layout-dark .header,
 .layout-dark .header .ant-btn-text, */
-.layout-dark .footer .ant-btn-circle,
+.layout-dark .ant-btn-circle,
 .layout-dark .ant-card,
 .layout-dark .ant-pagination-item,
 .layout-dark .ant-pagination-item a,
 .layout-dark .ant-pagination-item-link,
 .layout-dark .ant-table,
-.layout-dark .ant-table-thead > tr > th {
-    background-color: #161b22;
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.layout-dark .ant-table-thead > tr > th:hover {
+.layout-dark .ant-table-thead > tr > th,
+.layout-dark .ant-input,
+.layout-dark .ant-input-group-wrapper,
+.layout-dark .ant-select,
+.layout-dark .ant-select:not(.ant-select-customize-input) .ant-select-selector,
+.layout-dark .ant-select-selection-item {
     background-color: #161b22;
     color: rgba(255, 255, 255, 0.85);
 }
@@ -53,7 +58,13 @@ body {
 .layout-light .ant-card-meta-description,
 .layout-light .ant-card-head-title,
 .layout-light .ant-list-item-meta-title a,
-.layout-light .ant-list-item-meta-description {    
+.layout-light .ant-list-item-meta-description,
+.layout-light .ant-breadcrumb-link,
+.layout-light .ant-breadcrumb-link a,
+.layout-light .ant-breadcrumb-separator,
+.layout-light .ant-pagination-total-text,
+.layout-light .ant-form-item-label label,
+.layout-light .ant-select-arrow {    
     color: rgba(0, 0, 0, 0.85);
 }
 
@@ -62,10 +73,44 @@ body {
 .layout-dark .ant-card-meta-description,
 .layout-dark .ant-card-head-title,
 .layout-dark .ant-list-item-meta-title a,
-.layout-dark .ant-list-item-meta-description {
+.layout-dark .ant-list-item-meta-description,
+.layout-dark .ant-breadcrumb-link,
+.layout-dark .ant-breadcrumb-link a,
+.layout-dark .ant-breadcrumb-separator,
+.layout-dark .ant-pagination-total-text,
+.layout-dark .ant-form-item-label label,
+.layout-dark .ant-select-arrow {
     color: rgba(255, 255, 255, 0.85);
 }
 
-a.ant-btn-lg {
-    line-height: 1.5715;
+.layout-dark .ant-select-dropdown {
+    background-color: #161b22;
+    color: rgba(255, 255, 255, 0.85);
 }
+
+.ant-table-thead>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td, 
+.ant-table-tbody>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td, 
+.ant-table-thead>tr:hover:not(.ant-table-expanded-row)>td, 
+.ant-table-tbody>tr:hover:not(.ant-table-expanded-row)>td {
+    background: unset;
+}
+
+.ant-list-pagination {
+    margin-top: 0px;
+    text-align: right;
+}
+
+/* .ant-input-search-button {
+    background: rgba(255, 77, 79, 0.7);    
+    border: 0;
+    left: 0%;
+}
+
+.ant-input-search-button:hover {
+    background: rgba(255, 77, 79, 1);    
+} */
+
+
+/* a.ant-btn-lg {
+    line-height: 1.5715;
+} */

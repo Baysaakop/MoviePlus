@@ -9,44 +9,31 @@ import MoonIcon from '../icons/MoonIcon';
 const { Header, Content, Footer } = Layout;
 
 function CustomLayout (props) {        
-    const [darkMode, setDarkMode] = useState(getInitialMode());
-    const [scrollTop, setScrollTop] = useState(true);
+    const [darkMode, setDarkMode] = useState(getInitialMode());    
 
     useEffect(() => {
-        localStorage.setItem('dark', JSON.stringify(darkMode));        
-        window.addEventListener('scroll', onScroll, true);
+        localStorage.setItem('dark', JSON.stringify(darkMode));                
     }, [darkMode])
 
     function getInitialMode() {
         const isReturningUser = "dark" in localStorage;
         const savedMode = JSON.parse(localStorage.getItem('dark'));
-        const userPrefersDark = getPrefColorScheme();
+        // const userPrefersDark = getPrefColorScheme();
         if (isReturningUser) {
             return savedMode;
-        } else if (userPrefersDark) {
+        } else {
             return true;
-        } else {
-            return false;
         }        
     }
 
-    function getPrefColorScheme() {
-        if (!window.matchMedia) return;
+    // function getPrefColorScheme() {
+    //     if (!window.matchMedia) return;
 
-        return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-
-    function onScroll() {        
-        if (window.scrollY > 0) {
-            setScrollTop(false)
-        } else {
-            setScrollTop(true)
-        }        
-    }
+    //     return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // }
 
     const styleHeader = {
-        background: scrollTop ? 'rgba(0, 0, 0, 0.5)' : darkMode ? '#161b22' : '#fff',    
-        color: scrollTop ? 'rgb(255, 255, 255)' : darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',            
+        background: 'transparent',          
         display: 'inline-block',
         zIndex: '99', 
         position: 'fixed',      
@@ -76,9 +63,9 @@ function CustomLayout (props) {
     }
 
     return(
-        <Layout className={darkMode ? "layout-dark" : "layout-light"} style={{ padding: 0, margin: 0, width: '100%' }} onScroll={onScroll}>
+        <Layout className={darkMode ? "layout-dark" : "layout-light"} style={{ padding: 0, margin: 0, width: '100%' }}>
             <Header className="header" style={styleHeader}>
-                <CustomMenu {...props} darkMode={darkMode} scrollTop={scrollTop} />                
+                <CustomMenu {...props} darkMode={darkMode} />                
             </Header>
             <Content className="content" style={{ padding: '0',  margin: '0', width: '100%' }}>                                     
                 <div className="content-item" style={{ padding: '0', margin: '0', width: '100%' }}>                    
@@ -117,7 +104,7 @@ function CustomLayout (props) {
                         <Button shape="circle" icon={<GithubFilled />} style={{ margin: '8px' }} size="large" /> 
                     </Tooltip>
                     <p>
-                        © 2021 Tree Plus Project. All Rights Reserved. Designed and developed by On Plus Tech.
+                        © 2021 Movie Plus Project. All Rights Reserved. Designed and developed by On Plus Tech.
                     </p>
                 </div>                
             </Footer>

@@ -2,6 +2,7 @@ const api = {
     items: 'http://127.0.0.1:8000/api/items/items',
     posts: 'http://127.0.0.1:8000/api/items/posts',
     movies: 'http://127.0.0.1:8000/api/movies',
+    genres: 'http://127.0.0.1:8000/api/movies/genres',
     users: 'http://127.0.0.1:8000/api/users',
     signin: 'http://127.0.0.1:8000/rest-auth/login/',
     signup: 'http://127.0.0.1:8000/rest-auth/registration/',

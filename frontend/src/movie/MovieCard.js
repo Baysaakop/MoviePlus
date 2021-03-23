@@ -16,8 +16,8 @@ function MovieCard (props) {
                     <div className="cover-container">
                         <img src={props.item.poster} alt="poster" style={{ width: '100%', height: 'auto' }} />
                         <div className="cover-overlay-top-left">
-                            <Avatar size="large" style={{ background: 'rgba(255, 77, 79, 1)', border: '1px solid #fff', color: '#fff' }}>
-                                {parseInt(props.item.score) / 10}
+                            <Avatar size="large" style={{ background: '#161b22', border: '1px solid orange', color: 'orange', fontFamily: 'Nerko One, cursive', fontSize: '20px' }}>
+                                {parseInt(props.item.score)}
                             </Avatar>
                         </div>
                         <div className="cover-overlay-bot-right">
@@ -25,16 +25,16 @@ function MovieCard (props) {
                                 <Button size="large" type="ghost" shape="circle" icon={<C style={{ marginLeft: '2px' }} />} />
                             </Tooltip> */}
                             <Tooltip title="Таалагдсан">                                
-                                <Button size="default" type="ghost" shape="circle" icon={<LikeOutlined />} />
+                                <Button type="ghost" shape="circle" size="large" icon={<LikeOutlined />} />
                             </Tooltip>
                             <Tooltip title="Үзсэн">
-                                <Button size="default" type="ghost" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }}  />} />
+                                <Button type="ghost" shape="circle" size="large" icon={<CheckOutlined style={{ marginLeft: '2px' }}  />} />
                             </Tooltip>
                             <Tooltip title="Дараа үзэх">
-                                <Button size="default" type="ghost" shape="circle" icon={<PlusOutlined />} />
+                                <Button type="ghost" shape="circle" size="large" icon={<PlusOutlined />} />
                             </Tooltip>
                             <Tooltip title="Үнэлгээ өгөх">
-                                <Button size="default" type="ghost" shape="circle" icon={<StarOutlined />} />
+                                <Button type="ghost" shape="circle" size="large" icon={<StarOutlined />} />
                             </Tooltip>
                         </div>
                     </div>
