@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import './Menu.css';
-import { Button, Grid } from 'antd';
+import { Button, Grid, Spin } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
-import { DesktopOutlined, MenuOutlined } from '@ant-design/icons';
+import { DesktopOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 // import logo from './onplus-logo.png';
-// import axios from 'axios';
-// import api from '../api';
+import axios from 'axios';
+import api from '../api';
+import Avatar from 'antd/lib/avatar/avatar';
 const { useBreakpoint } = Grid;
 
 function CustomMenu (props) {    
     const screens = useBreakpoint();    
     const [current, setCurrent] = useState();        
     const [collapsed, setCollapsed] = useState(true);          
-    const [scrollTop, setScrollTop] = useState(true);
+    const [scrollTop, setScrollTop] = useState(true);    
+    const [user, setUser] = useState();
 
-    useEffect(() => {                
+    useEffect(() => {                        
         setCurrent(props.location.pathname)
         if (props.location.pathname === '/') {
             setScrollTop(true)
@@ -24,7 +26,24 @@ function CustomMenu (props) {
         } else {
             setScrollTop(false)
         }
-    }, [props.location])
+        if (user === undefined && props.token && props.token !== null) {
+            axios({
+                method: 'GET',
+                url: api.profile,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            }).then(res => {           
+                console.log(res.data)
+                setUser(res.data)
+            }).catch(err => {
+                console.log(err)
+            })
+        } else {
+            setUser(undefined)
+        }        
+    }, [props.location, props.token])
 
     const handleMenuCollapsed = () => {
         setCollapsed(!collapsed);
@@ -158,9 +177,16 @@ function CustomMenu (props) {
                         </Button>
                     </div>
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" href="/login">
-                            Нэвтрэх
-                        </Button>
+                        { user ? (
+                            <a href="/profile">
+                                {user.profile.avatar ? <Avatar src={user.profile.avatar} size="large" /> : <Avatar icon={<UserOutlined />} size="large" />}
+                                <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
+                            </a>
+                        ) : (
+                            <Button ghost={scrollTop || props.darkMode} type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'default' } size="large" href="/login">
+                                Нэвтрэх
+                            </Button>
+                        )}                        
                     </div>                   
                 </div>
             )}                        

@@ -3,7 +3,7 @@ import { Button, Form, Input, message, Spin, Typography } from 'antd';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 import { Redirect } from 'react-router';
-import { MailOutlined, QuestionCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { MailOutlined, QuestionCircleOutlined, LoadingOutlined, SendOutlined } from '@ant-design/icons';
 
 const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -19,7 +19,7 @@ const PasswordReset = (props) => {
     }
 
     if (props.success) {
-        message.info("Password reset e-mail has been sent to your e-mail address.")
+        message.info("Нууц үг сэргээх мэйл таны и-мэйл хаяг руу илгээгдлээ.")
         return <Redirect to="/" />
     }
 
@@ -28,41 +28,41 @@ const PasswordReset = (props) => {
     }
 
     return (
-       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
             {props.start ? (
                <Spin indicator={loadingIcon} />
             ) : (
-                <div>
-                    <Typography.Title level={3} style={{ textAlign: 'center' }}>Password Reset</Typography.Title>
+                <div style={{ border: '1px solid #888', padding: '16px' }}>
+                    <Typography.Title level={3} style={{ textAlign: 'center' }}>Нууц үг сэргээх</Typography.Title>
                     <Typography.Text>
-                        <QuestionCircleOutlined /> Please enter your e-mail address to receive password reset mail.
+                        <QuestionCircleOutlined /> Та системд бүртгэлтэй и-мэйл хаягаа оруулж нууц үгээ сэргээлгэнэ үү.
                     </Typography.Text>
                     <Form
                         form={form}
                         name="password-reset"
                         layout="vertical"
-                        style={{ padding: '16px', borderRadius: '5px', marginTop: '8px' }}
+                        style={{ borderRadius: '5px', marginTop: '16px' }}
                         onFinish={onFinish}
                     >
                         <Form.Item 
                             name="email" 
-                            label="E-mail"
+                            label="И-мэйл хаяг"
                             rules={[
                                 {
-                                    type: 'email',
-                                    message: 'The input is not valid E-mail!',
+                                    required: true,
+                                    message: 'Та и-мэйл хаягаа оруулна уу!',
                                 },
                                 {
-                                    required: true,
-                                    message: 'Please input your E-mail!',
-                                },
+                                    type: 'email',
+                                    message: 'Та зөв и-мэйл хаяг оруулна уу!',
+                                }
                             ]}
                         >
-                            <Input prefix={<MailOutlined style={{ color: '#a1a1a1' }} />} placeholder="E-mail" />
+                            <Input prefix={<MailOutlined style={{ color: '#a1a1a1' }} />} placeholder="И-мэйл хаяг" />
                         </Form.Item>
                         <Form.Item>
-                            <Button size="large" type="primary" htmlType="submit" style={{ width: '100%' }}>
-                                Submit
+                            <Button icon={<SendOutlined />} size="large" type="primary" htmlType="submit" style={{ width: '100%' }}>
+                                Илгээх
                             </Button>
                         </Form.Item>
                     </Form>

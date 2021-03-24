@@ -71,7 +71,7 @@ export const passwordResetConfirmFail = error => {
 
 export const logout = () => {
     localStorage.removeItem('token');    
-    message.info("Signed out")
+    message.info("Системээм гарлаа.")
     return {
         type: actionTypes.AUTH_LOGOUT
     };

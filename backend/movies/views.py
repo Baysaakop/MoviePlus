@@ -60,12 +60,20 @@ class MovieViewSet(viewsets.ModelViewSet):
         if genre is not None:
             queryset = queryset.filter(genre__id=genre)
         if order is not None:
-            if (order == 'releasedate'):
+            if (order == 'created_at'):
+                queryset = queryset.order_by('-created_at')
+            elif (order == 'releasedate'):
                 queryset = queryset.order_by('-releasedate')
             elif (order == 'duration'):
                 queryset = queryset.order_by('-duration')
             elif (order == 'name'):
                 queryset = queryset.order_by('name')
+            elif (order == 'score'):
+                queryset = queryset.order_by('-score')
+            elif (order == 'views'):
+                queryset = queryset.order_by('-views')
+            elif (order == 'likes'):
+                queryset = queryset.order_by('-likes')
         return queryset
 
 class ReviewViewSet(viewsets.ModelViewSet):

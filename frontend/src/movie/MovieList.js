@@ -37,10 +37,10 @@ function MovieList() {
         // form.setFieldsValue({            
         //     name: name           
         // }) 
-       getMovies(name, genre, page)
-    }, [genres, name, genre, page])   
+       getMovies(name, genre, page, order)
+    }, [genres, name, genre, page, order])   
 
-    function getMovies(name, genre, page) {
+    function getMovies(name, genre, page, order) {
         var url = api.movies + "?"
         var params = []
         if (name && name.length > 0) {
@@ -48,6 +48,9 @@ function MovieList() {
         }
         if (genre && genre > 0) {
             params.push("genre=" + genre)
+        }
+        if (order) {
+            params.push("order=" + order)
         }
         params.forEach(param => {
             url += param + "&"
@@ -75,33 +78,18 @@ function MovieList() {
 
     function onNameSearch(value) {        
         setName(value);
-        // setPage(1);
-        //setCategory(undefined)
-        // form.setFieldsValue({            
-        //     category: undefined           
-        // })     
-        // getMovies(value, 1);
     }
 
     function selectGenre (value) {        
         setGenre(value);
-        // const target = categories.find(x => x.id === parseInt(value))          
-        // setCategory(target);
-        // setPage(1);
-        // setSearch("");
-        // form.setFieldsValue({            
-        //     name: undefined           
-        // }) 
-        // getBooks("", target, 1)
     }
 
     function selectOrder (value) {
         setOrder(value);
     }
 
-    function onPageChange (pageNum, pageSize) {
+    function onPageChange (pageNum, pageSize) {        
         setPage(pageNum)
-        // getMovies(pageNum)
     }
 
     function showTotal(total) {
@@ -125,7 +113,7 @@ function MovieList() {
     }
 
     return (
-        <div style={{ marginTop: '80px' }}>
+        <div style={{ marginTop: '80px', minHeight: '80vh' }}>
             <div style={{ padding: getPadding() }}>
                 <Breadcrumb>
                     <Breadcrumb.Item>
@@ -139,9 +127,9 @@ function MovieList() {
             <div style={{ padding: getPadding() }}>
                 <Form form={form} layout="vertical" initialValues={{
                     genre: "all",
-                    order: "new"
+                    order: "created_at"
                 }}>
-                    <Row gutter={16}>
+                    <Row gutter={[16, 16]}>
                         <Col sm={24} md={8}>
                             <Form.Item name="name" label="Кино хайх:">                            
                                 <Search placeholder="Киноны нэрээр хайх" onSearch={onNameSearch} enterButton />
@@ -154,7 +142,7 @@ function MovieList() {
                                     style={{ width: '100%' }}
                                     placeholder="Бүгд"                
                                     onChange={selectGenre}
-                                    optionFilterProp="children"                
+                                    optionFilterProp="children"                                                 
                                 >
                                     <Option key="all">Бүгд</Option>
                                     { genres ? (
@@ -180,10 +168,12 @@ function MovieList() {
                                     onChange={selectOrder}
                                     optionFilterProp="children"                
                                 >                                    
-                                    <Option key="new">Шинээр нэмэгдсэн</Option>
-                                    <Option key="trend">Их хандалттай</Option>
-                                    <Option key="count">Нийт тоо</Option>
-                                    <Option key="available">Бэлэн байгаа</Option>
+                                    <Option key="created_at">Шинээр нэмэгдсэн</Option>
+                                    <Option key="releasedate">Нээлтийн огноогоор(2021 - 1900)</Option>
+                                    <Option key="score">Үнэлгээгээр(100 - 0)</Option>
+                                    <Option key="views">Хандалтаар (100 - 0)</Option>
+                                    <Option key="likes">Like-n тоогоор (100 - 0)</Option>        
+                                    <Option key="name">Үсгийн дарааллаар (A - Z)</Option>                                    
                                 </Select>
                             </Form.Item>  
                         </Col>
@@ -210,7 +200,7 @@ function MovieList() {
                 <Pagination
                     current={page}
                     total={total}
-                    pageSize={12}
+                    pageSize={24}
                     hideOnSinglePage={true}
                     showSizeChanger={false}
                     showTotal={showTotal}

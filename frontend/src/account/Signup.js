@@ -33,24 +33,24 @@ const Signup = (props) => {
     }
 
     return (
-        <Row gutter={[16, 16]}>            
+        <Row gutter={[16, 16]} style={{ marginTop: '80px', width: '100%', padding: '5% 15%' }}>            
             <Col xs={24} sm={12}>
-                <div style={{ height: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <img src={svg} alt="illustration-login" style={{ width: '70%', height: 'auto' }} />
                 </div>
             </Col>
             <Col xs={24} sm={12}>
-                <div style={{ minHeight: '400px', padding: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>            
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>            
                     {props.loading ? (
                         <Spin indicator={loadingIcon} />
                     ) : (
-                        <div style={{ width: '500px' }}>
+                        <div style={{ border: '1px solid #888', padding: '16px 0px' }}>
                             <div className="form-title" style={{ textAlign: 'center' }}>
                                 <Typography.Title level={2} style={{ background: 'transparent' }}>
-                                    Create an new account
+                                    Шинээр бүртгүүлэх
                                 </Typography.Title>
                                 <Typography.Title level={5} style={{ background: 'transparent' }}>
-                                    Already registered? <a href="/login" style={{ background: 'transparent' }}>Click here to sign in</a>
+                                    Та бүртгэлтэй бол <a href="/login" style={{ background: 'transparent' }}>энд дарж нэвтэрнэ үү</a>
                                 </Typography.Title>
                             </div>                                                        
                             <Form                            
@@ -65,55 +65,55 @@ const Signup = (props) => {
                                 style={{ borderRadius: '5px', padding: '16px' }}                     
                             >
                                 <Form.Item
-                                    label="E-mail"
+                                    label="И-мэйл хаяг"
                                     name="email"                                
                                     rules={[
-                                    {
-                                        type: 'email',
-                                        message: 'The input is not valid E-mail!',
-                                    },
-                                    {
-                                        required: true,
-                                        message: 'Please input your E-mail!',
-                                    },
+                                        {
+                                            required: true,
+                                            message: 'Та и-мэйл хаягаа оруулна уу!',
+                                        },
+                                        {
+                                            type: 'email',
+                                            message: 'Та зөв и-мэйл хаяг оруулна уу!',
+                                        }
                                     ]}
                                 >
-                                    <Input prefix={<MailOutlined style={{ color: '#a1a1a1' }} />} placeholder="E-mail" />
+                                    <Input prefix={<MailOutlined style={{ color: '#a1a1a1' }} />} placeholder="И-мэйл хаяг" />
                                 </Form.Item>
                                 <Form.Item
-                                    label="Username"
+                                    label="Хэрэглэгчийн нэр"
                                     name="username"                                                          
                                     rules={[
                                     {
                                         required: true,
-                                        message: 'Please input your username!',
+                                        message: 'Та хэрэглэгчийн нэрээ оруулна уу!',
                                     },
                                     ]}
                                 >
-                                    <Input prefix={<UserOutlined style={{ color: '#a1a1a1' }} />} placeholder="Username" />
+                                    <Input prefix={<UserOutlined style={{ color: '#a1a1a1' }} />} placeholder="Хэрэглэгчийн нэр" />
                                 </Form.Item>
                                 <Form.Item
-                                    label="Password"
+                                    label="Нууц үг"
                                     name="password"                                
                                     rules={[
                                     {
                                         required: true,
-                                        message: 'Please input your password!',
+                                        message: 'Та нууц үгээ оруулна уу!',
                                     },
                                     ]}
                                     hasFeedback
                                 >
-                                    <Input.Password prefix={<LockOutlined style={{ color: '#a1a1a1' }} />} placeholder="Password" />
+                                    <Input.Password prefix={<LockOutlined style={{ color: '#a1a1a1' }} />} placeholder="Нууц үг" />
                                 </Form.Item>
                                 <Form.Item
-                                    label="Confirm Password"
+                                    label="Нууц үг давтах"
                                     name="confirm"                                
                                     dependencies={['password']}
                                     hasFeedback
                                     rules={[
                                     {
                                         required: true,
-                                        message: 'Please confirm your password!',
+                                        message: 'Та нууц үгээ давтан оруулна уу!',
                                     },
                                     ({ getFieldValue }) => ({
                                         validator(rule, value) {
@@ -125,14 +125,14 @@ const Signup = (props) => {
                                     }),
                                     ]}
                                 >
-                                    <Input.Password prefix={<LockOutlined style={{ color: '#a1a1a1' }} />} placeholder="Confirm Password" />
+                                    <Input.Password prefix={<LockOutlined style={{ color: '#a1a1a1' }} />} placeholder="Нууц үг давтах" />
                                 </Form.Item>                                
                                 <Form.Item>
                                     <Button size="large" type="primary" htmlType="submit" style={{ width: '100%' }}>
-                                        Sign up
+                                        Бүртгүүлэх
                                     </Button>
                                 </Form.Item>
-                                <Divider>OR</Divider>
+                                <Divider>эсвэл</Divider>
                                 <Button size="large" danger type="primary" icon={<GoogleOutlined style={{ fontSize: '18px' }} />} style={{ width: '100%', marginBottom: '16px' }}>
                                     Sign in with Google
                                 </Button>

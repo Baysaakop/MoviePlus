@@ -15,13 +15,13 @@ const Logout = (props) => {
     }
 
     return (
-       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid #888', padding: '16px 0px', height: '40vh' }}>
            <Result
                 status="warning"
-                title="Are you sure to sign out?"
+                title="Та системээс гарахдаа итгэлтэй байна уу?"
                 extra={
                     <Button danger size="large" type="primary" onClick={onClick}>
-                        Sign Out
+                        Гарах
                     </Button>
                 }
             />

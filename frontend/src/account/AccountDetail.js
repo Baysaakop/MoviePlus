@@ -61,12 +61,12 @@ function AccountDetail (props) {
         })            
         .then(res => {
             if (res.status === 200 || res.status === 201) {
-                message.info("Saved successfully.")   
+                message.info("Амжилттай хадгаллаа. Та хуудсаа refresh хийнэ үү.")   
             }                                                         
         })
         .catch(err => {                      
             console.log(err.message)      
-            message.error("Error has occured. Please try again later.")
+            message.error("Алдаа гарлаа. Та дараа дахин оролдоно уу.")
         })          
     }
 
@@ -76,52 +76,52 @@ function AccountDetail (props) {
 
     return (
         <div>
-            <Typography.Title level={3}>Account Details</Typography.Title>
+            <Typography.Title level={3}>Хэрэглэгчийн мэдээлэл</Typography.Title>
             <Form layout="vertical" form={form} onFinish={onFinish} style={{ padding: '16px', border: '1px solid rgba(0, 0, 0, 0.5)' }}>
                 <Row gutter={[16, 0]}>
                     <Col xs={24} md={6}>
-                        <Form.Item name="avatar" label="Avatar">
+                        <Form.Item name="avatar" label="Профайл зураг:">
                             <div style={{ width: '150px', height: '150px' }}>
                                 <ImageUpload onImageSelected={onImageSelected} image={props.user.profile.avatar} />   
                             </div>                             
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={16} md={18}>
-                        <Form.Item name="email" label="E-mail:">
+                        <Form.Item name="email" label="И-мэйл хаяг:">
                             <Input disabled prefix={<MailOutlined style={{ color: '#a1a1a1' }} />} defaultValue={props.user.email} />
                         </Form.Item>
-                        <Form.Item name="username" label="Username:">
+                        <Form.Item name="username" label="Хэрэглэгчийн нэр:">
                             <Input prefix={<UserOutlined style={{ color: '#a1a1a1' }} />} defaultValue={props.user.username ? props.user.username : undefined} />
                         </Form.Item>   
-                        <Form.Item name="phone_number" label="Phone Number:">
+                        <Form.Item name="phone_number" label="Утасны дугаар:">
                             <Input prefix={<MobileOutlined style={{ color: '#a1a1a1' }} />} defaultValue={props.user.profile.phone_number ? props.user.profile.phone_number : undefined} />
                         </Form.Item> 
                     </Col>
                 </Row>           
                 <Row gutter={[16, 0]}>
                     <Col xs={24} sm={24} md={8}>
-                        <Form.Item name="last_name" label="Last Name:">
+                        <Form.Item name="last_name" label="Овог:">
                             <Input prefix={<UserOutlined style={{ color: '#a1a1a1' }} />} defaultValue={props.user.last_name ? props.user.last_name : undefined} />
                         </Form.Item>
                     </Col>
                     <Col xs={24} sm={24} md={8}>
-                        <Form.Item name="first_name" label="First Name:">
+                        <Form.Item name="first_name" label="Нэр:">
                             <Input prefix={<UserOutlined style={{ color: '#a1a1a1' }} />} defaultValue={props.user.first_name ? props.user.first_name : undefined} />
                         </Form.Item>  
                     </Col>
                     <Col xs={24} sm={24} md={8}>
-                        <Form.Item name="birth_date" label="Birth Date:">
+                        {/* <Form.Item name="birth_date" label="Төрсөн өдөр:">
                             <DatePicker style={{ width: '100%' }} defaultValue={props.user.profile.birth_date ? moment(props.user.profile.birth_date, "YYYY-MM-DD") : undefined} />
-                        </Form.Item> 
+                        </Form.Item>  */}
+                        <Form.Item name="role" label="Хандалтын түвшин:">
+                            <Input prefix={<LockOutlined style={{ color: '#a1a1a1' }} />} disabled defaultValue={props.user.profile.role === "1" ? "Admin" : props.user.profile.role === "2" ? "Moderator" : "User"} />
+                        </Form.Item>
                     </Col>
-                </Row>                                                                                                       
-                <Form.Item name="role" label="Role:">
-                    <Input prefix={<LockOutlined style={{ color: '#a1a1a1' }} />} disabled defaultValue={props.user.profile.role === "1" ? "Admin" : props.user.profile.role === "2" ? "Moderator" : "User"} />
-                </Form.Item>
+                </Row>                                                                                                                       
                 <Form.Item>                                                                  
-                    <Popconfirm title="Are you sure to update your account？" okText="Yes" cancelText="No" onConfirm={form.submit}>
+                    <Popconfirm title="Хэрэглэгчийн мэдээллийг шинэчлэх үү？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
                         <Button type="primary" icon={<EditOutlined />} style={{ width: '100%' }}>
-                            Submit
+                            Хадгалах
                         </Button>
                     </Popconfirm>                                                                                                            
                 </Form.Item>         

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import 'antd/dist/antd.css';
 import { Button, Layout, Tooltip } from 'antd';
 import CustomMenu from '../components/Menu';
 import './Layout.css';
