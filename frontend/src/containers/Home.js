@@ -68,7 +68,7 @@ function Home (props) {
                                                 <h1 style={{ color: '#f1f1f1' }}>{movie.name} /{movie.releasedate.slice(0, 4)}/</h1>
                                                 <p style={{ color: '#f1f1f1' }}>Найруулагч: Christopher Nolan</p>
                                                 <Tooltip title="Трэйлэр үзэх">
-                                                <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} />
+                                                    <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} />
                                                 </Tooltip>
                                                 <Tooltip title="Таалагдсан">
                                                     <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} />
@@ -96,8 +96,8 @@ function Home (props) {
                         {latest ? latest.slice(0, 4).map(movie => {
                                 return (
                                     <div>
-                                        <div style={{ margin: 0, padding: 0, width: '100%', height: '70vh', position: 'relative' }}>
-                                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />                                    
+                                        <div style={{ margin: 0, padding: 0, width: '100%', height: '80vh', position: 'relative' }}>
+                                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.5', backgroundColor: '#000' }} />                                    
                                             <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, 0%)', padding: '16px' }}>
                                                 <Typography.Title level={2} style={{ color: '#fff' }}>СОНИРХСОН КИНОГОО ХАЙНА УУ</Typography.Title>
                                                 {/* <Search placeholder="Кино эсвэл цувралын нэрийг бичнэ үү" onSearch={onSearch} size="large" enterButton={<Button danger type="primary" size="large" icon={<SearchOutlined />} />} allowClear /> */}

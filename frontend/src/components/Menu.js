@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Menu.css';
-import { Button, Grid, Spin } from 'antd';
+import { Button, Grid } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import { DesktopOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
@@ -26,7 +26,7 @@ function CustomMenu (props) {
         } else {
             setScrollTop(false)
         }
-        if (user === undefined && props.token && props.token !== null) {
+        if (props.token && props.token !== null) {
             axios({
                 method: 'GET',
                 url: api.profile,
@@ -34,8 +34,7 @@ function CustomMenu (props) {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${props.token}`
                 }
-            }).then(res => {           
-                console.log(res.data)
+            }).then(res => {                           
                 setUser(res.data)
             }).catch(err => {
                 console.log(err)

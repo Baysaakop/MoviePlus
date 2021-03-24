@@ -66,7 +66,9 @@ body {
 .layout-light .ant-form-item-label label,
 .layout-light .ant-select-arrow,
 .layout-light .ant-select-item,
-.layout-light .ant-form-item {    
+.layout-light .ant-form-item,
+.layout-light .ant-statistic-content,
+.layout-light .ant-statistic-title {    
     color: rgba(0, 0, 0, 0.85);
 }
 
@@ -86,7 +88,9 @@ body {
 .layout-dark .ant-divider,
 .layout-dark .ant-tabs-tab-btn,
 .layout-dark .ant-result-title,
-.layout-dark .ant-result-subtitle {
+.layout-dark .ant-result-subtitle,
+.layout-dark .ant-statistic-content,
+.layout-dark .ant-statistic-title {
     color: rgba(255, 255, 255, 0.85);
 }
 
