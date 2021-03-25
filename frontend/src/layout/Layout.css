@@ -28,8 +28,7 @@ body {
 .layout-light .ant-input-group,
 .layout-light .ant-select,
 .layout-light .ant-select:not(.ant-select-customize-input) .ant-select-selector,
-.layout-light .ant-select-selection-item,
-.layout-light .ant-select-dropdown,
+.layout-light .ant-select-selection-item
 .layout-light .ant-input-affix-wrapper {
     background-color: #fff;
     color:  rgba(0, 0, 0, 0.85);
@@ -46,8 +45,7 @@ body {
 .layout-dark .ant-input-group-wrapper,
 .layout-dark .ant-select,
 .layout-dark .ant-select:not(.ant-select-customize-input) .ant-select-selector,
-.layout-dark .ant-select-selection-item,
-.layout-dark .ant-select-dropdown,
+.layout-dark .ant-select-selection-item
 .layout-dark .ant-input-affix-wrapper {
     background-color: #161b22;
     color: rgba(255, 255, 255, 0.85);
@@ -133,3 +131,27 @@ body {
 .layout-dark .ant-form-item-has-error .ant-input-affix-wrapper:hover {
     background: #161b22;
 }
+
+.layout-light .ant-btn-ghost {    
+    background: transparent;
+    border-color: #000;
+    color: #000;
+}
+
+.layout-dark .ant-btn-ghost {    
+    background: transparent;
+    border-color: #fff;
+    color: #fff;
+}
+
+.ant-btn-ghost:hover {
+    background: rgba(24, 144, 255, 0.7);
+}
+
+/* .ant-select-dropdown {
+    background-color: #161b22;    
+}
+
+.layout-dark > .ant-select-item {    
+    color: rgba(255, 255, 255, 0.85);
+} */

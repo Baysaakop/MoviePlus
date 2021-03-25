@@ -137,7 +137,8 @@ function MovieList() {
                         </Col>
                         <Col sm={24} md={8}>
                             <Form.Item name="genre" label="Төрөл сонгох">                                
-                                <Select                                    
+                                <Select                      
+                                    dropdownStyle={{ backgroundColor: '#161b22' }}                                
                                     showSearch                            
                                     style={{ width: '100%' }}
                                     placeholder="Бүгд"                
@@ -149,7 +150,7 @@ function MovieList() {
                                         <>
                                             {genres.map(item => {
                                                 return (
-                                                    <Option key={item.id}>{item.name}</Option>
+                                                    <Option key={item.id} style={{ color: '#fff' }}>{item.name}</Option>
                                                 )
                                             })}
                                         </>

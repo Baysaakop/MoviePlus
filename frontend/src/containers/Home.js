@@ -6,6 +6,7 @@ import api from '../api';
 import MovieCard from '../movie/MovieCard';
 import { CaretRightOutlined, CheckOutlined, LikeOutlined, PlusOutlined, StarOutlined } from '@ant-design/icons';
 import MovieTrendTable from '../movie/MovieTrendTable';
+import GenreTag from '../components/GenreTag';
 
 const { useBreakpoint } = Grid;
 const { Search } = Input;
@@ -59,7 +60,7 @@ function Home (props) {
                     <Carousel className="carousel" autoplay effect="fade" afterChange={onChange} style={{ zIndex: '1' }}>
                         {latest ? latest.slice(0, 4).map(movie => {
                                 return (
-                                    <div>
+                                    <a href={`/movies/${movie.id}`}>
                                         <div style={{ margin: 0, padding: 0, width: '100%', height: '25vh' }}>
                                             <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />     
                                         </div>                                                                           
@@ -84,7 +85,7 @@ function Home (props) {
                                                 </Tooltip>
                                             </div>
                                         </div> 
-                                    </div>
+                                    </a>
                                 );
                             }) : <></>
                         }                
@@ -95,35 +96,52 @@ function Home (props) {
                     <Carousel className="carousel" autoplay effect="fade" afterChange={onChange} style={{ zIndex: '1' }}>
                         {latest ? latest.slice(0, 4).map(movie => {
                                 return (
-                                    <div>
-                                        <div style={{ margin: 0, padding: 0, width: '100%', height: '80vh', position: 'relative' }}>
-                                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.5', backgroundColor: '#000' }} />                                    
+                                    <a href={`/movies/${movie.id}`}>
+                                        <div style={{ margin: 0, padding: 0, width: '100%', height: '70vh', position: 'relative' }}>
+                                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.2', backgroundColor: '#000' }} />                                    
                                             <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, 0%)', padding: '16px' }}>
                                                 <Typography.Title level={2} style={{ color: '#fff' }}>СОНИРХСОН КИНОГОО ХАЙНА УУ</Typography.Title>
                                                 {/* <Search placeholder="Кино эсвэл цувралын нэрийг бичнэ үү" onSearch={onSearch} size="large" enterButton={<Button danger type="primary" size="large" icon={<SearchOutlined />} />} allowClear /> */}
                                                 <Search placeholder="Кино эсвэл цувралын нэрийг бичнэ үү" onSearch={onSearch} size="large" enterButton />
                                             </div>
-                                            <div style={{ position: 'absolute', left: '15%', bottom: '10%', background: 'rgba(0, 0, 0, 0.6)', padding: '16px' }}>
-                                                <h1 style={{ color: '#f1f1f1' }}>{movie.name} /{movie.releasedate.slice(0, 4)}/</h1>
-                                                <p style={{ color: '#f1f1f1' }}>Найруулагч: Christopher Nolan</p>
-                                                <Tooltip title="Трэйлэр үзэх">
-                                                    <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} />
-                                                </Tooltip>
-                                                <Tooltip title="Таалагдсан">
-                                                    <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} />
-                                                </Tooltip>
-                                                <Tooltip title="Үзсэн">
-                                                    <Button size="large" type="ghost" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }}  />} />
-                                                </Tooltip>
-                                                <Tooltip title="Дараа үзэх">
-                                                    <Button size="large" type="ghost" shape="circle" icon={<PlusOutlined />} />
-                                                </Tooltip>
-                                                <Tooltip title="Үнэлгээ өгөх">
-                                                    <Button size="large" type="ghost" shape="circle" icon={<StarOutlined />} />
-                                                </Tooltip>
+                                            <div style={{ position: 'absolute', left: '15%', bottom: '5%', padding: '16px' }}>
+                                                <Typography.Title level={2} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>
+                                                {/* <p style={{ color: '#f1f1f1' }}>Найруулагч: Christopher Nolan</p> */}
+                                                <div className="info">
+                                                    <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text>
+                                                    <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин |</Typography.Text>
+                                                    <Typography.Text type="secondary"> Нээлт: {movie.releasedate}</Typography.Text>
+                                                </div>
+                                                <div className="genre" style={{ marginTop: '8px' }}>
+                                                    {movie.genre.map(g => {
+                                                        return (                                                
+                                                            <GenreTag genre={g.name} />
+                                                        )                                            
+                                                    })}
+                                                </div>
+                                                <div className="actions" style={{ marginTop: '16px' }}>                                        
+                                                    <Tooltip title="Трэйлэр үзэх">
+                                                        <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} />
+                                                    </Tooltip>
+                                                    <Tooltip title="Таалагдсан">
+                                                        <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} />
+                                                    </Tooltip>
+                                                    <Tooltip title="Үзсэн">
+                                                        <Button size="large" type="ghost" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }}  />} />
+                                                    </Tooltip>
+                                                    <Tooltip title="Дараа үзэх">
+                                                        <Button size="large" type="ghost" shape="circle" icon={<PlusOutlined />} />
+                                                    </Tooltip>
+                                                    <Tooltip title="Үнэлгээ өгөх">
+                                                        <Button size="large" type="ghost" shape="circle" icon={<StarOutlined />} />
+                                                    </Tooltip>
+                                                </div>      
+                                                {/* <div className="rating" style={{ marginTop: '16px' }}>
+                                                    <Statistic title="Үнэлгээ" value={movie.score} prefix={<StarFilled style={{ color: 'gold' }} />} suffix={<span>/100 <span style={{ fontSize: '16px' }}>({movie.score_count} үнэлгээнээс)</span></span>} />                                        
+                                                </div>                                            */}
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 );
                             }) : <></>
                         }                

@@ -1,12 +1,18 @@
-.moviedetail .ant-btn-ghost {
+.moviedetail .actions .ant-btn-ghost {
     margin-right: 8px;
-    background: transparent;
-    border-color: #fff;
-    color: #fff;
 }
 
-.moviedetail .ant-btn-ghost:hover {
+/* .layout-light .moviedetail .actions .ant-btn-ghost:hover {
     background: rgba(24, 144, 255, 0.7);
-    /* color: #1890ff;
-    border-color: #1890ff; */
 }
+
+.layout-dark .moviedetail .actions .ant-btn-ghost {
+    margin-right: 8px;
+    background: transparent;
+    border-color: #000;
+    color: #000;
+}
+
+.layout-dark .moviedetail .actions .ant-btn-ghost:hover {
+    background: rgba(24, 144, 255, 0.7);
+} */

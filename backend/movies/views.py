@@ -16,18 +16,26 @@ class MovieFilter(FilterSet):
 class GenreViewSet(viewsets.ModelViewSet):
     serializer_class = GenreSerializer
     queryset = Genre.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 class RatingViewSet(viewsets.ModelViewSet):
     serializer_class = RatingSerializer
     queryset = Rating.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 class ProductionViewSet(viewsets.ModelViewSet):
     serializer_class = ProductionSerializer
     queryset = Production.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 class OccupationViewSet(viewsets.ModelViewSet):
     serializer_class = OccupationSerializer
     queryset = Occupation.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
 class ArtistViewSet(viewsets.ModelViewSet):
     serializer_class = ArtistSerializer

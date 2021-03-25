@@ -23,16 +23,23 @@ class OccupationSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description')        
 
 class ArtistSerializer(serializers.ModelSerializer):
+    occupation = OccupationSerializer(read_only=True, many=True)
     class Meta:
         model = Artist
         fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'avatar', 'occupation', 'likes', 'followers', 'created_by', 'created_at')  
 
 class MemberSerializer(serializers.ModelSerializer):
+    artist = ArtistSerializer(read_only=True)
+    role = OccupationSerializer(read_only=True, many=True)
     class Meta:
         model = Member
         fields = ('id', 'artist', 'role', 'role_name')    
 
 class MovieSerializer(serializers.ModelSerializer):
+    rating = RatingSerializer(read_only=True)
+    genre = GenreSerializer(read_only=True, many=True)
+    production = ProductionSerializer(read_only=True, many=True)
+    members = MemberSerializer(read_only=True, many=True)
     class Meta:
         model = Movie
         fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'members', 'views', 'likes', 'watched', 'watchlisted', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  

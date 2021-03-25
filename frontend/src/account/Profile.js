@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import api from '../api';
 import AccountDetail from './AccountDetail';
-import { CheckCircleOutlined, CloseCircleOutlined, LikeOutlined, PlusCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, LikeOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import Logout from './Logout';
+import Moderator from './Moderator';
 
 const { useBreakpoint } = Grid;
 
@@ -22,6 +23,7 @@ function Profile (props) {
                 'Authorization': `Token ${props.token}`
             }
         }).then(res => {            
+            console.log(res.data)
             setUser(res.data)
         }).catch(err => {
             console.log(err)
@@ -62,7 +64,7 @@ function Profile (props) {
                             <div style={{ padding: '8px' }}>
                                 <AccountDetail user={user ? user : undefined} token={props.token} />
                             </div>
-                        </Tabs.TabPane>
+                        </Tabs.TabPane>                        
                         <Tabs.TabPane tab={<span><LikeOutlined style={{ fontSize: '18px' }} />Таалагдсан кино</span>} key="2">
                             <div style={{ padding: '8px' }}>Таалагдсан кино</div>                        
                         </Tabs.TabPane>
@@ -77,6 +79,16 @@ function Profile (props) {
                                 <Logout />
                             </div>        
                         </Tabs.TabPane>
+                        { user.profile.role === "1" || user.profile.role === "2" ? (
+                            <>
+                                <Tabs.TabPane tab={<span><SettingOutlined style={{ fontSize: '18px' }} />Модератор цонх</span>} key="6">
+                                    <Moderator />      
+                                </Tabs.TabPane>
+                            </>
+                        ) : (
+                            <>
+                            </>
+                        )} 
                     </Tabs>                
                 ) : (
                     <Result

@@ -28,10 +28,10 @@ class Profile(models.Model):
     birthday = models.DateField(null=True, blank=True)
     avatar = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     role = models.CharField(max_length=20, choices=USER_ROLES, default="3")
-    likes = models.ManyToManyField(Movie, related_name="movie_likes")
-    watched = models.ManyToManyField(Movie, related_name="movie_watched")
-    watchlist = models.ManyToManyField(Movie, related_name="movie_watchlist")
-    scores = models.ManyToManyField(Score)
+    likes = models.ManyToManyField(Movie, related_name="movie_likes", null=True, blank=True)
+    watched = models.ManyToManyField(Movie, related_name="movie_watched", null=True, blank=True)
+    watchlist = models.ManyToManyField(Movie, related_name="movie_watchlist", null=True, blank=True)
+    scores = models.ManyToManyField(Score, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
