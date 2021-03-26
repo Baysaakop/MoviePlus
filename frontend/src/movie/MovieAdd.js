@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Typography, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ImageUpload from '../components/ImageUpload';
@@ -10,7 +10,8 @@ const { Option } = Select;
 
 function MovieAdd () {
     const [form] = Form.useForm();    
-    const [image, setImage] = useState();
+    const [poster, setPoster] = useState();
+    const [landscape, setLandscape] = useState();
     const [ratings, setRatings] = useState(); 
     const [genres, setGenres] = useState(); 
     const [occupations, setOccupations] = useState(); 
@@ -49,10 +50,10 @@ function MovieAdd () {
         }) 
     }, [])
 
-    function onActorSearch(value) {                
+    function onArtistSearch(value) {                
         axios({
             method: 'GET',                        
-            url: api.artists + "?search=" + value
+            url: api.artists + "?name=" + value
         })
         .then(res => {                        
             setArtists(res.data.results);            
@@ -62,8 +63,11 @@ function MovieAdd () {
         })      
     }
 
-    function onFinish (values) {   
-        var formData = new FormData();                  
+    function onFinish (values) {          
+        console.log(values)
+        console.log(poster)
+        console.log(landscape)
+        // var formData = new FormData();                  
         // formData.append('name', values.name);      
         // if (values.code && values.code !== null) {
         //     formData.append('code', values.code);
@@ -110,14 +114,22 @@ function MovieAdd () {
         // })         
     }
 
-    function onImageSelected (path) {        
-        setImage(path);
+    function onPosterSelected (path) {        
+        setPoster(path);
+    }
+
+    function onLandscapeSelected (path) {        
+        setLandscape(path);
     }
 
     return (
         <div>
             <Typography.Title level={4}>Шинээр кино нэмэх</Typography.Title>
-            <Form layout="vertical" form={form} onFinish={onFinish}>
+            <Form layout="vertical" form={form} onFinish={onFinish} initialValues={{ 
+                ["crew"]: [''],
+                ["cast"]: ['']                      
+                }}
+            >
                 <Form.Item name="name" label="Нэр:" rules={[{ required: true, message: 'Та киноны нэрийг оруулна уу!' }]}>
                     <Input placeholder="Harry Potter..." />
                 </Form.Item>
@@ -147,8 +159,7 @@ function MovieAdd () {
                     <Col xs={12} sm={8} md={6}>
                         <Form.Item name="rating" label="Насны ангилал:">                        
                             <Select
-                                showSearch
-                                mode="multiple"
+                                showSearch                                
                                 placeholder="Ангилал сонгоно уу"                                                
                                 optionFilterProp="children"                                
                             >
@@ -192,98 +203,159 @@ function MovieAdd () {
                 <Row gutter={16}>       
                     <Col xs={24} sm={12} md={12} lg={8}>                        
                         <Form.Item name="poster" label="Постер:">                               
-                            <ImageUpload onImageSelected={onImageSelected} height="300px" width="200px" />                        
+                            <ImageUpload onImageSelected={onPosterSelected} height="300px" width="200px" />                        
                         </Form.Item>
                     </Col>             
                     <Col xs={24} sm={12} md={12} lg={16}>                        
                         <Form.Item name="landscape" label="Өргөн зураг:">                               
-                            <ImageUpload onImageSelected={onImageSelected} height="300px" width="600px" />                        
+                            <ImageUpload onImageSelected={onLandscapeSelected} height="300px" width="600px" />                        
                         </Form.Item>
                     </Col>                                   
                 </Row>
-                <Row gutter={16}>       
-                    <Col xs={24} sm={12} md={6}>                        
-                        <Form.Item name="crew" label="Баг бүрэлдэхүүн:">   
-                            <Select
-                                showSearch
-                                onSearch={onActorSearch}                                
-                                placeholder="Уран бүтээлч сонгоно уу"                                                
-                                optionFilterProp="children"                                                             
-                            >
-                                { artists ? (
-                                    <>
-                                        {artists.map(item => {
-                                            return (
-                                                <Option key={item.id}>{item.name}</Option>
-                                            )
-                                        })}
-                                    </>
-                                ) : (
-                                    <></>
-                                )}
-                            </Select>                                                                                 
-                        </Form.Item>
-                    </Col>                              
-                    <Col xs={24} sm={12} md={6}>                        
-                        <Form.Item name="role" label="Үүрэг:">   
-                            <Select
-                                showSearch
-                                mode="multiple"                                                       
-                                placeholder="Үүрэг сонгоно уу"                                                
-                                optionFilterProp="children"                                                             
-                            >
-                                { occupations ? (
-                                    <>
-                                        {occupations.map(item => {
-                                            return (
-                                                <Option key={item.id}>{item.name}</Option>
-                                            )
-                                        })}
-                                    </>
-                                ) : (
-                                    <></>
-                                )}
-                            </Select>                                                                                
-                        </Form.Item>
-                    </Col>             
-                    <Col xs={24} sm={12} md={6}>                        
-                        <Form.Item name="cast" label="Жүжигчин:">   
-                            <Select
-                                showSearch
-                                onSearch={onActorSearch}                                
-                                placeholder="Жүжигчин сонгоно уу"                                                
-                                optionFilterProp="children"                                                             
-                            >
-                                { artists ? (
-                                    <>
-                                        {artists.map(item => {
-                                            return (
-                                                <Option key={item.id}>{item.name}</Option>
-                                            )
-                                        })}
-                                    </>
-                                ) : (
-                                    <></>
-                                )}
-                            </Select>                                                                                 
-                        </Form.Item>
-                    </Col>                              
-                    <Col xs={24} sm={12} md={6}>                        
-                        <Form.Item name="role_name" label="Дүр:">   
-                            <Input placeholder="Peter Parker" />                                                                                 
-                        </Form.Item>
-                    </Col>                                   
+                <Row gutter={[16, 16]}>
+                    <Col span={11} style={{ marginBottom: '8px' }}>
+                        <Typography.Text>Баг бүрэлдэхүүн</Typography.Text>                                
+                    </Col>
+                    <Col span={11}>
+                        <Typography.Text>Үүрэг</Typography.Text>
+                    </Col>
+                    <Col span={2}></Col>                    
                 </Row>
+                <Form.List name="crew">                                                        
+                    {(fields, { add, remove }) => (
+                    <>
+                        {fields.map(field => (
+                        <Row key={field.key} gutter={[8, 8]} style={{ width: '100%' }}>
+                            <Col span={11}>
+                                <Form.Item
+                                {...field}
+                                    name={[field.name, 'crew']}
+                                    fieldKey={[field.fieldKey, 'crew']}                                                
+                                >
+                                    <Select 
+                                        showSearch
+                                        onSearch={onArtistSearch}                                
+                                        placeholder="Уран бүтээлч"                                                
+                                        optionFilterProp="children"                                                             
+                                    >
+                                        { artists ? (
+                                            <>
+                                                {artists.map(item => {
+                                                    return (
+                                                        <Option key={item.id}>{item.name}</Option>
+                                                    )
+                                                })}
+                                            </>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </Select> 
+                                </Form.Item>
+                            </Col>
+                            <Col span={11}>
+                                <Form.Item
+                                {...field}
+                                    name={[field.name, 'role']}
+                                    fieldKey={[field.fieldKey, 'role']}                                      
+                                >
+                                    <Select 
+                                        showSearch
+                                        mode="multiple"                              
+                                        placeholder="Үүрэг"                                                
+                                        optionFilterProp="children"                                                             
+                                    >
+                                        { occupations ? (
+                                            <>
+                                                {occupations.map(item => {
+                                                    return (
+                                                        <Option key={item.id}>{item.name}</Option>
+                                                    )
+                                                })}
+                                            </>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </Select> 
+                                </Form.Item>   
+                            </Col>
+                            <Col span={2}>
+                                <Form.Item name="buttons">
+                                    <PlusCircleOutlined onClick={() => add()} style={{ marginRight: '8px', fontSize: '20px', color: '#888' }} />
+                                    <MinusCircleOutlined onClick={() => remove(field.name)} style={{ fontSize: '20px', color: '#888' }} />
+                                </Form.Item>  
+                            </Col>
+                        </Row>
+                        ))}                                
+                    </>
+                    )}                                                                                                            
+                </Form.List>
+                <Row gutter={[16, 16]}>
+                    <Col span={11} style={{ marginBottom: '8px' }}>
+                        <Typography.Text>Жүжигчид</Typography.Text>                                
+                    </Col>
+                    <Col span={11}>
+                        <Typography.Text>Дүр</Typography.Text>
+                    </Col>
+                    <Col span={2}></Col>                    
+                </Row>
+                <Form.List name="cast">                                                        
+                    {(fields, { add, remove }) => (
+                    <>
+                        {fields.map(field => (
+                        <Row key={field.key} gutter={[8, 8]} style={{ width: '100%' }}>
+                            <Col span={11}>
+                                <Form.Item
+                                {...field}
+                                    name={[field.name, 'crew']}
+                                    fieldKey={[field.fieldKey, 'crew']}                                                 
+                                >
+                                    <Select 
+                                        showSearch
+                                        onSearch={onArtistSearch}                                
+                                        placeholder="Уран бүтээлч"                                                
+                                        optionFilterProp="children"                                                             
+                                    >
+                                        { artists ? (
+                                            <>
+                                                {artists.map(item => {
+                                                    return (
+                                                        <Option key={item.id}>{item.name}</Option>
+                                                    )
+                                                })}
+                                            </>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </Select> 
+                                </Form.Item>
+                            </Col>
+                            <Col span={11}>
+                                <Form.Item
+                                {...field}
+                                    name={[field.name, 'role_name']}
+                                    fieldKey={[field.fieldKey, 'role_name']}                                      
+                                >
+                                    <Input placeholder="Дүр" /> 
+                                </Form.Item>   
+                            </Col>
+                            <Col span={2}>
+                                <Form.Item name="buttons">
+                                    <PlusCircleOutlined onClick={() => add()} style={{ marginRight: '8px', fontSize: '20px', color: '#888' }} />
+                                    <MinusCircleOutlined onClick={() => remove(field.name)} style={{ fontSize: '20px', color: '#888' }} />
+                                </Form.Item>  
+                            </Col>
+                        </Row>
+                        ))}                                
+                    </>
+                    )}                                                                                                            
+                </Form.List>               
                 <Form.Item>
                     <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <Popconfirm title="Тус номыг бүртгэх үү？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
+                        <Popconfirm title="Тус киног бүртгэх үү？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
                             <Button block type="primary" icon={<PlusOutlined />}>
-                                Бүртгэх
+                                Хадгалах
                             </Button>
                         </Popconfirm>
-                        {/* <Button type="ghost" icon={<ReloadOutlined />} onClick={onReset} style={{ marginRight: '8px' }}>
-                            Хоослох
-                        </Button>                                 */}
                     </div>                                        
                 </Form.Item>                                
             </Form>

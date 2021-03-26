@@ -40,9 +40,40 @@ class OccupationViewSet(viewsets.ModelViewSet):
 class ArtistViewSet(viewsets.ModelViewSet):
     serializer_class = ArtistSerializer
     queryset = Artist.objects.all()
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'occupation']   
-    ordering_fields = ['name', 'birthday', 'likes', 'followers']
+
+    def get_queryset(self):
+        queryset = Artist.objects.all().order_by('-created_at')
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(name__startswith=name)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        user = Token.objects.get(key=request.data['token']).user   
+        artist = Artist.objects.create(
+            name=request.data['name'],
+            created_by=user
+        )
+        if 'firstname' in request.data:
+            artist.firstname=request.data['firstname']
+        if 'lastname' in request.data:
+            artist.lastname=request.data['lastname']
+        if 'biography' in request.data:
+            artist.biography=request.data['biography']
+        if 'birthday' in request.data:
+            artist.birthday=request.data['birthday']
+        if 'gender' in request.data:
+            artist.gender=request.data['gender']
+        if 'avatar' in request.data:
+            artist.avatar=request.data['avatar']
+        if 'occupation' in request.data:
+            arr = str(request.data['occupation']).split(',')
+            for item in arr:
+                artist.occupation.add(int(item))
+        artist.save()
+        serializer = ArtistSerializer(artist)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class MemberViewSet(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
@@ -51,12 +82,6 @@ class MemberViewSet(viewsets.ModelViewSet):
 class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
-    # filter_backends = [filters.SearchFilter, filters.OrderingFilter]    
-    # filter_class = MovieFilter
-    # filter_backends = [DjangoFilterBackend, filters.OrderingFilter]  
-    # search_fields = ['name', 'genre__id']
-    # ordering_fields = ['name', 'duration', 'releasedate', 'views', 'likes', 'watched', 'watchlisted', 'score']
-    # ordering = ['-created_at']
 
     def get_queryset(self):
         queryset = Movie.objects.all().order_by('-created_at')
@@ -64,7 +89,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         genre = self.request.query_params.get('genre', None)
         order = self.request.query_params.get('order', None)
         if name is not None:
-            queryset = queryset.filter(name__icontains=name)
+            queryset = queryset.filter(name__istartswith=name)
         if genre is not None:
             queryset = queryset.filter(genre__id=genre)
         if order is not None:

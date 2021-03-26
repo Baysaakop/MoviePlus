@@ -28,7 +28,7 @@ body {
 .layout-light .ant-input-group,
 .layout-light .ant-select,
 .layout-light .ant-select:not(.ant-select-customize-input) .ant-select-selector,
-.layout-light .ant-select-selection-item
+.layout-light .ant-select-selection-item,
 .layout-light .ant-input-affix-wrapper {
     background-color: #fff;
     color:  rgba(0, 0, 0, 0.85);
@@ -45,8 +45,11 @@ body {
 .layout-dark .ant-input-group-wrapper,
 .layout-dark .ant-select,
 .layout-dark .ant-select:not(.ant-select-customize-input) .ant-select-selector,
-.layout-dark .ant-select-selection-item
-.layout-dark .ant-input-affix-wrapper {
+.layout-dark .ant-select-selection-item,
+.layout-dark .ant-input-affix-wrapper,
+.layout-dark .ant-input-number-input-wrap,
+.layout-dark .ant-input-number-handler-wrap,
+.layout-dark .ant-picker {
     background-color: #161b22;
     color: rgba(255, 255, 255, 0.85);
 }
@@ -88,7 +91,15 @@ body {
 .layout-dark .ant-result-title,
 .layout-dark .ant-result-subtitle,
 .layout-dark .ant-statistic-content,
-.layout-dark .ant-statistic-title {
+.layout-dark .ant-statistic-title,
+.layout-dark .ant-input-number-handler-up-inner,
+.layout-dark .ant-input-number-handler-down-inner,
+.layout-dark .ant-picker-suffix,
+.layout-dark .ant-picker-input input,
+.layout-dark .ant-input-focused,
+.layout-dark .ant-input:focus,
+.layout-dark .ant-input:hover,
+.layout-dark .ant-select-selection-item-remove {
     color: rgba(255, 255, 255, 0.85);
 }
 

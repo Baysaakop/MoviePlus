@@ -38,7 +38,7 @@ function MovieList() {
         //     name: name           
         // }) 
        getMovies(name, genre, page, order)
-    }, [genres, name, genre, page, order])   
+    }, [name, genre, page, order])   
 
     function getMovies(name, genre, page, order) {
         var url = api.movies + "?"
@@ -55,11 +55,12 @@ function MovieList() {
         params.forEach(param => {
             url += param + "&"
         })        
-        url += "page=" + page        
+        url += "page=" + page                
         axios({
             method: 'GET',
             url: url
-        }).then(res => {                                    
+        }).then(res => {                    
+            console.log(res.data)                
             setMovies(res.data.results)
             setTotal(res.data.count)
         }).catch(err => {
@@ -138,7 +139,7 @@ function MovieList() {
                         <Col sm={24} md={8}>
                             <Form.Item name="genre" label="Төрөл сонгох">                                
                                 <Select                      
-                                    dropdownStyle={{ backgroundColor: '#161b22' }}                                
+                                    // dropdownStyle={{ backgroundColor: '#161b22' }}                                
                                     showSearch                            
                                     style={{ width: '100%' }}
                                     placeholder="Бүгд"                
@@ -150,7 +151,7 @@ function MovieList() {
                                         <>
                                             {genres.map(item => {
                                                 return (
-                                                    <Option key={item.id} style={{ color: '#fff' }}>{item.name}</Option>
+                                                    <Option key={item.id}>{item.name}</Option>
                                                 )
                                             })}
                                         </>
@@ -201,7 +202,7 @@ function MovieList() {
                 <Pagination
                     current={page}
                     total={total}
-                    pageSize={24}
+                    pageSize={4}
                     hideOnSinglePage={true}
                     showSizeChanger={false}
                     showTotal={showTotal}
