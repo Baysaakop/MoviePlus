@@ -2,6 +2,7 @@ import { DeleteOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
 import { Tabs, Typography } from 'antd';
 import React from 'react';
 import ArtistAdd from '../artist/ArtistAdd';
+import ArtistUpdate from '../artist/ArtistUpdate';
 import MovieAdd from '../movie/MovieAdd';
 
 function Moderator (props) {
@@ -13,11 +14,8 @@ function Moderator (props) {
                         <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
                             <MovieAdd />
                         </Tabs.TabPane>
-                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах</span>}>
-
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key="3" tab={<span><DeleteOutlined />Устгах</span>}>
-
+                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>
+                            
                         </Tabs.TabPane>
                     </Tabs>
                 </Tabs.TabPane> 
@@ -26,19 +24,10 @@ function Moderator (props) {
                         <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
                             <ArtistAdd />
                         </Tabs.TabPane>
-                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах</span>}>
-
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key="3" tab={<span><DeleteOutlined />Устгах</span>}>
-
+                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>
+                            <ArtistUpdate />
                         </Tabs.TabPane>
                     </Tabs>
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="Төрөл жанр" key="3">
-                    <Typography.Title level={5}>Төрөл жанр</Typography.Title>
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="Ангилал" key="3">
-                    <Typography.Title level={5}>Төрөл жанр</Typography.Title>
                 </Tabs.TabPane>
             </Tabs>
         </div>

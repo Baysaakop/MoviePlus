@@ -1,14 +1,16 @@
 import { MinusCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Typography, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker } from 'antd';
+import { Typography, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ImageUpload from '../components/ImageUpload';
 import axios from 'axios';
 import api from '../api';
+import { connect } from "react-redux";
+import moment from 'moment';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-function MovieAdd () {
+function MovieAdd (props) {
     const [form] = Form.useForm();    
     const [poster, setPoster] = useState();
     const [landscape, setLandscape] = useState();
@@ -67,51 +69,59 @@ function MovieAdd () {
         console.log(values)
         console.log(poster)
         console.log(landscape)
-        // var formData = new FormData();                  
-        // formData.append('name', values.name);      
-        // if (values.code && values.code !== null) {
-        //     formData.append('code', values.code);
-        // }
-        // if (values.description && values.description !== null) {
-        //     formData.append('description', values.description);
-        // }
-        // if (values.category && values.category !== null) {
-        //     formData.append('category', values.category);
-        // }
-        // if (values.author && values.author !== null) {
-        //     formData.append('author', values.author);
-        // }
-        // if (values.published_at && values.published_at !== null) {
-        //     formData.append('published_at', values.published_at);
-        // } 
-        // if (values.pages && values.pages !== null) {
-        //     formData.append('pages', values.pages);
-        // }        
-        // if (values.count && values.count !== null) {
-        //     formData.append('count', values.count);            
-        // }
-        // if (values.available && values.available !== null) {            
-        //     formData.append('available', values.available);
-        // }
-        // if (image && image !== null) {
-        //     formData.append('image', image);
-        // }            
-        // formData.append('token', props.token);                              
-        // axios({
-        //     method: 'POST',
-        //     url: `${api.books}/`,
-        //     data: formData,
-        //     headers: {'Content-Type': 'multipart/form-data'}            
-        // })                   
-        // .then(res => {
-        //     if (res.status === 200 || res.status === 201) {
-        //         message.info("Амжилттай бүртгэгдлээ.")   
-        //     }                        
-        //     form.resetFields()             
-        // })
-        // .catch(err => {                            
-        //     message.error("Бүртгэл амжилтгүй боллоо. Та дахин оролдоно уу.")
-        // })         
+        var formData = new FormData();
+        formData.append('name', values.name);      
+        if (values.description && values.description !== null) {
+            formData.append('description', values.description);
+        }
+        if (values.plot && values.plot !== null) {
+            formData.append('plot', values.plot);
+        }
+        if (values.firstname && values.firstname !== null) {
+            formData.append('firstname', values.firstname);
+        }
+        if (values.releasedate && values.releasedate !== null) {
+            formData.append('releasedate', moment(values.releasedate).format("YYYY-MM-DD"));
+        }
+        if (values.duration && values.duration !== null) {
+            formData.append('duration', values.duration);
+        }
+        if (values.rating && values.rating !== null) {
+            formData.append('rating', values.rating);
+        }
+        if (values.genre && values.genre !== null) {
+            formData.append('genre', values.genre);
+        }
+        if (values.crew && values.crew !== null) {
+            formData.append('crew', values.crew);
+        }
+        if (values.cast && values.cast !== null) {
+            formData.append('cast', values.cast);
+        }
+        if (poster && poster !== null) {
+            formData.append('poster', poster);
+        }
+        if (landscape && landscape !== null) {
+            formData.append('landscape', landscape);
+        }
+        formData.append('token', props.token);
+        axios({
+            method: 'POST',
+            url: `${api.movies}/`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Token ${props.token}`            
+            }
+        }).then(res => {                        
+            if (res.status === 201 || res.status === 200) {                
+                message.info("Нэмэгдлээ.");
+                form.resetFields();
+            }             
+        }).catch(err => {   
+            message.error("Амжилтгүй боллоо."); 
+            console.log(err);            
+        })
     }
 
     function onPosterSelected (path) {        
@@ -124,14 +134,13 @@ function MovieAdd () {
 
     return (
         <div>
-            <Typography.Title level={4}>Шинээр кино нэмэх</Typography.Title>
             <Form layout="vertical" form={form} onFinish={onFinish} initialValues={{ 
                 ["crew"]: [''],
                 ["cast"]: ['']                      
                 }}
             >
                 <Form.Item name="name" label="Нэр:" rules={[{ required: true, message: 'Та киноны нэрийг оруулна уу!' }]}>
-                    <Input placeholder="Harry Potter..." />
+                    <Input />
                 </Form.Item>
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={24} md={12}>
@@ -229,8 +238,8 @@ function MovieAdd () {
                             <Col span={11}>
                                 <Form.Item
                                 {...field}
-                                    name={[field.name, 'crew']}
-                                    fieldKey={[field.fieldKey, 'crew']}                                                
+                                    name={[field.name, 'artist']}
+                                    fieldKey={[field.fieldKey, 'artist']}                                                
                                 >
                                     <Select 
                                         showSearch
@@ -279,7 +288,7 @@ function MovieAdd () {
                                 </Form.Item>   
                             </Col>
                             <Col span={2}>
-                                <Form.Item name="buttons">
+                                <Form.Item>
                                     <PlusCircleOutlined onClick={() => add()} style={{ marginRight: '8px', fontSize: '20px', color: '#888' }} />
                                     <MinusCircleOutlined onClick={() => remove(field.name)} style={{ fontSize: '20px', color: '#888' }} />
                                 </Form.Item>  
@@ -306,8 +315,8 @@ function MovieAdd () {
                             <Col span={11}>
                                 <Form.Item
                                 {...field}
-                                    name={[field.name, 'crew']}
-                                    fieldKey={[field.fieldKey, 'crew']}                                                 
+                                    name={[field.name, 'artist']}
+                                    fieldKey={[field.fieldKey, 'artist']}                                                 
                                 >
                                     <Select 
                                         showSearch
@@ -339,7 +348,7 @@ function MovieAdd () {
                                 </Form.Item>   
                             </Col>
                             <Col span={2}>
-                                <Form.Item name="buttons">
+                                <Form.Item>
                                     <PlusCircleOutlined onClick={() => add()} style={{ marginRight: '8px', fontSize: '20px', color: '#888' }} />
                                     <MinusCircleOutlined onClick={() => remove(field.name)} style={{ fontSize: '20px', color: '#888' }} />
                                 </Form.Item>  
@@ -351,16 +360,22 @@ function MovieAdd () {
                 </Form.List>               
                 <Form.Item>
                     <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <Popconfirm title="Тус киног бүртгэх үү？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
-                            <Button block type="primary" icon={<PlusOutlined />}>
-                                Хадгалах
+                        <Popconfirm title="Нэмэх үү？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
+                            <Button type="primary" icon={<PlusOutlined />}>
+                                Нэмэх
                             </Button>
                         </Popconfirm>
                     </div>                                        
-                </Form.Item>                                
+                </Form.Item>                                       
             </Form>
         </div>
     )
 }
 
-export default MovieAdd;
+const mapStateToProps = state => {
+    return {
+        token: state.token
+    }
+}
+
+export default connect(mapStateToProps)(MovieAdd);
