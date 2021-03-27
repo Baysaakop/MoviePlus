@@ -1,3 +1,4 @@
+import json
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -75,6 +76,37 @@ class ArtistViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def update(self, request, *args, **kwargs):                         
+        artist = self.get_object()                 
+        user = Token.objects.get(key=request.data['token']).user
+        artist.updated_by=user
+        if 'name' in request.data:
+            artist.name=request.data['name']
+        if 'lastname' in request.data:
+            artist.lastname=request.data['lastname']
+        if 'firstname' in request.data:
+            artist.firstname=request.data['firstname']
+        if 'biography' in request.data:
+            artist.biography=request.data['biography']
+        if 'gender' in request.data:
+            artist.gender=request.data['gender']
+        if 'occupation' in request.data:          
+            artist.occupation.clear()  
+            arr = str(request.data['occupation']).split(',')
+            for item in arr:
+                check = item.isnumeric()
+                if check == True:
+                    artist.occupation.add(int(item))                            
+        if 'birthday' in request.data:
+            print(request.data['birthday'])
+            artist.birthday=request.data['birthday']        
+        if 'avatar' in request.data:
+            artist.avatar=request.data['avatar'] 
+        artist.save()
+        serializer = ArtistSerializer(artist)
+        headers = self.get_success_headers(serializer.data)        
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)       
+
 class MemberViewSet(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
     queryset = Member.objects.all()
@@ -108,6 +140,71 @@ class MovieViewSet(viewsets.ModelViewSet):
             elif (order == 'likes'):
                 queryset = queryset.order_by('-likes')
         return queryset
+
+    def create(self, request, *args, **kwargs):
+        user = Token.objects.get(key=request.data['token']).user        
+        json_obj = json.dumps(request.data)
+        print(json_obj)   
+        # movie = Movie.objects.create(
+        #     name=request.data['name'],
+        #     created_by=user
+        # )
+        # if 'description' in request.data:
+        #     movie.description=request.data['description']
+        # if 'plot' in request.data:
+        #     movie.plot=request.data['plot']
+        # if 'duration' in request.data:
+        #     movie.duration=request.data['duration']
+        # if 'releasedate' in request.data:
+        #     movie.releasedate=request.data['releasedate']
+        # if 'poster' in request.data:
+        #     movie.poster=request.data['poster']
+        # if 'landscape' in request.data:
+        #     movie.landscape=request.data['landscape']
+        # if 'rating' in request.data:
+        #     arr = str(request.data['rating']).split(',')
+        #     for item in arr:
+        #         movie.rating.add(int(item))
+        # if 'genre' in request.data:
+        #     arr = str(request.data['genre']).split(',')
+        #     for item in arr:
+        #         movie.genre.add(int(item))     
+            
+        # movie.save()
+        # serializer = MovieSerializer(movie)
+        # headers = self.get_success_headers(serializer.data)
+        # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # def update(self, request, *args, **kwargs):                         
+    #     artist = self.get_object()                 
+    #     user = Token.objects.get(key=request.data['token']).user
+    #     artist.updated_by=user
+    #     if 'name' in request.data:
+    #         artist.name=request.data['name']
+    #     if 'lastname' in request.data:
+    #         artist.lastname=request.data['lastname']
+    #     if 'firstname' in request.data:
+    #         artist.firstname=request.data['firstname']
+    #     if 'biography' in request.data:
+    #         artist.biography=request.data['biography']
+    #     if 'gender' in request.data:
+    #         artist.gender=request.data['gender']
+    #     if 'occupation' in request.data:          
+    #         artist.occupation.clear()  
+    #         arr = str(request.data['occupation']).split(',')
+    #         for item in arr:
+    #             check = item.isnumeric()
+    #             if check == True:
+    #                 artist.occupation.add(int(item))                            
+    #     if 'birthday' in request.data:
+    #         print(request.data['birthday'])
+    #         artist.birthday=request.data['birthday']        
+    #     if 'avatar' in request.data:
+    #         artist.avatar=request.data['avatar'] 
+    #     artist.save()
+    #     serializer = ArtistSerializer(artist)
+    #     headers = self.get_success_headers(serializer.data)        
+    #     return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)  
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
