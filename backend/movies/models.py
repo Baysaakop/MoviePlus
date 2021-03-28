@@ -48,8 +48,14 @@ class Artist(models.Model):
         return self.name
 
 class Member(models.Model):    
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
-    role = models.ManyToManyField(Occupation)    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
+    role = models.ForeignKey(Occupation, on_delete=models.CASCADE, null=True, blank=True)        
+
+    def __str__(self):
+        return self.artist.name
+
+class Cast(models.Model):    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
     role_name = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
@@ -64,7 +70,8 @@ class Movie(models.Model):
     rating = models.ForeignKey(Rating, on_delete=models.CASCADE, null=True, blank=True)
     genre = models.ManyToManyField(Genre, null=True, blank=True)    
     production = models.ManyToManyField(Production, null=True, blank=True)
-    members = models.ManyToManyField(Member, null=True, blank=True)
+    member = models.ManyToManyField(Member, null=True, blank=True)
+    cast = models.ManyToManyField(Cast, null=True, blank=True)
     views = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)    
     watched = models.IntegerField(default=0)    

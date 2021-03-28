@@ -2,8 +2,8 @@ import json
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review
-from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ArtistSerializer, MemberSerializer, MovieSerializer, ReviewSerializer
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Cast, Movie, Review
+from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ArtistSerializer, MemberSerializer, CastSerializer, MovieSerializer, ReviewSerializer
 from rest_framework import viewsets, filters
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -111,6 +111,10 @@ class MemberViewSet(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
     queryset = Member.objects.all()
 
+class CastViewSet(viewsets.ModelViewSet):
+    serializer_class = CastSerializer
+    queryset = Cast.objects.all()
+
 class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
@@ -142,38 +146,47 @@ class MovieViewSet(viewsets.ModelViewSet):
         return queryset
 
     def create(self, request, *args, **kwargs):
-        user = Token.objects.get(key=request.data['token']).user        
-        json_obj = json.dumps(request.data)
-        print(json_obj)   
-        # movie = Movie.objects.create(
-        #     name=request.data['name'],
-        #     created_by=user
-        # )
-        # if 'description' in request.data:
-        #     movie.description=request.data['description']
-        # if 'plot' in request.data:
-        #     movie.plot=request.data['plot']
-        # if 'duration' in request.data:
-        #     movie.duration=request.data['duration']
-        # if 'releasedate' in request.data:
-        #     movie.releasedate=request.data['releasedate']
-        # if 'poster' in request.data:
-        #     movie.poster=request.data['poster']
-        # if 'landscape' in request.data:
-        #     movie.landscape=request.data['landscape']
-        # if 'rating' in request.data:
-        #     arr = str(request.data['rating']).split(',')
-        #     for item in arr:
-        #         movie.rating.add(int(item))
-        # if 'genre' in request.data:
-        #     arr = str(request.data['genre']).split(',')
-        #     for item in arr:
-        #         movie.genre.add(int(item))     
-            
-        # movie.save()
-        # serializer = MovieSerializer(movie)
-        # headers = self.get_success_headers(serializer.data)
-        # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        print(request.data)                   
+        user = Token.objects.get(key=request.data['token']).user                                
+        movie = Movie.objects.create(
+            name=request.data['name'],
+            created_by=user
+        )
+        if 'description' in request.data:
+            movie.description=request.data['description']
+        if 'plot' in request.data:
+            movie.plot=request.data['plot']
+        if 'duration' in request.data:
+            movie.duration=request.data['duration']
+        if 'releasedate' in request.data:
+            movie.releasedate=request.data['releasedate']
+        if 'poster' in request.data:
+            movie.poster=request.data['poster']
+        if 'landscape' in request.data:
+            movie.landscape=request.data['landscape']
+        if 'rating' in request.data:            
+            rating = Rating.objects.get(id=int(request.data['rating']))
+            movie.rating=rating   
+        if 'genre' in request.data:            
+            for item in request.data['genre']:
+                movie.genre.add(int(item))     
+        if 'crew' in request.data:  
+            for c in request.data['crew']:           
+                artist = Artist.objects.get(id=int(c['artist']))             
+                role = Occupation.objects.get(id=int(c['role']))
+                member, created = Member.objects.get_or_create(artist=artist, role=role)                
+                movie.member.add(member)
+        if 'cast' in request.data:  
+            for c in request.data['cast']:       
+                artist = Artist.objects.get(id=int(c['artist']))             
+                role_name = Occupation.objects.get(id=int(c['role_name']))                 
+                cast, created = Cast.objects.get_or_create(artist=artist, role_name=role_name)    
+                movie.cast.add(cast)
+
+        movie.save()
+        serializer = MovieSerializer(movie)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     # def update(self, request, *args, **kwargs):                         
     #     artist = self.get_object()                 

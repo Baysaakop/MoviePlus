@@ -65,52 +65,47 @@ function MovieAdd (props) {
         })      
     }
 
-    function onFinish (values) {          
-        console.log(values)
-        console.log(poster)
-        console.log(landscape)
-        var formData = new FormData();
-        formData.append('name', values.name);      
+    function onFinish (values) {                  
+        const data = {
+            name: values.name,
+            token: props.token
+        }
         if (values.description && values.description !== null) {
-            formData.append('description', values.description);
+            data['description'] = values.description;
         }
         if (values.plot && values.plot !== null) {
-            formData.append('plot', values.plot);
+            data['plot'] = values.plot;
         }
-        if (values.firstname && values.firstname !== null) {
-            formData.append('firstname', values.firstname);
+        if (values.releasedate && values.releasedate !== null) {            
+            data['releasedate'] = moment(values.releasedate).format("YYYY-MM-DD");
         }
-        if (values.releasedate && values.releasedate !== null) {
-            formData.append('releasedate', moment(values.releasedate).format("YYYY-MM-DD"));
+        if (values.duration && values.duration !== null) {            
+            data['duration'] = values.duration;
         }
-        if (values.duration && values.duration !== null) {
-            formData.append('duration', values.duration);
-        }
-        if (values.rating && values.rating !== null) {
-            formData.append('rating', values.rating);
+        if (values.rating && values.rating !== null) {            
+            data['rating'] = values.rating;
         }
         if (values.genre && values.genre !== null) {
-            formData.append('genre', values.genre);
+            data['genre'] = values.genre;
         }
         if (values.crew && values.crew !== null) {
-            formData.append('crew', values.crew);
+            data['crew'] = values.crew;
         }
         if (values.cast && values.cast !== null) {
-            formData.append('cast', values.cast);
+            data['cast'] = values.cast;
         }
-        if (poster && poster !== null) {
-            formData.append('poster', poster);
-        }
-        if (landscape && landscape !== null) {
-            formData.append('landscape', landscape);
-        }
-        formData.append('token', props.token);
+        // if (poster && poster !== null) {
+        //     data['poster'] = poster;            
+        // }
+        // if (landscape && landscape !== null) {
+        //     data['landscape'] = landscape; 
+        // }
         axios({
             method: 'POST',
             url: `${api.movies}/`,
-            data: formData,
+            data: data,
             headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json',
                 'Authorization': `Token ${props.token}`            
             }
         }).then(res => {                        
@@ -122,7 +117,30 @@ function MovieAdd (props) {
             message.error("Амжилтгүй боллоо."); 
             console.log(err);            
         })
+        // axios({
+        //     method: 'POST',
+        //     url: `${api.movies}/`,
+        //     data: formData,
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data',
+        //         'Authorization': `Token ${props.token}`            
+        //     }
+        // }).then(res => {                        
+        //     if (res.status === 201 || res.status === 200) {                
+        //         message.info("Нэмэгдлээ.");
+        //         form.resetFields();
+        //     }             
+        // }).catch(err => {   
+        //     message.error("Амжилтгүй боллоо."); 
+        //     console.log(err);            
+        // })
     }
+
+    // function handleMember(arr) {
+    //     arr.forEach(item => 
+
+    //     )
+    // }
 
     function onPosterSelected (path) {        
         setPoster(path);
@@ -268,8 +286,7 @@ function MovieAdd (props) {
                                     fieldKey={[field.fieldKey, 'role']}                                      
                                 >
                                     <Select 
-                                        showSearch
-                                        mode="multiple"                              
+                                        showSearch                                                              
                                         placeholder="Үүрэг"                                                
                                         optionFilterProp="children"                                                             
                                     >

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Cast, Movie, Review
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,16 +33,23 @@ class MemberSerializer(serializers.ModelSerializer):
     role = OccupationSerializer(read_only=True, many=True)
     class Meta:
         model = Member
-        fields = ('id', 'artist', 'role', 'role_name')    
+        fields = ('id', 'artist', 'role')    
+
+class CastSerializer(serializers.ModelSerializer):
+    artist = ArtistSerializer(read_only=True)    
+    class Meta:
+        model = Cast
+        fields = ('id', 'artist', 'role_name')    
 
 class MovieSerializer(serializers.ModelSerializer):
     rating = RatingSerializer(read_only=True)
     genre = GenreSerializer(read_only=True, many=True)
     production = ProductionSerializer(read_only=True, many=True)
-    members = MemberSerializer(read_only=True, many=True)
+    member = MemberSerializer(read_only=True, many=True)
+    cast = CastSerializer(read_only=True, many=True)
     class Meta:
         model = Movie
-        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'members', 'views', 'likes', 'watched', 'watchlisted', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
+        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'member', 'cast', 'views', 'likes', 'watched', 'watchlisted', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
