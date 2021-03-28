@@ -65,7 +65,8 @@ function MovieAdd (props) {
         })      
     }
 
-    function onFinish (values) {                  
+    function onFinish (values) {      
+        console.log(values)            
         const data = {
             name: values.name,
             token: props.token
@@ -85,21 +86,23 @@ function MovieAdd (props) {
         if (values.rating && values.rating !== null) {            
             data['rating'] = values.rating;
         }
-        if (values.genre && values.genre !== null) {
+        if (values.genre && values.genre !== null && values.genre.length > 0 && values.genre[0] !== "") {
             data['genre'] = values.genre;
         }
-        if (values.crew && values.crew !== null) {
+        if (values.crew && values.crew !== null && values.crew.length > 0 && values.crew[0] !== "") {
             data['crew'] = values.crew;
         }
-        if (values.cast && values.cast !== null) {
+        if (values.cast && values.cast !== null && values.cast.length > 0 && values.cast[0] !== "") {
             data['cast'] = values.cast;
         }
-        // if (poster && poster !== null) {
-        //     data['poster'] = poster;            
-        // }
-        // if (landscape && landscape !== null) {
-        //     data['landscape'] = landscape; 
-        // }
+        var formData = new FormData();
+        if (poster && poster !== null) {
+            formData.append('poster', poster)               
+        }
+        if (landscape && landscape !== null) {
+            formData.append('landscape', landscape)            
+        }
+        formData.append('token', props.token)
         axios({
             method: 'POST',
             url: `${api.movies}/`,
@@ -109,31 +112,30 @@ function MovieAdd (props) {
                 'Authorization': `Token ${props.token}`            
             }
         }).then(res => {                        
-            if (res.status === 201 || res.status === 200) {                
-                message.info("Нэмэгдлээ.");
-                form.resetFields();
+            if (res.status === 201 || res.status === 200) {      
+                console.log(res)
+                axios({
+                    method: 'PUT',
+                    url: `${api.movies}/${res.data.id}/`,
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Token ${props.token}`            
+                    }
+                }).then(res => {                        
+                    if (res.status === 201 || res.status === 200) {                
+                        message.info("Нэмэгдлээ.");
+                        form.resetFields();
+                    }             
+                }).catch(err => {   
+                    message.error("Амжилтгүй боллоо."); 
+                    console.log(err);            
+                })                          
             }             
         }).catch(err => {   
             message.error("Амжилтгүй боллоо."); 
             console.log(err);            
-        })
-        // axios({
-        //     method: 'POST',
-        //     url: `${api.movies}/`,
-        //     data: formData,
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data',
-        //         'Authorization': `Token ${props.token}`            
-        //     }
-        // }).then(res => {                        
-        //     if (res.status === 201 || res.status === 200) {                
-        //         message.info("Нэмэгдлээ.");
-        //         form.resetFields();
-        //     }             
-        // }).catch(err => {   
-        //     message.error("Амжилтгүй боллоо."); 
-        //     console.log(err);            
-        // })
+        })        
     }
 
     // function handleMember(arr) {

@@ -2,6 +2,7 @@ import { Avatar, Button, Card, Tooltip } from 'antd';
 import React from 'react';
 import './MovieCard.css';
 import { CheckOutlined, PlusOutlined, LikeOutlined } from '@ant-design/icons';
+import blank from './blank.jpg';
 
 const { Meta } = Card;
 
@@ -29,13 +30,12 @@ function MovieCard (props) {
                     cover={
                         <div className="cover-container">
                             <a href={`/movies/${props.item.id}`}>
-                                <img src={props.item.poster} alt="poster" style={{ width: '100%', height: 'auto' }} />
+                                <img src={props.item.poster ? props.item.poster : blank} alt="poster" style={{ width: '100%', height: 'auto' }} />
                             </a>
                             <div className="cover-overlay-top-left">
                                 <Avatar size="large" style={{ background: '#161b22', border: '1px solid orange', color: 'orange', fontFamily: 'Nerko One, cursive', fontSize: '20px' }}>
                                     {parseInt(props.item.score)}
-                                </Avatar>
-                                {/* <StarFilled style={{ color: 'yellow' }} /> {props.item.score} */}
+                                </Avatar>                                
                             </div>
                             <div className="cover-overlay-bot-right">                           
                                 <Tooltip title="Таалагдсан">                                

@@ -4,6 +4,7 @@ import React from 'react';
 import ArtistAdd from '../artist/ArtistAdd';
 import ArtistUpdate from '../artist/ArtistUpdate';
 import MovieAdd from '../movie/MovieAdd';
+import MovieUpdate from '../movie/MovieUpdate';
 
 function Moderator (props) {
     return (
@@ -15,7 +16,7 @@ function Moderator (props) {
                             <MovieAdd />
                         </Tabs.TabPane>
                         <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>
-                            
+                            <MovieUpdate />
                         </Tabs.TabPane>
                     </Tabs>
                 </Tabs.TabPane> 
