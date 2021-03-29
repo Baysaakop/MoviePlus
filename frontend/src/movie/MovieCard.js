@@ -54,7 +54,7 @@ function MovieCard (props) {
                         </div>
                     }
                 >
-                    <Meta title={props.item.name} description={props.item.releasedate.slice(0, 4)} />
+                    <Meta title={props.item.name} description={props.item.releasedate ? props.item.releasedate.slice(0, 4) : 'Null'} />
                 </Card>
             {/* </a> */}
         </div>

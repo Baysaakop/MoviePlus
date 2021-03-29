@@ -50,6 +50,10 @@ function MovieAdd (props) {
         .catch(err => {
             console.log(err.message);
         }) 
+        form.setFieldsValue({
+            crew: [''],
+            cast: ['']
+        })
     }, [])
 
     function onArtistSearch(value) {                
@@ -154,10 +158,7 @@ function MovieAdd (props) {
 
     return (
         <div>
-            <Form layout="vertical" form={form} onFinish={onFinish} initialValues={{ 
-                ["crew"]: [''],
-                ["cast"]: ['']                      
-                }}
+            <Form layout="vertical" form={form} onFinish={onFinish}
             >
                 <Form.Item name="name" label="Нэр:" rules={[{ required: true, message: 'Та киноны нэрийг оруулна уу!' }]}>
                     <Input />

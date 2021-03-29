@@ -1,4 +1,4 @@
-import { MinusCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, MinusCircleOutlined, PlusCircleOutlined, ToolOutlined } from '@ant-design/icons';
 import { Typography, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker, message, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ImageUpload from '../components/ImageUpload';
@@ -73,6 +73,24 @@ function MovieUpdate (props) {
     function selectMovie (value) {                        
         const target = movies.find(x => x.id === parseInt(value))             
         console.log(target)           
+        let temp = []
+        if (target.member && target.member.length > 0) {            
+            target.member.forEach(m => {
+                let cur = temp.find(x => x.id === m.artist.id);
+                if (!cur || cur === null) {
+                    temp.push(m.artist)   
+                }                
+            })            
+        }
+        if (target.cast && target.cast.length > 0) {            
+            target.cast.forEach(m => {
+                let cur = temp.find(x => x.id === m.artist.id);
+                if (!cur || cur === null) {
+                    temp.push(m.artist)   
+                }  
+            })            
+        }
+        setArtists(temp)
         form.setFieldsValue({
             name: target.name !== null ? target.name : "",
             description: target.description !== null ? target.description : "",
@@ -81,7 +99,8 @@ function MovieUpdate (props) {
             releasedate: target.releasedate !== null ? moment(target.releasedate) : undefined,
             rating: target.rating !== null ? target.rating.id.toString() : undefined ,                  
             genre: target.genre !== null && target.genre.length > 0 ? getIDsFromArray(target.genre) : undefined, 
-            crew: target.member !== null && target.member.length > 0 ? getMembers(target.member) : undefined,                                                                                                                 
+            crew: target.member !== null && target.member.length > 0 ? getMembers(target.member) : undefined,              
+            cast: target.cast !== null && target.cast.length > 0 ? getCast(target.cast) : undefined,                                                                                                                 
         })     
         setPoster(target.poster)        
         setLandscape(target.landscape)        
@@ -94,6 +113,18 @@ function MovieUpdate (props) {
             let d = {
                 artist: member.artist.id.toString(),
                 role: member.role.id.toString()
+            }            
+            res.push(d)
+        })
+        return res
+    }
+
+    function getCast(cast) {        
+        let res = []
+        cast.forEach(member => {
+            let d = {
+                actor: member.artist.id.toString(),
+                role_name: member.role_name
             }            
             res.push(d)
         })
@@ -121,6 +152,18 @@ function MovieUpdate (props) {
         return true;
     }
 
+    function compareCrew (crew, members) {
+        if (crew.length !== members.length) {
+            return false;
+        }
+        let i;
+        for (i = 0; i < crew.length; i++) {
+            if (crew[i].artist !== members[i].id.toString() && crew[i].artist !== members[i].name) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     function onArtistSearch(value) {                
         axios({
@@ -137,75 +180,99 @@ function MovieUpdate (props) {
 
     function onFinish (values) {      
         console.log(values)            
-        const data = {
-            name: values.name,
-            token: props.token
-        }
-        if (values.description && values.description !== null) {
-            data['description'] = values.description;
-        }
-        if (values.plot && values.plot !== null) {
-            data['plot'] = values.plot;
-        }
-        if (values.releasedate && values.releasedate !== null) {            
-            data['releasedate'] = moment(values.releasedate).format("YYYY-MM-DD");
-        }
-        if (values.duration && values.duration !== null) {            
-            data['duration'] = values.duration;
-        }
-        if (values.rating && values.rating !== null) {            
-            data['rating'] = values.rating;
-        }
-        if (values.genre && values.genre !== null && values.genre.length > 0 && values.genre[0] !== "") {
-            data['genre'] = values.genre;
-        }
-        if (values.crew && values.crew !== null && values.crew.length > 0 && values.crew[0] !== "") {
-            data['crew'] = values.crew;
-        }
-        if (values.cast && values.cast !== null && values.cast.length > 0 && values.cast[0] !== "") {
-            data['cast'] = values.cast;
-        }
-        var formData = new FormData();
-        if (poster && poster !== null) {
-            formData.append('poster', poster)               
-        }
-        if (landscape && landscape !== null) {
-            formData.append('landscape', landscape)            
-        }
-        formData.append('token', props.token)
-        axios({
-            method: 'POST',
-            url: `${api.movies}/`,
-            data: data,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`            
+        if (selection) {
+            const data = {            
+                token: props.token
             }
-        }).then(res => {                        
-            if (res.status === 201 || res.status === 200) {      
-                console.log(res)
-                axios({
-                    method: 'PUT',
-                    url: `${api.movies}/${res.data.id}/`,
-                    data: formData,
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': `Token ${props.token}`            
-                    }
-                }).then(res => {                        
-                    if (res.status === 201 || res.status === 200) {                
-                        message.info("Нэмэгдлээ.");
-                        form.resetFields();
-                    }             
-                }).catch(err => {   
-                    message.error("Амжилтгүй боллоо."); 
-                    console.log(err);            
-                })                          
-            }             
-        }).catch(err => {   
-            message.error("Амжилтгүй боллоо."); 
-            console.log(err);            
-        })        
+            if (values.name && values.name !== selection.name) {
+                data['name'] = values.name;
+            }
+            if (values.description && values.description !== selection.description) {
+                data['description'] = values.description;
+            }
+            if (values.plot && values.plot !== selection.plot) {
+                data['plot'] = values.plot;
+            }
+            if (values.releasedate && moment(values.releasedate).format("YYYY-MM-DD") !== selection.releasedate) {            
+                data['releasedate'] = moment(values.releasedate).format("YYYY-MM-DD");
+            }
+            if (values.duration && values.duration !== selection.duration) {            
+                data['duration'] = values.duration;
+            }
+            if (values.rating && values.rating !== selection.rating.id.toString()) {            
+                data['rating'] = values.rating;
+            }
+            if (values.genre && !compareM2M(values.genre, selection.genre)) {
+                data['genre'] = values.genre;
+            }
+            if (values.crew && !compareCrew(values.crew, selection.member)) {
+                data['crew'] = values.crew;
+            }
+            // if (values.cast && values.cast !== null && values.cast.length > 0 && values.cast[0] !== "") {
+            //     data['cast'] = values.cast;
+            // }
+            var formData = new FormData();
+            if (poster && poster !== selection.poster) {
+                formData.append('poster', poster)               
+            }
+            if (landscape && landscape !== selection.landscape) {
+                formData.append('landscape', landscape)            
+            }
+            formData.append('token', props.token)
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${selection.id}/`,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`            
+                }
+            }).then(res => {                        
+                if (res.status === 201 || res.status === 200) {      
+                    console.log(res)
+                    axios({
+                        method: 'PUT',
+                        url: `${api.movies}/${res.data.id}/`,
+                        data: formData,
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Token ${props.token}`            
+                        }
+                    }).then(res => {                        
+                        if (res.status === 201 || res.status === 200) {                
+                            message.info("Засварлалаа.");
+                            form.resetFields();
+                        }             
+                    }).catch(err => {   
+                        message.error("Амжилтгүй боллоо."); 
+                        console.log(err);            
+                    })                          
+                }             
+            }).catch(err => {   
+                message.error("Амжилтгүй боллоо."); 
+                console.log(err);            
+            })       
+        }
+    }
+
+    function onDelete() {
+        if (selection) {
+            axios({
+                method: 'DELETE',
+                url: `${api.movies}/${selection.id}/`                
+            })            
+            .then(res => {                
+                if (res.status === 200 || res.status === 204) {
+                    message.info("Устгалаа.")   
+                }                        
+                form.resetFields()             
+            })
+            .catch(err => {                            
+                message.error("Амжилтгүй боллоо.")
+            }) 
+        } else {
+            message.warning("Та эхлээд засварлах уран бүтээлчээ сонгоно уу!")
+        }   
     }
 
     function onPosterSelected (path) {        
@@ -364,7 +431,7 @@ function MovieUpdate (props) {
                                         >
                                             { artists ? (
                                                 <>
-                                                    {artists.map(item => {
+                                                    { artists.map(item => {
                                                         return (
                                                             <Option key={item.id}>{item.name}</Option>
                                                         )
@@ -389,7 +456,7 @@ function MovieUpdate (props) {
                                         >
                                             { occupations ? (
                                                 <>
-                                                    {occupations.map(item => {
+                                                    { occupations.map(item => {
                                                         return (
                                                             <Option key={item.id}>{item.name}</Option>
                                                         )
@@ -474,12 +541,17 @@ function MovieUpdate (props) {
                     </Form.List>               
                     <Form.Item>
                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                            <Popconfirm title="Нэмэх үү？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
-                                <Button type="primary" icon={<PlusOutlined />}>
-                                    Нэмэх
+                            <Popconfirm title="Засах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
+                                <Button type="primary" icon={<ToolOutlined />} style={{ marginRight: '8px' }}>
+                                    Засах   
                                 </Button>
                             </Popconfirm>
-                        </div>                                        
+                            <Popconfirm title="Устгах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={onDelete}>
+                                <Button danger type="primary" icon={<DeleteOutlined />}>
+                                    Устгах
+                                </Button>
+                            </Popconfirm>
+                        </div>                                                 
                     </Form.Item>                                       
                 </Form>
             ) : (

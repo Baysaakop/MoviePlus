@@ -48,7 +48,7 @@ function MovieDetail (props) {
                                 <div style={{ borderRadius: '5px', padding: '16px', marginLeft: '24px', height: '100%' }}>
                                     <Typography.Title level={2} style={{ marginBottom: '0' }}>{movie.name}</Typography.Title>
                                     <div className="info">
-                                        <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text>
+                                        { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating ? movie.rating.name : "Null"} |</Typography.Text> : <></> }
                                         <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин |</Typography.Text>
                                         <Typography.Text type="secondary"> Нээлт: {movie.releasedate}</Typography.Text>
                                     </div>
@@ -82,16 +82,16 @@ function MovieDetail (props) {
                                     <div className="infotabs">
                                         <Tabs defaultActiveKey="1">
                                             <Tabs.TabPane tab="Мэдээлэл" key="1">
-                                                <Typography.Title level={4}>Дэлгэрэнгүй</Typography.Title>
+                                                <Typography.Title level={5}>Дэлгэрэнгүй</Typography.Title>
                                                 <Typography.Paragraph>{movie.description}</Typography.Paragraph>
-                                                <Typography.Title level={4}>Агуулга</Typography.Title>
+                                                <Typography.Title level={5}>Агуулга</Typography.Title>
                                                 <Typography.Paragraph>{movie.plot}</Typography.Paragraph>
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Бүрэлдэхүүн" key="2">
-                                                <Typography.Title level={4}>Баг бүрэлдэхүүн</Typography.Title>
+                                                <Typography.Title level={5}>Баг бүрэлдэхүүн</Typography.Title>
                                                 <List                                                                                                        
                                                     itemLayout="horizontal"                                                    
-                                                    dataSource={movie.members ? movie.members : undefined}
+                                                    dataSource={movie.member ? movie.member : undefined}
                                                     renderItem={item => (
                                                     <List.Item>                                                        
                                                         <List.Item.Meta
@@ -101,29 +101,47 @@ function MovieDetail (props) {
                                                             title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}
                                                             description={item.artist.occupation.map(occupation => {
                                                                 return (
-                                                                    <span>{occupation.name} |</span>
+                                                                    <span>{occupation.name} </span>
                                                                 )
                                                             })}
                                                         />
-                                                        <Typography.Title level={5}>
-                                                            {item.role.map(role => {
-                                                                return (
-                                                                    <span>{role.name}</span>
-                                                                )
-                                                            })}
-                                                        </Typography.Title>                                                        
+                                                        <Typography.Text>
+                                                            {item.role.name}
+                                                        </Typography.Text>                                                        
                                                     </List.Item>
                                                     )}
                                                 />
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Жүжигчид" key="3">
-                                                <Typography.Title level={4}>Жүжигчид</Typography.Title>
+                                                <Typography.Title level={5}>Жүжигчид</Typography.Title>
+                                                <List                                                                                                        
+                                                    itemLayout="horizontal"                                                    
+                                                    dataSource={movie.cast ? movie.cast : undefined}
+                                                    renderItem={item => (
+                                                    <List.Item>                                                        
+                                                        <List.Item.Meta
+                                                            avatar={
+                                                                <Avatar size="large" src={item.artist.avatar} />
+                                                            }
+                                                            title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}
+                                                            description={item.artist.occupation.map(occupation => {
+                                                                return (
+                                                                    <span>{occupation.name} </span>
+                                                                )
+                                                            })}
+                                                        />
+                                                        <Typography.Text>
+                                                            {item.role_name}
+                                                        </Typography.Text>                                                        
+                                                    </List.Item>
+                                                    )}
+                                                />
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Зураг" key="4">
-                                                <Typography.Title level={4}>Зураг</Typography.Title>
+                                                <Typography.Title level={5}>Зураг</Typography.Title>
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Сэтгэгдэл" key="5">
-                                                <Typography.Title level={4}>Сэтгэгдэл</Typography.Title>
+                                                <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>
                                             </Tabs.TabPane>
                                         </Tabs>
                                     </div>

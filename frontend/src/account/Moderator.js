@@ -1,5 +1,5 @@
-import { DeleteOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
-import { Tabs, Typography } from 'antd';
+import { PlusOutlined, ToolOutlined } from '@ant-design/icons';
+import { Tabs } from 'antd';
 import React from 'react';
 import ArtistAdd from '../artist/ArtistAdd';
 import ArtistUpdate from '../artist/ArtistUpdate';

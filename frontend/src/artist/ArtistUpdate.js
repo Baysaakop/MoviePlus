@@ -3,7 +3,7 @@ import { Typography, Form, Input, Row, Col, DatePicker, Select, Popconfirm, Butt
 import ImageUpload from '../components/ImageUpload';
 import axios from 'axios';
 import api from '../api';
-import { DeleteOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ToolOutlined } from '@ant-design/icons';
 import { connect } from "react-redux";
 import moment from 'moment';
 

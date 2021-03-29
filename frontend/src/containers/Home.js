@@ -108,7 +108,7 @@ function Home (props) {
                                                 <Typography.Title level={2} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>
                                                 {/* <p style={{ color: '#f1f1f1' }}>Найруулагч: Christopher Nolan</p> */}
                                                 <div className="info">
-                                                    <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text>
+                                                    { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating ? movie.rating.name : "Null"} |</Typography.Text> : <></> }
                                                     <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин |</Typography.Text>
                                                     <Typography.Text type="secondary"> Нээлт: {movie.releasedate}</Typography.Text>
                                                 </div>
