@@ -14,6 +14,7 @@ import PasswordResetConfirm from './account/PasswordResetConfirm';
 import PostCreate from './posts/PostCreate';
 import MovieList from './movie/MovieList';
 import MovieDetail from './movie/MovieDetail';
+import ArtistList from './artist/ArtistList';
 
 function BaseRouter () {
     return (
@@ -26,6 +27,8 @@ function BaseRouter () {
             <Route exact path="/updateitem/:itemID" component={ItemUpdate} /> */}
             <Route exact path="/movies" component={MovieList} />
             <Route exact path="/movies/:movieID" component={MovieDetail} />
+            <Route exact path="/artists" component={ArtistList} />
+            <Route exact path="/artists/:movieID" component={MovieDetail} />
             {/* Posts urls */}
             <Route exact path="/newpost" component={PostCreate} />
             {/* User urls */}

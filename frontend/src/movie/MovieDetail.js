@@ -2,7 +2,7 @@ import { Avatar, Button, Col, List, Row, Spin, Statistic, Tabs, Tooltip, Typogra
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckOutlined, LikeOutlined, LoadingOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, EyeOutlined, LikeOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import GenreTag from '../components/GenreTag';
 
@@ -27,6 +27,16 @@ function MovieDetail (props) {
             console.log(err.message);
         })
     }, [props.match]);
+    
+    function formatCount(count) {
+        if (count >= 1000000) {
+            return (count / 1000000).toFixed(1).toString() + "M";
+        } else if (count >= 1000) {
+            return (count / 1000).toFixed(1).toString() + "K";
+        } else {
+            return count.toString();
+        }
+    }
 
     return (
         <div style={{ marginTop: '80px' }}>
@@ -34,7 +44,7 @@ function MovieDetail (props) {
                 <div>
                     <div style={{ height: '60vh' }}>
                         {movie.landscape ? (
-                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.3', backgroundColor: '#000' }} />                        
+                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: '0.3', backgroundColor: '#000' }} />                        
                         ) : (
                             <div style={{ width: '100%', height: '100%', opacity: '0.5', backgroundColor: '#000' }} />
                         )}                        
@@ -43,12 +53,34 @@ function MovieDetail (props) {
                         <Row gutter={[16, 16]} style={{ marginTop: '-20%', paddingBottom: '40px' }}>
                             <Col xs={24} sm={24} md={12} lg={6}>
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />
+                                <Row gutter={[8, 8]} style={{ marginTop: '8px' }}>
+                                    <Col span={6} style={{ textAlign: 'center' }}>
+                                        <EyeOutlined style={{ fontSize: '20px' }} />
+                                        <br></br>
+                                        <Typography.Text>{formatCount(movie.views)}</Typography.Text>
+                                    </Col>
+                                    <Col span={6} style={{ textAlign: 'center' }}>
+                                        <LikeOutlined style={{ fontSize: '20px' }} />
+                                        <br></br>
+                                        <Typography.Text>{formatCount(movie.likes)}</Typography.Text>
+                                    </Col>
+                                    <Col span={6} style={{ textAlign: 'center' }}>
+                                        <CheckCircleOutlined style={{ fontSize: '20px' }} />
+                                        <br></br>
+                                        <Typography.Text>{formatCount(movie.watched)}</Typography.Text>
+                                    </Col>
+                                    <Col span={6} style={{ textAlign: 'center' }}>
+                                        <PlusCircleOutlined style={{ fontSize: '20px' }} />
+                                        <br></br>
+                                        <Typography.Text>{formatCount(movie.watchlisted)}</Typography.Text>    
+                                    </Col>
+                                </Row>
                             </Col>
                             <Col xs={24} sm={24} md={12} lg={18}>
                                 <div style={{ borderRadius: '5px', padding: '16px', marginLeft: '24px', height: '100%' }}>
                                     <Typography.Title level={2} style={{ marginBottom: '0' }}>{movie.name}</Typography.Title>
                                     <div className="info">
-                                        { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating ? movie.rating.name : "Null"} |</Typography.Text> : <></> }
+                                        { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
                                         <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин |</Typography.Text>
                                         <Typography.Text type="secondary"> Нээлт: {movie.releasedate}</Typography.Text>
                                     </div>

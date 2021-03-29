@@ -43,10 +43,25 @@ class ArtistViewSet(viewsets.ModelViewSet):
     queryset = Artist.objects.all()
 
     def get_queryset(self):
-        queryset = Artist.objects.all().order_by('-created_at')
+        queryset = Artist.objects.all().order_by('-created_at')        
         name = self.request.query_params.get('name', None)
+        occupation = self.request.query_params.get('occupation', None)
+        order = self.request.query_params.get('order', None)
         if name is not None:
-            queryset = queryset.filter(name__startswith=name)
+            queryset = queryset.filter(name__istartswith=name)
+        if occupation is not None:
+            queryset = queryset.filter(occupation__id=occupation)
+        if order is not None:
+            if (order == 'created_at'):
+                queryset = queryset.order_by('-created_at')
+            elif (order == 'birthday'):
+                queryset = queryset.order_by('-birthday')
+            elif (order == 'name'):
+                queryset = queryset.order_by('name')
+            elif (order == 'views'):
+                queryset = queryset.order_by('-views')
+            elif (order == 'likes'):
+                queryset = queryset.order_by('-likes')
         return queryset
 
     def create(self, request, *args, **kwargs):
@@ -98,7 +113,6 @@ class ArtistViewSet(viewsets.ModelViewSet):
                 if check == True:
                     artist.occupation.add(int(item))                            
         if 'birthday' in request.data:
-            print(request.data['birthday'])
             artist.birthday=request.data['birthday']        
         if 'avatar' in request.data:
             artist.avatar=request.data['avatar'] 
@@ -145,8 +159,7 @@ class MovieViewSet(viewsets.ModelViewSet):
                 queryset = queryset.order_by('-likes')
         return queryset
 
-    def create(self, request, *args, **kwargs):
-        print(request.data)                   
+    def create(self, request, *args, **kwargs):              
         user = Token.objects.get(key=request.data['token']).user                                
         movie = Movie.objects.create(
             name=request.data['name'],
@@ -178,7 +191,7 @@ class MovieViewSet(viewsets.ModelViewSet):
                 movie.member.add(member)
         if 'cast' in request.data:  
             for c in request.data['cast']:       
-                artist = Artist.objects.get(id=int(c['artist']))             
+                artist = Artist.objects.get(id=int(c['actor']))             
                 role_name = str(c['role_name'])                 
                 cast, created = Cast.objects.get_or_create(artist=artist, role_name=role_name)    
                 movie.cast.add(cast)
@@ -220,7 +233,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         if 'cast' in request.data:  
             movie.cast.clear()
             for c in request.data['cast']:       
-                artist = Artist.objects.get(id=int(c['artist']))             
+                artist = Artist.objects.get(id=int(c['actor']))             
                 role_name = str(c['role_name'])                 
                 cast, created = Cast.objects.get_or_create(artist=artist, role_name=role_name)    
                 movie.cast.add(cast)

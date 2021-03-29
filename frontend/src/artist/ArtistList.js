@@ -1,53 +1,48 @@
 import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form } from 'antd';
 import React, { useState, useEffect } from 'react';
-import MovieCard from './MovieCard';
 import axios from 'axios';  
 import api from '../api';
+import ArtistCard from './ArtistCard';
 
 const { useBreakpoint } = Grid;
 const { Option } = Select;
 const { Search } = Input;
 
-function MovieList() {
+function ArtistList () {
     const screens = useBreakpoint();
     const [form] = Form.useForm();
-    const [movies, setMovies] = useState();    
+    const [artists, setArtists] = useState();    
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState();
     const [name, setName] = useState();
-    const [genres, setGenres] = useState();     
-    const [genre, setGenre] = useState();    
-    const [order, setOrder] = useState();    
+    const [occupations, setOccupations] = useState();     
+    const [occupation, setOccupation] = useState();    
+    const [order, setOrder] = useState();   
 
     useEffect(() => {
-        if (!genres) {
+        if (!occupations) {
             axios({
                 method: 'GET',
-                url: api.genres
+                url: api.occupations
             })
             .then(res => {                        
-                setGenres(res.data.results);            
+                setOccupations(res.data.results);            
             })        
             .catch(err => {
                 console.log(err.message);
             }) 
         }; 
-        // let name = getLocationSearch(props.location.search);
-        // setSearch(name)
-        // form.setFieldsValue({            
-        //     name: name           
-        // }) 
-       getMovies(name, genre, page, order)
-    }, [name, genre, page, order])   
+        getArtists(name, occupation, page, order)
+    }, [name, occupation, page, order])
 
-    function getMovies(name, genre, page, order) {
-        var url = api.movies + "?"
+    function getArtists(name, occupation, page, order) {
+        var url = api.artists + "?"
         var params = []
         if (name && name.length > 0) {
             params.push("name=" + name)
         }
-        if (genre && genre > 0) {
-            params.push("genre=" + genre)
+        if (occupation && occupation > 0) {
+            params.push("occupation=" + occupation)
         }
         if (order) {
             params.push("order=" + order)
@@ -61,28 +56,19 @@ function MovieList() {
             url: url
         }).then(res => {                    
             console.log(res.data)                
-            setMovies(res.data.results)
+            setArtists(res.data.results)
             setTotal(res.data.count)
         }).catch(err => {
             console.log(err.message)
         });        
     }
 
-    // function getLocationSearch(value) {    
-    //     if (value && value !== null && value.length > 0 && value.includes("=")) {
-    //         let res = value.split("=");            
-    //         return res[1];
-    //     } else {
-    //         return "";
-    //     }    
-    // }
-
     function onNameSearch(value) {        
         setName(value);
     }
 
-    function selectGenre (value) {        
-        setGenre(value);
+    function selectOccupation (value) {        
+        setOccupation(value);
     }
 
     function selectOrder (value) {
@@ -121,35 +107,31 @@ function MovieList() {
                         <a href="/">Нүүр</a>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
-                        Кино
+                        Уран бүтээлч
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>
             <div style={{ padding: getPadding() }}>
-                <Form form={form} layout="vertical" initialValues={{
-                    genre: "all",
-                    order: "created_at"
-                }}>
+                <Form form={form} layout="vertical">
                     <Row gutter={[16, 16]}>
                         <Col sm={24} md={8}>
-                            <Form.Item name="name" label="Кино хайх:">                            
-                                <Search placeholder="Киноны нэрээр хайх" onSearch={onNameSearch} enterButton />
+                            <Form.Item name="name" label="Уран бүтээлч хайх:">                            
+                                <Search placeholder="Уран бүтээлчийн нэрээр хайх" onSearch={onNameSearch} enterButton />
                             </Form.Item>
                         </Col>
                         <Col sm={24} md={8}>
-                            <Form.Item name="genre" label="Төрөл сонгох">                                
-                                <Select                      
-                                    // dropdownStyle={{ backgroundColor: '#161b22' }}                                
+                            <Form.Item name="occupation" label="Мэргэжил сонгох">                                
+                                <Select                                                                                      
                                     showSearch                            
                                     style={{ width: '100%' }}
                                     placeholder="Бүгд"                
-                                    onChange={selectGenre}
+                                    onChange={selectOccupation}
                                     optionFilterProp="children"                                                 
                                 >
                                     <Option key="all">Бүгд</Option>
-                                    { genres ? (
+                                    { occupations ? (
                                         <>
-                                            {genres.map(item => {
+                                            {occupations.map(item => {
                                                 return (
                                                     <Option key={item.id}>{item.name}</Option>
                                                 )
@@ -171,10 +153,9 @@ function MovieList() {
                                     optionFilterProp="children"                
                                 >                                    
                                     <Option key="created_at">Шинээр нэмэгдсэн</Option>
-                                    <Option key="releasedate">Нээлтийн огноогоор(2021 - 1900)</Option>
-                                    <Option key="score">Үнэлгээгээр(100 - 0)</Option>
-                                    <Option key="views">Хандалтаар (100 - 0)</Option>
-                                    <Option key="likes">Like-n тоогоор (100 - 0)</Option>        
+                                    <Option key="birthday">Төрсөн өдрөөр(2021 > 1900)</Option>                                    
+                                    <Option key="views">Хандалтаар (100 > 0)</Option>
+                                    <Option key="likes">Like-n тоогоор (100 > 0)</Option>        
                                     <Option key="name">Үсгийн дарааллаар (A - Z)</Option>                                    
                                 </Select>
                             </Form.Item>  
@@ -192,10 +173,10 @@ function MovieList() {
                         xxl: 6,
                     }}                                        
                     style={{ marginTop: '16px' }}                
-                    dataSource={movies ? movies : undefined}
+                    dataSource={artists ? artists : undefined}
                     renderItem={item => (
                         <List.Item>
-                            <MovieCard item={item} />
+                            <ArtistCard item={item} />
                         </List.Item>
                     )}
                 />
@@ -210,7 +191,7 @@ function MovieList() {
                 />
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default MovieList;
+export default ArtistList;

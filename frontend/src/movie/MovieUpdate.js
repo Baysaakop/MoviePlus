@@ -165,6 +165,19 @@ function MovieUpdate (props) {
         return true;
     }
 
+    function compareCast (cast, members) {
+        if (cast.length !== members.length) {
+            return false;
+        }
+        let i;
+        for (i = 0; i < cast.length; i++) {
+            if (cast[i].actor !== members[i].id.toString() && cast[i].actor !== members[i].name) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     function onArtistSearch(value) {                
         axios({
             method: 'GET',                        
@@ -208,9 +221,9 @@ function MovieUpdate (props) {
             if (values.crew && !compareCrew(values.crew, selection.member)) {
                 data['crew'] = values.crew;
             }
-            // if (values.cast && values.cast !== null && values.cast.length > 0 && values.cast[0] !== "") {
-            //     data['cast'] = values.cast;
-            // }
+            if (values.cast && !compareCast(values.cast, selection.cast)) {
+                data['cast'] = values.cast;
+            }
             var formData = new FormData();
             if (poster && poster !== selection.poster) {
                 formData.append('poster', poster)               

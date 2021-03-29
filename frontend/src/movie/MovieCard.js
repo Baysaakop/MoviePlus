@@ -28,14 +28,17 @@ function MovieCard (props) {
                     hoverable                 
                     style={{ width: '100%', height: 'auto', border: '0' }}
                     cover={
-                        <div className="cover-container">
+                        <div className="cover-container" style={{ paddingBottom: '140%', overflow: 'hidden' }}>
                             <a href={`/movies/${props.item.id}`}>
-                                <img src={props.item.poster ? props.item.poster : blank} alt="poster" style={{ width: '100%', height: 'auto' }} />
+                                <img src={props.item.poster ? props.item.poster : blank} alt="poster" style={{ width: '100%', height: '100%', position: 'absolute' }} />
                             </a>
                             <div className="cover-overlay-top-left">
                                 <Avatar size="large" style={{ background: '#161b22', border: '1px solid orange', color: 'orange', fontFamily: 'Nerko One, cursive', fontSize: '20px' }}>
                                     {parseInt(props.item.score)}
-                                </Avatar>                                
+                                </Avatar>    
+                                {/* <div style={{ padding: '4px', background: 'rgba(0, 0, 0, 0.8    )', borderRadius: '5px', fontSize: '18px' }}>
+                                    <StarFilled style={{ color: 'gold' }} /> {props.item.score}
+                                </div>                             */}
                             </div>
                             <div className="cover-overlay-bot-right">                           
                                 <Tooltip title="Таалагдсан">                                
@@ -54,7 +57,7 @@ function MovieCard (props) {
                         </div>
                     }
                 >
-                    <Meta title={props.item.name} description={props.item.releasedate ? props.item.releasedate.slice(0, 4) : 'Null'} />
+                    <Meta title={props.item.name} description={props.item.releasedate ? props.item.releasedate.toString().slice(0, 4) : '----'} />
                 </Card>
             {/* </a> */}
         </div>
