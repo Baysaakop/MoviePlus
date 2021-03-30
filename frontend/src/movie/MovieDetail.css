@@ -2,6 +2,12 @@
     margin-right: 8px;
 }
 
+
+.moviedetail .actions .ant-btn-primary {
+    margin-right: 8px;
+    background: rgba(24, 144, 255, 1);
+}
+
 /* .layout-light .moviedetail .actions .ant-btn-ghost:hover {
     background: rgba(24, 144, 255, 0.7);
 }

@@ -75,7 +75,7 @@ class Movie(models.Model):
     views = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)    
     watched = models.IntegerField(default=0)    
-    watchlisted = models.IntegerField(default=0)    
+    watchlist = models.IntegerField(default=0)    
     score = models.IntegerField(default=0)
     score_count = models.IntegerField(default=0)
     poster = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)

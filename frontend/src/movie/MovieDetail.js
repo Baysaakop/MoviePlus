@@ -1,32 +1,94 @@
-import { Avatar, Button, Col, List, Row, Spin, Statistic, Tabs, Tooltip, Typography } from 'antd';
+import { Grid, Avatar, Button, Col, List, message, Row, Spin, Statistic, Tabs, Tooltip, Typography, Modal, Rate } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, EyeOutlined, LikeOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, DislikeOutlined, EyeOutlined, LikeOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import GenreTag from '../components/GenreTag';
+import { connect } from "react-redux";
+
+const { useBreakpoint } = Grid;
 
 const spinIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function MovieDetail (props) {
+    const screens = useBreakpoint();  
+    const [user, setUser] = useState();
+    const [movie, setMovie] = useState();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [rateVisible, setRateVisible] = useState(false);
+    // const [width, setWidth] = useState(0);
+    // const [height, setHeight] = useState(0);
 
-    const [movie, setMovie] = useState()
+    useEffect(() => {               
+        getMovie()        
+    }, []);
 
-    useEffect(() => {
+    function getWidth() {
+        if (screens.xxl) {
+            return 1200            
+        } else if (screens.xl) {
+            return 1000
+        } else if (screens.lg) {
+            return 700
+        } else if (screens.md) {
+            return 600
+        } else if (screens.sm) {
+            return 500
+        } else if(screens.xs) {
+            return 400
+        } else {
+            return 400
+        }       
+    }
+
+    function getHeight() {
+        if (screens.xxl) {
+            return 600
+        } else if (screens.xl) {
+            return 500
+        } else if (screens.lg) {
+            return 350
+        } else if (screens.md) {
+            return 300
+        } else if (screens.sm) {
+            return 250
+        } else if(screens.xs) {
+            return 200
+        } else {
+            return 200
+        }       
+    }
+
+    function getMovie() {
         const id = props.match.params.movieID;
-        const url = api.movies + "/" + id + "/";        
+        const url = api.movies + "/" + id + "/";  
         axios({
             method: 'GET',
-            url: url
+            url: url,
+            headers: {
+                'Content-Type': 'application/json'                
+            }
         })
         .then(res => {
-            console.log(res.data);
             setMovie(res.data);
         })
         .catch(err => {
-            console.log(err.message);
+            message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
         })
-    }, [props.match]);
+        axios({
+            method: 'GET',
+            url: api.profile,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.token}`
+            }
+        }).then(res => {            
+            setUser(res.data)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
     
     function formatCount(count) {
         if (count >= 1000000) {
@@ -36,6 +98,114 @@ function MovieDetail (props) {
         } else {
             return count.toString();
         }
+    }
+
+    function like () {        
+        const data = {            
+            token: props.token,
+            like: true
+        }            
+        axios({
+            method: 'PUT',
+            url: `${api.movies}/${movie.id}/`,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.token}`            
+            }
+        }).then(res => {                        
+            if (res.status === 201 || res.status === 200) {                                               
+                getMovie()     
+            }             
+        }).catch(err => {   
+            message.error("Амжилтгүй боллоо."); 
+            console.log(err);            
+        })       
+    }
+
+    function watched () {
+        const data = {            
+            token: props.token,
+            watched: true
+        }            
+        axios({
+            method: 'PUT',
+            url: `${api.movies}/${movie.id}/`,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.token}`            
+            }
+        }).then(res => {                        
+            if (res.status === 201 || res.status === 200) {                                               
+                getMovie()     
+            }             
+        }).catch(err => {   
+            message.error("Амжилтгүй боллоо."); 
+            console.log(err);            
+        })       
+    }
+
+    function watchlist () {
+        const data = {            
+            token: props.token,
+            watchlist: true
+        }            
+        axios({
+            method: 'PUT',
+            url: `${api.movies}/${movie.id}/`,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.token}`            
+            }
+        }).then(res => {                        
+            if (res.status === 201 || res.status === 200) {                                               
+                getMovie()     
+            }             
+        }).catch(err => {   
+            message.error("Амжилтгүй боллоо."); 
+            console.log(err);            
+        })    
+    }
+
+    function score () {        
+        const data = {            
+            token: props.token,
+            score: true
+        }            
+        axios({
+            method: 'PUT',
+            url: `${api.movies}/${movie.id}/`,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.token}`            
+            }
+        }).then(res => {                        
+            if (res.status === 201 || res.status === 200) {                                               
+                getMovie()     
+            }             
+        }).catch(err => {   
+            message.error("Амжилтгүй боллоо."); 
+            console.log(err);            
+        })       
+    }
+
+    const showModal = () => {        
+        setModalVisible(true);
+    }
+
+    const hideModal = () => {        
+        setModalVisible(false);
+    }
+
+    const showRate = () => {        
+        setRateVisible(true);
+    }
+
+    const hideRate = () => {        
+        setRateVisible(false);
     }
 
     return (
@@ -72,7 +242,7 @@ function MovieDetail (props) {
                                     <Col span={6} style={{ textAlign: 'center' }}>
                                         <PlusCircleOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
-                                        <Typography.Text>{formatCount(movie.watchlisted)}</Typography.Text>    
+                                        <Typography.Text>{formatCount(movie.watchlist)}</Typography.Text>    
                                     </Col>
                                 </Row>
                             </Col>
@@ -93,20 +263,54 @@ function MovieDetail (props) {
                                     </div>                                    
                                     <div className="actions" style={{ marginTop: '16px' }}>                                        
                                         <Tooltip title="Трэйлэр үзэх">
-                                            <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} />
+                                            <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={showModal} />
                                         </Tooltip>
-                                        <Tooltip title="Таалагдсан">
-                                            <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} />
-                                        </Tooltip>
-                                        <Tooltip title="Үзсэн">
-                                            <Button size="large" type="ghost" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }}  />} />
-                                        </Tooltip>
-                                        <Tooltip title="Дараа үзэх">
-                                            <Button size="large" type="ghost" shape="circle" icon={<PlusOutlined />} />
-                                        </Tooltip>
+                                        <Modal 
+                                            title={movie.name}      
+                                            visible={modalVisible}
+                                            footer={null}                    
+                                            onCancel={hideModal}                                                   
+                                            width={getWidth()}
+                                        >
+                                            <div>
+                                                <iframe title={movie.name} width="100%" height={getHeight()} src={movie.trailer} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                            </div>
+                                        </Modal>
+                                        { user && user.profile.likes.find(x => x === movie.id) !== null && user.profile.likes.find(x => x === movie.id) !== undefined ? (
+                                            <Tooltip title="Таалагдлаа">
+                                                <Button size="large" type="primary" shape="circle" icon={<LikeOutlined />} onClick={like} />
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip title="Таалагдлаа">
+                                                <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} onClick={like} />
+                                            </Tooltip>
+                                        )}         
+                                        { user && user.profile.watched.find(x => x === movie.id) !== null && user.profile.watched.find(x => x === movie.id) !== undefined ? (
+                                            <Tooltip title="Үзсэн">
+                                                <Button size="large" type="primary" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }} onClick={watched}  />} />
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip title="Үзсэн">
+                                                <Button size="large" type="ghost" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }} onClick={watched}  />} />
+                                            </Tooltip>
+                                        )}
+                                        { user && user.profile.watchlist.find(x => x === movie.id) !== null && user.profile.watchlist.find(x => x === movie.id) !== undefined ? (
+                                            <Tooltip title="Дараа үзэх">
+                                                <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={watchlist} />
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip title="Дараа үзэх">
+                                                <Button size="large" type="ghost" shape="circle" icon={<PlusOutlined />} onClick={watchlist} />
+                                            </Tooltip>
+                                        )}                                                                                                                        
                                         <Tooltip title="Үнэлгээ өгөх">
-                                            <Button size="large" type="ghost" shape="circle" icon={<StarOutlined />} />
+                                            <Button size="large" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
                                         </Tooltip>
+                                        {rateVisible ? 
+                                            <span>
+                                                Таны үнэлгээ: <Rate />
+                                            </span>
+                                        : <></>}
                                     </div>    
                                     <div className="rating" style={{ margin: '16px 0' }}>
                                         <Statistic title="Үнэлгээ" value={movie.score} prefix={<StarFilled style={{ color: 'gold' }} />} suffix={<span>/100 <span style={{ fontSize: '16px' }}>({movie.score_count} үнэлгээнээс)</span></span>} />                                        
@@ -183,7 +387,7 @@ function MovieDetail (props) {
                     </div>
                 </div>
             ) : (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
                     <Spin indicator={spinIcon} />
                 </div>
             )}                        
@@ -191,4 +395,10 @@ function MovieDetail (props) {
     )
 }
 
-export default MovieDetail;
+const mapStateToProps = state => {
+    return {
+        token: state.token
+    }
+}
+
+export default connect(mapStateToProps)(MovieDetail);

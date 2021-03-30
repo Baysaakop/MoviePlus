@@ -27,7 +27,7 @@ function Home (props) {
         });        
         axios({
             method: 'GET',
-            url: `${api.movies}?ordering=-score`
+            url: `${api.movies}?order=score`
         }).then(res => {                                          
             setToprated(res.data.results)
         }).catch(err => {
@@ -96,9 +96,11 @@ function Home (props) {
                     <Carousel className="carousel" autoplay effect="fade" afterChange={onChange} style={{ zIndex: '1' }}>
                         {latest ? latest.slice(0, 4).map(movie => {
                                 return (
-                                    <a href={`/movies/${movie.id}`}>
+                                    <div>
                                         <div style={{ margin: 0, padding: 0, width: '100%', height: '70vh', position: 'relative' }}>
-                                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.2', backgroundColor: '#000' }} />                                    
+                                            <a href={`/movies/${movie.id}`}>
+                                                <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: '0.2', backgroundColor: '#000' }} />                                    
+                                            </a>
                                             <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, 0%)', padding: '16px' }}>
                                                 <Typography.Title level={2} style={{ color: '#fff' }}>СОНИРХСОН КИНОГОО ХАЙНА УУ</Typography.Title>
                                                 {/* <Search placeholder="Кино эсвэл цувралын нэрийг бичнэ үү" onSearch={onSearch} size="large" enterButton={<Button danger type="primary" size="large" icon={<SearchOutlined />} />} allowClear /> */}
@@ -108,7 +110,7 @@ function Home (props) {
                                                 <Typography.Title level={2} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>
                                                 <p style={{ color: '#f1f1f1' }}>Найруулагч: Christopher Nolan</p>
                                                 <div className="info">
-                                                    { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating} |</Typography.Text> : <></> }
+                                                    { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
                                                     <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин |</Typography.Text>
                                                     <Typography.Text type="secondary"> Нээлт: {movie.releasedate}</Typography.Text>
                                                 </div>
@@ -123,7 +125,7 @@ function Home (props) {
                                                     <Tooltip title="Трэйлэр үзэх">
                                                         <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} />
                                                     </Tooltip>
-                                                    <Tooltip title="Таалагдсан">
+                                                    <Tooltip title="Таалагдсан">                                                     
                                                         <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} />
                                                     </Tooltip>
                                                     <Tooltip title="Үзсэн">
@@ -141,7 +143,7 @@ function Home (props) {
                                                 </div>                                            */}
                                             </div>
                                         </div>
-                                    </a>
+                                    </div>
                                 );
                             }) : <></>
                         }                
@@ -176,7 +178,7 @@ function Home (props) {
                             dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
                             renderItem={item => (
                                 <List.Item>
-                                    <MovieCard item={item} />
+                                    <MovieCard id={item.id} />
                                 </List.Item>
                             )}
                         />
@@ -207,7 +209,7 @@ function Home (props) {
                             dataSource={toprated ? toprated.slice(0, getListNumber() * 3) : undefined}
                             renderItem={item => (
                                 <List.Item>
-                                    <MovieCard item={item} />
+                                    <MovieCard id={item.id} />
                                 </List.Item>
                             )}
                         />

@@ -44,7 +44,7 @@ function ArtistCard (props) {
                         </div>
                     }
                 >
-                    <Meta title={props.item.name} description={props.item.birthday ? props.item.birthday : '----'} />
+                    <Meta style={{ fontSize: '14px' }} title={props.item.name} description={props.item.birthday ? props.item.birthday : '----'} />
                 </Card>
             {/* </a> */}
         </div>

@@ -165,12 +165,12 @@ function ArtistList () {
                 <List                        
                     grid={{
                         gutter: 16,
-                        xs: 2,
-                        sm: 2,
-                        md: 3,
-                        lg: 4,
-                        xl: 5,
-                        xxl: 6,
+                        xs: 3,
+                        sm: 3,
+                        md: 4,
+                        lg: 6,
+                        xl: 6,
+                        xxl: 8,
                     }}                                        
                     style={{ marginTop: '16px' }}                
                     dataSource={artists ? artists : undefined}

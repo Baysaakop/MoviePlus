@@ -49,7 +49,7 @@ class MovieSerializer(serializers.ModelSerializer):
     cast = CastSerializer(read_only=True, many=True)
     class Meta:
         model = Movie
-        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'member', 'cast', 'views', 'likes', 'watched', 'watchlisted', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
+        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'member', 'cast', 'views', 'likes', 'watched', 'watchlist', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

@@ -38,3 +38,14 @@
 .cover-overlay-bot-right .ant-btn-ghost:hover {
     background: rgba(24, 144, 255, 0.7);
 }
+
+.cover-overlay-bot-right .ant-btn-primary {
+    margin-bottom: 4px;
+    background: rgba(24, 144, 255, 1);
+    border-color: #fff;
+    color: #fff;
+}
+
+.cover-overlay-bot-right .ant-btn-primary:hover {
+    background: rgba(24, 144, 255, 0.3);
+}

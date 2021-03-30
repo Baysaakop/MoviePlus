@@ -8,6 +8,7 @@ from rest_framework import viewsets, filters
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import FilterSet
+from users.models import Profile
 
 class MovieFilter(FilterSet):
     class Meta:
@@ -159,6 +160,13 @@ class MovieViewSet(viewsets.ModelViewSet):
                 queryset = queryset.order_by('-likes')
         return queryset
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.views = instance.views + 1        
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     def create(self, request, *args, **kwargs):              
         user = Token.objects.get(key=request.data['token']).user                                
         movie = Movie.objects.create(
@@ -237,6 +245,37 @@ class MovieViewSet(viewsets.ModelViewSet):
                 role_name = str(c['role_name'])                 
                 cast, created = Cast.objects.get_or_create(artist=artist, role_name=role_name)    
                 movie.cast.add(cast)
+        if 'like' in request.data:
+            user = Token.objects.get(key=request.data['token']).user
+            profile = Profile.objects.get(user=user)
+            if movie in profile.likes.all():
+                profile.likes.remove(movie)
+                movie.likes = movie.likes - 1                
+            else:
+                profile.likes.add(movie)
+                movie.likes = movie.likes + 1
+            movie.views = movie.views - 1
+            profile.save()
+        if 'watched' in request.data:
+            user = Token.objects.get(key=request.data['token']).user
+            profile = Profile.objects.get(user=user)
+            if movie in profile.watched.all():
+                profile.watched.remove(movie)
+                movie.watched = movie.watched - 1
+            else:
+                profile.watched.add(movie)
+                movie.watched = movie.watched + 1
+            profile.save()
+        if 'watchlist' in request.data:
+            user = Token.objects.get(key=request.data['token']).user
+            profile = Profile.objects.get(user=user)
+            if movie in profile.watchlist.all():
+                profile.watchlist.remove(movie)
+                movie.watchlist = movie.watchlist - 1
+            else:
+                profile.watchlist.add(movie)
+                movie.watchlist = movie.watchlist + 1
+            profile.save()
         movie.save()
         serializer = MovieSerializer(movie)
         headers = self.get_success_headers(serializer.data)        
