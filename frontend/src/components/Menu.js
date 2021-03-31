@@ -56,14 +56,30 @@ function CustomMenu (props) {
         }        
     }
 
+    function getPadding() {
+        if (screens.xxl) {
+            return '0 15%'
+        } else if (screens.xl) {
+            return '0 10%'
+        } else if (screens.lg) {
+            return '0 8%'
+        } else if (screens.md) {
+            return '0 5%'
+        } else if (screens.sm) {
+            return '0 5%'
+        } else if (screens.xs) {
+            return '0 5%'
+        }
+    }
+
     const styleHeaderWeb = {        
         background: scrollTop ? 'rgba(0, 0, 0, 0.5)' : props.darkMode ? '#161b22' : '#fff',            
         display: 'flex',
         justifyContent: 'space-around', 
         alignItems: 'center',
-        padding: '0 15%',
         height: '80px',    
-        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)'
+        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)',
+        padding: getPadding()
     }
     
     const styleHeaderMobile = {
@@ -72,9 +88,9 @@ function CustomMenu (props) {
         display: 'flex',
         justifyContent: 'space-between', 
         alignItems: 'center',
-        padding: '0 5%',        
         height: '80px',
-        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)'
+        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)',
+        padding: getPadding()
     }
     
     const styleLogo = {
@@ -99,7 +115,48 @@ function CustomMenu (props) {
 
     return (
         <div className="menu" onScroll={onScroll}>              
-            { screens.xs ? (
+            { screens.xxl || screens.xl || screens.lg || screens.md ? (
+                <div style={styleHeaderWeb}>
+                    <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Link to="/">
+                            <div style={styleLogo}>         
+                                <div style={{ display: 'flex', alignItems: 'center' }}>                                    
+                                    <DesktopOutlined style={{ fontSize: '24px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
+                                </div>
+                                <div style={{ fontSize: '24px', marginLeft: '8px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }}>                        
+                                    Movie+                    
+                                </div>                        
+                            </div>       
+                        </Link>
+                    </div>
+                    <div style={{ width: '60%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/movies') ? 'primary' : 'default' } size="large" href="/movies" style={{ marginLeft: '8px' }}>
+                            Кино
+                        </Button>
+                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/series') ? 'primary' : 'default' } size="large" href="/series" style={{ marginLeft: '8px' }}>
+                            Цуврал
+                        </Button>
+                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/artists') ? 'primary' : 'default' } size="large" href="/artists" style={{ marginLeft: '8px' }}>
+                            Уран бүтээлч
+                        </Button>
+                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" href="/posts" style={{ marginLeft: '8px' }}>
+                            Нийтлэл
+                        </Button>
+                    </div>
+                    <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                        { user ? (
+                            <a href="/profile">
+                                {user.profile.avatar ? <Avatar src={user.profile.avatar} size="large" /> : <Avatar icon={<UserOutlined />} size="large" />}
+                                <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
+                            </a>
+                        ) : (
+                            <Button ghost={scrollTop || props.darkMode} type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'default' } size="large" href="/login">
+                                Нэвтрэх
+                            </Button>
+                        )}                        
+                    </div>                   
+                </div>                                
+            ) : (
                 <div>
                     <div style={styleHeaderMobile}>
                         <div>
@@ -146,47 +203,6 @@ function CustomMenu (props) {
                             </Button>                            
                         </div>
                     )}                             
-                </div>
-            ) : (
-                <div style={styleHeaderWeb}>
-                    <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center' }}>
-                        <Link to="/">
-                            <div style={styleLogo}>         
-                                <div style={{ display: 'flex', alignItems: 'center' }}>                                    
-                                    <DesktopOutlined style={{ fontSize: '24px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
-                                </div>
-                                <div style={{ fontSize: '24px', marginLeft: '8px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }}>                        
-                                    Movie+                    
-                                </div>                        
-                            </div>       
-                        </Link>
-                    </div>
-                    <div style={{ width: '60%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/movies') ? 'primary' : 'default' } size="large" href="/movies" style={{ marginLeft: '8px' }}>
-                            Кино
-                        </Button>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/series') ? 'primary' : 'default' } size="large" href="/series" style={{ marginLeft: '8px' }}>
-                            Цуврал
-                        </Button>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/artists') ? 'primary' : 'default' } size="large" href="/artists" style={{ marginLeft: '8px' }}>
-                            Уран бүтээлч
-                        </Button>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" href="/posts" style={{ marginLeft: '8px' }}>
-                            Нийтлэл
-                        </Button>
-                    </div>
-                    <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                        { user ? (
-                            <a href="/profile">
-                                {user.profile.avatar ? <Avatar src={user.profile.avatar} size="large" /> : <Avatar icon={<UserOutlined />} size="large" />}
-                                <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
-                            </a>
-                        ) : (
-                            <Button ghost={scrollTop || props.darkMode} type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'default' } size="large" href="/login">
-                                Нэвтрэх
-                            </Button>
-                        )}                        
-                    </div>                   
                 </div>
             )}                        
         </div>

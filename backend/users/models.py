@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from movies.models import Movie
+from movies.models import Movie, Artist
 
 USER_ROLES = (
     ("1", "admin"),
@@ -31,6 +31,8 @@ class Profile(models.Model):
     likes = models.ManyToManyField(Movie, related_name="movie_likes", null=True, blank=True)
     watched = models.ManyToManyField(Movie, related_name="movie_watched", null=True, blank=True)
     watchlist = models.ManyToManyField(Movie, related_name="movie_watchlist", null=True, blank=True)
+    artist_likes = models.ManyToManyField(Artist, related_name="artist_likes", null=True, blank=True)
+    artist_followed = models.ManyToManyField(Artist, related_name="artist_followed", null=True, blank=True)    
     scores = models.ManyToManyField(Score, null=True, blank=True)
 
     def __str__(self):

@@ -8,7 +8,8 @@ from rest_framework import viewsets, filters
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import FilterSet
-from users.models import Profile
+from users.models import Profile, Score
+from django.db.models import Q
 
 class MovieFilter(FilterSet):
     class Meta:
@@ -65,6 +66,13 @@ class ArtistViewSet(viewsets.ModelViewSet):
                 queryset = queryset.order_by('-likes')
         return queryset
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.views = instance.views + 1        
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     def create(self, request, *args, **kwargs):
         user = Token.objects.get(key=request.data['token']).user   
         artist = Artist.objects.create(
@@ -117,6 +125,26 @@ class ArtistViewSet(viewsets.ModelViewSet):
             artist.birthday=request.data['birthday']        
         if 'avatar' in request.data:
             artist.avatar=request.data['avatar'] 
+        if 'like' in request.data:
+            user = Token.objects.get(key=request.data['token']).user
+            profile = Profile.objects.get(user=user)
+            if artist in profile.artist_likes.all():
+                profile.artist_likes.remove(artist)
+                artist.likes = artist.likes - 1                
+            else:
+                profile.artist_likes.add(artist)
+                artist.likes = artist.likes + 1
+            profile.save()
+        if 'follow' in request.data:
+            user = Token.objects.get(key=request.data['token']).user
+            profile = Profile.objects.get(user=user)
+            if artist in profile.artist_followed.all():
+                profile.artist_followed.remove(artist)
+                artist.followers = artist.followers - 1                
+            else:
+                profile.artist_followed.add(artist)
+                artist.followers = artist.followers + 1
+            profile.save()
         artist.save()
         serializer = ArtistSerializer(artist)
         headers = self.get_success_headers(serializer.data)        
@@ -139,10 +167,13 @@ class MovieViewSet(viewsets.ModelViewSet):
         name = self.request.query_params.get('name', None)
         genre = self.request.query_params.get('genre', None)
         order = self.request.query_params.get('order', None)
+        artist = self.request.query_params.get('artist', None)
         if name is not None:
             queryset = queryset.filter(name__istartswith=name)
         if genre is not None:
             queryset = queryset.filter(genre__id=genre)
+        if artist is not None:
+            queryset = queryset.filter(Q(member__artist__id=artist) | Q(cast__artist__id=artist)).distinct().order_by('releasedate')
         if order is not None:
             if (order == 'created_at'):
                 queryset = queryset.order_by('-created_at')
@@ -254,7 +285,6 @@ class MovieViewSet(viewsets.ModelViewSet):
             else:
                 profile.likes.add(movie)
                 movie.likes = movie.likes + 1
-            movie.views = movie.views - 1
             profile.save()
         if 'watched' in request.data:
             user = Token.objects.get(key=request.data['token']).user
@@ -275,6 +305,32 @@ class MovieViewSet(viewsets.ModelViewSet):
             else:
                 profile.watchlist.add(movie)
                 movie.watchlist = movie.watchlist + 1
+            profile.save()
+        if 'score' in request.data:
+            score = int(request.data['score'])
+            user = Token.objects.get(key=request.data['token']).user            
+            profile = Profile.objects.get(user=user)
+            # Remove score
+            if (score == 0):
+                score_obj = profile.scores.get(movie=movie)              
+                if (movie.score_count == 1):
+                    movie.score = 0
+                    movie.score_count = 0
+                else:
+                    movie.score = int(((movie.score * movie.score_count) - score_obj.score) / (movie.score_count - 1))
+                    movie.score_count = movie.score_count - 1
+                profile.scores.remove(score_obj)
+            else:
+                score_obj, created = profile.scores.get_or_create(movie=movie)
+                score_obj.score = score
+                score_obj.save()
+                # New score
+                if created:                                
+                    movie.score = int(((movie.score * movie.score_count) + score) / (movie.score_count + 1))
+                    movie.score_count = movie.score_count + 1
+                # Update score
+                else:
+                    movie.score = int(((movie.score * (movie.score_count - 1)) + score) / movie.score_count )
             profile.save()
         movie.save()
         serializer = MovieSerializer(movie)

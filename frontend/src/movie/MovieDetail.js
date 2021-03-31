@@ -2,7 +2,7 @@ import { Grid, Avatar, Button, Col, List, message, Row, Spin, Statistic, Tabs, T
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, DislikeOutlined, EyeOutlined, LikeOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, EyeOutlined, LikeOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import GenreTag from '../components/GenreTag';
 import { connect } from "react-redux";
@@ -84,6 +84,7 @@ function MovieDetail (props) {
                 'Authorization': `Token ${props.token}`
             }
         }).then(res => {            
+            console.log(res.data)
             setUser(res.data)
         }).catch(err => {
             console.log(err)
@@ -101,95 +102,111 @@ function MovieDetail (props) {
     }
 
     function like () {        
-        const data = {            
-            token: props.token,
-            like: true
-        }            
-        axios({
-            method: 'PUT',
-            url: `${api.movies}/${movie.id}/`,
-            data: data,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`            
-            }
-        }).then(res => {                        
-            if (res.status === 201 || res.status === 200) {                                               
-                getMovie()     
-            }             
-        }).catch(err => {   
-            message.error("Амжилтгүй боллоо."); 
-            console.log(err);            
-        })       
+        if (user !== null && user !== undefined) {
+            const data = {            
+                token: props.token,
+                like: true
+            }            
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${movie.id}/`,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`            
+                }
+            }).then(res => {                        
+                if (res.status === 201 || res.status === 200) {                                               
+                    getMovie()     
+                }             
+            }).catch(err => {   
+                message.error("Амжилтгүй боллоо."); 
+                console.log(err);            
+            })       
+        } else {
+            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+        }     
     }
 
     function watched () {
-        const data = {            
-            token: props.token,
-            watched: true
-        }            
-        axios({
-            method: 'PUT',
-            url: `${api.movies}/${movie.id}/`,
-            data: data,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`            
-            }
-        }).then(res => {                        
-            if (res.status === 201 || res.status === 200) {                                               
-                getMovie()     
-            }             
-        }).catch(err => {   
-            message.error("Амжилтгүй боллоо."); 
-            console.log(err);            
-        })       
+        if (user !== null && user !== undefined) {
+            const data = {            
+                token: props.token,
+                watched: true
+            }            
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${movie.id}/`,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`            
+                }
+            }).then(res => {                        
+                if (res.status === 201 || res.status === 200) {                                               
+                    getMovie()     
+                }             
+            }).catch(err => {   
+                message.error("Амжилтгүй боллоо."); 
+                console.log(err);            
+            })      
+        } else {
+            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+        }    
     }
 
     function watchlist () {
-        const data = {            
-            token: props.token,
-            watchlist: true
-        }            
-        axios({
-            method: 'PUT',
-            url: `${api.movies}/${movie.id}/`,
-            data: data,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`            
-            }
-        }).then(res => {                        
-            if (res.status === 201 || res.status === 200) {                                               
-                getMovie()     
-            }             
-        }).catch(err => {   
-            message.error("Амжилтгүй боллоо."); 
-            console.log(err);            
-        })    
+        if (user !== null && user !== undefined) {
+            const data = {            
+                token: props.token,
+                watchlist: true
+            }            
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${movie.id}/`,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`            
+                }
+            }).then(res => {                        
+                if (res.status === 201 || res.status === 200) {                                               
+                    getMovie()     
+                }             
+            }).catch(err => {   
+                message.error("Амжилтгүй боллоо."); 
+                console.log(err);            
+            })    
+        } else {
+            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+        }  
     }
 
-    function score () {        
-        const data = {            
-            token: props.token,
-            score: true
-        }            
-        axios({
-            method: 'PUT',
-            url: `${api.movies}/${movie.id}/`,
-            data: data,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`            
-            }
-        }).then(res => {                        
-            if (res.status === 201 || res.status === 200) {                                               
-                getMovie()     
-            }             
-        }).catch(err => {   
-            message.error("Амжилтгүй боллоо."); 
-            console.log(err);            
-        })       
+    function score (value) {            
+        if (user !== null && user !== undefined) {    
+            const data = {            
+                token: props.token,
+                score: (value * 20)
+            }            
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${movie.id}/`,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`            
+                }
+            }).then(res => {                        
+                if (res.status === 201 || res.status === 200) {                                               
+                    getMovie()     
+                }             
+            }).catch(err => {   
+                message.error("Амжилтгүй боллоо."); 
+                console.log(err);            
+            })       
+        } else {
+            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+        }  
     }
 
     const showModal = () => {        
@@ -200,30 +217,38 @@ function MovieDetail (props) {
         setModalVisible(false);
     }
 
-    const showRate = () => {        
-        setRateVisible(true);
-    }
-
-    const hideRate = () => {        
-        setRateVisible(false);
+    function getPadding() {
+        if (screens.xxl) {
+            return '16px 15%'
+        } else if (screens.xl) {
+            return '16px 10%'
+        } else if (screens.lg) {
+            return '16px 8%'
+        } else if (screens.md) {
+            return '16px 5%'
+        } else if (screens.sm) {
+            return '16px 5%'
+        } else if (screens.xs) {
+            return '16px 5%'
+        }
     }
 
     return (
-        <div style={{ marginTop: '80px' }}>
+        <div style={{ marginTop: '80px', minHeight: '80vh' }}>
             { movie ? (
                 <div>
-                    <div style={{ height: '60vh' }}>
+                    <div style={{ height: `${getHeight()}px` }}>
                         {movie.landscape ? (
-                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'contain', opacity: '0.3', backgroundColor: '#000' }} />                        
+                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.2', backgroundColor: '#000' }} />                        
                         ) : (
                             <div style={{ width: '100%', height: '100%', opacity: '0.5', backgroundColor: '#000' }} />
                         )}                        
                     </div>
-                    <div style={{ padding: '0 15%' }} className="moviedetail">
+                    <div style={{ padding: getPadding() }} className="detail">
                         <Row gutter={[16, 16]} style={{ marginTop: '-20%', paddingBottom: '40px' }}>
-                            <Col xs={24} sm={24} md={12} lg={6}>
+                            <Col xs={24} sm={8} md={8} lg={8} xl={6} style={{ padding: '0 32px' }}>
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />
-                                <Row gutter={[8, 8]} style={{ marginTop: '8px' }}>
+                                <Row gutter={[8, 8]} style={{ marginTop: '8px', width: '100%' }}>
                                     <Col span={6} style={{ textAlign: 'center' }}>
                                         <EyeOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
@@ -246,8 +271,8 @@ function MovieDetail (props) {
                                     </Col>
                                 </Row>
                             </Col>
-                            <Col xs={24} sm={24} md={12} lg={18}>
-                                <div style={{ borderRadius: '5px', padding: '16px', marginLeft: '24px', height: '100%' }}>
+                            <Col xs={24} sm={16} md={16} lg={16} xl={18}>
+                                <div style={{ borderRadius: '5px', height: '100%' }}>
                                     <Typography.Title level={2} style={{ marginBottom: '0' }}>{movie.name}</Typography.Title>
                                     <div className="info">
                                         { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
@@ -276,16 +301,16 @@ function MovieDetail (props) {
                                                 <iframe title={movie.name} width="100%" height={getHeight()} src={movie.trailer} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                             </div>
                                         </Modal>
-                                        { user && user.profile.likes.find(x => x === movie.id) !== null && user.profile.likes.find(x => x === movie.id) !== undefined ? (
-                                            <Tooltip title="Таалагдлаа">
+                                        { user && user.profile.likes.find(x => x.id === movie.id) !== null && user.profile.likes.find(x => x.id === movie.id) !== undefined ? (
+                                            <Tooltip title="Таалагдсан">
                                                 <Button size="large" type="primary" shape="circle" icon={<LikeOutlined />} onClick={like} />
                                             </Tooltip>
                                         ) : (
-                                            <Tooltip title="Таалагдлаа">
+                                            <Tooltip title="Таалагдсан">
                                                 <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} onClick={like} />
                                             </Tooltip>
                                         )}         
-                                        { user && user.profile.watched.find(x => x === movie.id) !== null && user.profile.watched.find(x => x === movie.id) !== undefined ? (
+                                        { user && user.profile.watched.find(x => x.id === movie.id) !== null && user.profile.watched.find(x => x.id === movie.id) !== undefined ? (
                                             <Tooltip title="Үзсэн">
                                                 <Button size="large" type="primary" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }} onClick={watched}  />} />
                                             </Tooltip>
@@ -294,7 +319,7 @@ function MovieDetail (props) {
                                                 <Button size="large" type="ghost" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }} onClick={watched}  />} />
                                             </Tooltip>
                                         )}
-                                        { user && user.profile.watchlist.find(x => x === movie.id) !== null && user.profile.watchlist.find(x => x === movie.id) !== undefined ? (
+                                        { user && user.profile.watchlist.find(x => x.id === movie.id) !== null && user.profile.watchlist.find(x => x.id === movie.id) !== undefined ? (
                                             <Tooltip title="Дараа үзэх">
                                                 <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={watchlist} />
                                             </Tooltip>
@@ -302,15 +327,34 @@ function MovieDetail (props) {
                                             <Tooltip title="Дараа үзэх">
                                                 <Button size="large" type="ghost" shape="circle" icon={<PlusOutlined />} onClick={watchlist} />
                                             </Tooltip>
-                                        )}                                                                                                                        
-                                        <Tooltip title="Үнэлгээ өгөх">
-                                            <Button size="large" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
-                                        </Tooltip>
-                                        {rateVisible ? 
-                                            <span>
-                                                Таны үнэлгээ: <Rate />
-                                            </span>
-                                        : <></>}
+                                        )}                                                                                                                                                                
+                                        <span style={{ fontSize: '16px' }}>                                                
+                                            {user && user.profile.scores.find(x => x.movie.id === movie.id) !== null && user.profile.scores.find(x => x.movie.id === movie.id) !== undefined ? (
+                                                <>
+                                                    <Tooltip title="Үнэлгээ өгөх">
+                                                        <Button size="large" type="primary" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                                    </Tooltip>
+                                                    {rateVisible ? 
+                                                        <>
+                                                            Таны үнэлгээ: <Rate onChange={score} defaultValue={parseInt(user.profile.scores.find(x => x.movie.id === movie.id).score / 20)} />
+                                                            {` (${parseInt(user.profile.scores.find(x => x.movie.id === movie.id).score / 20)})`}
+                                                        </>
+                                                    : <></>}
+                                                </>
+                                            ) : 
+                                                <>
+                                                    <Tooltip title="Үнэлгээ өгөх">
+                                                        <Button size="large" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                                    </Tooltip>
+                                                    {rateVisible ? 
+                                                        <>
+                                                            Таны үнэлгээ: <Rate onChange={score} />
+                                                            {` (Хоосон)`}
+                                                        </>
+                                                    : <></>}                                                        
+                                                </>
+                                            }
+                                        </span>
                                     </div>    
                                     <div className="rating" style={{ margin: '16px 0' }}>
                                         <Statistic title="Үнэлгээ" value={movie.score} prefix={<StarFilled style={{ color: 'gold' }} />} suffix={<span>/100 <span style={{ fontSize: '16px' }}>({movie.score_count} үнэлгээнээс)</span></span>} />                                        
@@ -332,7 +376,9 @@ function MovieDetail (props) {
                                                     <List.Item>                                                        
                                                         <List.Item.Meta
                                                             avatar={
-                                                                <Avatar size="large" src={item.artist.avatar} />
+                                                                <a href={`/artists/${item.artist.id}`}>
+                                                                    <Avatar size="large" src={item.artist.avatar} />
+                                                                </a>
                                                             }
                                                             title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}
                                                             description={item.artist.occupation.map(occupation => {
@@ -357,7 +403,9 @@ function MovieDetail (props) {
                                                     <List.Item>                                                        
                                                         <List.Item.Meta
                                                             avatar={
-                                                                <Avatar size="large" src={item.artist.avatar} />
+                                                                <a href={`/artists/${item.artist.id}`}>
+                                                                    <Avatar size="large" src={item.artist.avatar} />
+                                                                </a>
                                                             }
                                                             title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}
                                                             description={item.artist.occupation.map(occupation => {

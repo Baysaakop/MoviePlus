@@ -39,6 +39,7 @@ class Artist(models.Model):
     gender = models.CharField(max_length=10, blank=True, null=True)    
     occupation = models.ManyToManyField(Occupation)    
     avatar = models.ImageField(upload_to='artists/%Y/%m/%d', null=True, blank=True)
+    views = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)
     followers = models.IntegerField(default=0)    
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='artist_created_by')

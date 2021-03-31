@@ -12,6 +12,19 @@
     font-size: 16px; */
 }
 
+.cover-overlay-mid-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: all .6s ease;
+    /* padding: 4px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    font-size: 16px; */
+}
+
 .cover-overlay-bot-right {
     position: absolute;
     padding: 4px;
@@ -34,6 +47,9 @@
     opacity: 1;        
     background: rgba(0, 0, 0, 0.2);           
 }
+.cover-container:hover .cover-overlay-mid-center {
+    opacity: 1;                   
+}
 
 .cover-overlay-bot-right .ant-btn-ghost:hover {
     background: rgba(24, 144, 255, 0.7);
@@ -48,4 +64,12 @@
 
 .cover-overlay-bot-right .ant-btn-primary:hover {
     background: rgba(24, 144, 255, 0.3);
+}
+
+.layout-dark .ant-card-actions {
+    background-color: #161b22;    
+}
+
+.layout-dark .ant-card-actions .anticon {
+    color: rgba(255, 255, 255, 0.85);
 }

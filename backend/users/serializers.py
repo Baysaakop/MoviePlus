@@ -4,13 +4,21 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.conf import settings
 from django.utils.translation import gettext as _
 from .models import Profile, Score
+from movies.serializers import MovieSerializer, ArtistSerializer
 
 class ScoreSerializer(serializers.ModelSerializer):    
+    movie = MovieSerializer(read_only=True)
     class Meta:
         model = Score
         fields = ('id', 'movie', 'score')
 
 class ProfileSerializer(serializers.ModelSerializer):    
+    scores = ScoreSerializer(many=True, read_only=True)
+    likes = MovieSerializer(many=True, read_only=True)
+    watched = MovieSerializer(many=True, read_only=True)
+    watchlist = MovieSerializer(many=True, read_only=True)
+    artist_likes = ArtistSerializer(many=True, read_only=True)
+    artist_followed = ArtistSerializer(many=True, read_only=True)
     class Meta:
         model = Profile
         # fields = (
@@ -20,7 +28,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         exclude = ('user',)
      
 class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(required=False)
+    profile = ProfileSerializer(required=False)    
     class Meta:
         model = User
         fields = (

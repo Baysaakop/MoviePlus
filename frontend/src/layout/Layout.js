@@ -48,7 +48,7 @@ function CustomLayout (props) {
         position: 'fixed',
         zIndex: '2',
         top: '50%',
-        right: '6%'
+        right: '4%'
     }
     
     const styleFooter = {    

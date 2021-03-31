@@ -1,4 +1,4 @@
-import { Grid, Breadcrumb, Button, Result, Tabs } from 'antd';
+import { Grid, Breadcrumb, Button, Result, Tabs, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import AccountDetail from './AccountDetail';
 import { CheckCircleOutlined, CloseCircleOutlined, LikeOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import Logout from './Logout';
 import Moderator from './Moderator';
+import MoviesLiked from '../movie/MoviesLiked';
 
 const { useBreakpoint } = Grid;
 
@@ -32,17 +33,17 @@ function Profile (props) {
 
     function getPadding() {
         if (screens.xxl) {
-            return '24px 15% 0 15%';
+            return '16px 15%'
         } else if (screens.xl) {
-            return '24px 15% 0 15%';
-        } else if ( screens.lg) {
-            return '24px 15% 0 15%';
+            return '16px 10%'
+        } else if (screens.lg) {
+            return '16px 8%'
         } else if (screens.md) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         } else if (screens.sm) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         } else if (screens.xs) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         }
     }
 
@@ -66,13 +67,22 @@ function Profile (props) {
                             </div>
                         </Tabs.TabPane>                        
                         <Tabs.TabPane tab={<span><LikeOutlined style={{ fontSize: '18px' }} />Таалагдсан кино</span>} key="2">
-                            <div style={{ padding: '8px' }}>Таалагдсан кино</div>                        
+                            <div style={{ padding: '8px' }}>
+                                <Typography.Title level={5}>Таалагдсан кино</Typography.Title>
+                                <MoviesLiked movies={user.profile.likes} />                 
+                            </div>
                         </Tabs.TabPane>
-                        <Tabs.TabPane tab={<span><CheckCircleOutlined style={{ fontSize: '18px' }} />Үзсэн кино</span>} key="3">
-                            <div style={{ padding: '8px' }}>Үзсэн кино</div>        
+                        <Tabs.TabPane tab={<span><CheckCircleOutlined style={{ fontSize: '18px' }} />Үзсэн кино</span>} key="3">                            
+                            <div style={{ padding: '8px' }}>
+                                <Typography.Title level={5}>Үзсэн кино</Typography.Title>
+                                <MoviesLiked movies={user.profile.watched} />                 
+                            </div>       
                         </Tabs.TabPane>
-                        <Tabs.TabPane tab={<span><PlusCircleOutlined style={{ fontSize: '18px' }} />Дараа үзэх кино</span>} key="4">
-                            <div style={{ padding: '8px' }}>Дараа үзэх кино</div>        
+                        <Tabs.TabPane tab={<span><PlusCircleOutlined style={{ fontSize: '18px' }} />Дараа үзэх кино</span>} key="4">                              
+                            <div style={{ padding: '8px' }}>
+                                <Typography.Title level={5}>Дараа үзэх кино</Typography.Title>
+                                <MoviesLiked movies={user.profile.watchlist} />                 
+                            </div>  
                         </Tabs.TabPane>
                         <Tabs.TabPane tab={<span><CloseCircleOutlined style={{ fontSize: '18px' }} />Гарах</span>} key="5">
                             <div style={{ padding: '8px' }}>

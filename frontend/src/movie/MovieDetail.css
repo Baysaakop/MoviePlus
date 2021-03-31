@@ -1,9 +1,9 @@
-.moviedetail .actions .ant-btn-ghost {
+.detail .actions .ant-btn-ghost {
     margin-right: 8px;
 }
 
 
-.moviedetail .actions .ant-btn-primary {
+.detail .actions .ant-btn-primary {
     margin-right: 8px;
     background: rgba(24, 144, 255, 1);
 }

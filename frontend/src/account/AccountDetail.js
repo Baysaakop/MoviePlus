@@ -10,21 +10,6 @@ function AccountDetail (props) {
     const [form] = Form.useForm();    
     const [image, setImage] = useState();  
 
-    // useEffect(() => {                      
-    //     if (props.user) { 
-    //         setImage(props.user.profile.avatar)
-    //         form.setFieldsValue({                
-    //             email: props.user.email,             
-    //             username: props.user.username,                
-    //             first_name: props.user.first_name,
-    //             last_name: props.user.last_name,                           
-    //             mobile: props.user.profile.phone_number,      
-    //             birth_date: props.user.profile.birth_date ? moment(props.user.profile.birth_date, "YYYY-MM-DD") : undefined,
-    //             role: props.user.profile.role === "1" ? "Admin" : props.user.profile.role === "2" ? "Moderator" : "User"
-    //         })              
-    //     }
-    // }, [props.user])
-
     function onFinish (values) {                          
         var formData = new FormData();
         if (values.username) {
@@ -46,10 +31,6 @@ function AccountDetail (props) {
         if (image) {
             formData.append('avatar', image);
         }                
-        // formData.append('token', props.token);            
-        // for (var pair of formData.entries()) {
-        //     console.log(pair[0]+ ', ' + pair[1]); 
-        // }
         axios({
             method: 'PUT',
             url: `${api.users}/${props.user.id}/`,
@@ -110,9 +91,6 @@ function AccountDetail (props) {
                         </Form.Item>  
                     </Col>
                     <Col xs={24} sm={24} md={8}>
-                        {/* <Form.Item name="birth_date" label="Төрсөн өдөр:">
-                            <DatePicker style={{ width: '100%' }} defaultValue={props.user.profile.birth_date ? moment(props.user.profile.birth_date, "YYYY-MM-DD") : undefined} />
-                        </Form.Item>  */}
                         <Form.Item name="role" label="Хандалтын түвшин:">
                             <Input prefix={<LockOutlined style={{ color: '#a1a1a1' }} />} disabled defaultValue={props.user.profile.role === "1" ? "Admin" : props.user.profile.role === "2" ? "Moderator" : "User"} />
                         </Form.Item>

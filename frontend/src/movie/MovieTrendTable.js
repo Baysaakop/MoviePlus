@@ -37,8 +37,8 @@ function MovieTrendTable(props) {
         },
         {
             title: <PlusCircleOutlined style={{ fontSize: '18px' }} />,
-            dataIndex: 'watchlisted',
-            key: 'watchlisted',
+            dataIndex: 'watchlist',
+            key: 'watchlist',
             align: 'center',
         },
     ];

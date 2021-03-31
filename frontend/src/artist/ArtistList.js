@@ -176,14 +176,14 @@ function ArtistList () {
                     dataSource={artists ? artists : undefined}
                     renderItem={item => (
                         <List.Item>
-                            <ArtistCard item={item} />
+                            <ArtistCard artist={item} />
                         </List.Item>
                     )}
                 />
                 <Pagination
                     current={page}
                     total={total}
-                    pageSize={24}
+                    pageSize={12}
                     hideOnSinglePage={true}
                     showSizeChanger={false}
                     showTotal={showTotal}

@@ -26,7 +26,7 @@ class ArtistSerializer(serializers.ModelSerializer):
     occupation = OccupationSerializer(read_only=True, many=True)
     class Meta:
         model = Artist
-        fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 'likes', 'followers', 'created_by', 'created_at')  
+        fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 'views', 'likes', 'followers', 'created_by', 'created_at')  
 
 class MemberSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)

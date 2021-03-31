@@ -99,17 +99,17 @@ function MovieList() {
 
     function getPadding() {
         if (screens.xxl) {
-            return '24px 15% 0 15%';
+            return '16px 15%'
         } else if (screens.xl) {
-            return '24px 15% 0 15%';
-        } else if ( screens.lg) {
-            return '24px 15% 0 15%';
+            return '16px 10%'
+        } else if (screens.lg) {
+            return '16px 8%'
         } else if (screens.md) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         } else if (screens.sm) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         } else if (screens.xs) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         }
     }
 
@@ -131,12 +131,12 @@ function MovieList() {
                     order: "created_at"
                 }}>
                     <Row gutter={[16, 16]}>
-                        <Col sm={24} md={8}>
+                        <Col xs={24} sm={24} md={24} lg={8}>
                             <Form.Item name="name" label="Кино хайх:">                            
                                 <Search placeholder="Киноны нэрээр хайх" onSearch={onNameSearch} enterButton />
                             </Form.Item>
                         </Col>
-                        <Col sm={24} md={8}>
+                        <Col xs={24} sm={24} md={24} lg={8}>
                             <Form.Item name="genre" label="Төрөл сонгох">                                
                                 <Select                      
                                     // dropdownStyle={{ backgroundColor: '#161b22' }}                                
@@ -161,7 +161,7 @@ function MovieList() {
                                 </Select>
                             </Form.Item>                                                    
                         </Col>                                                           
-                        <Col sm={24} md={8}>
+                        <Col xs={24} sm={24} md={24} lg={8}>
                             <Form.Item name="order" label="Эрэмбэлэх:">                                
                                 <Select                                
                                     showSearch                            
@@ -187,22 +187,22 @@ function MovieList() {
                         xs: 2,
                         sm: 3,
                         md: 4,
-                        lg: 4,
+                        lg: 5,
                         xl: 6,
-                        xxl: 8,
+                        xxl: 6,
                     }}                                        
                     style={{ marginTop: '16px' }}                
                     dataSource={movies ? movies : undefined}
                     renderItem={item => (
                         <List.Item>
-                            <MovieCard id={item.id} />
+                            <MovieCard movie={item} />
                         </List.Item>
                     )}
                 />
                 <Pagination
                     current={page}
                     total={total}
-                    pageSize={24}
+                    pageSize={12}
                     hideOnSinglePage={true}
                     showSizeChanger={false}
                     showTotal={showTotal}
