@@ -88,11 +88,12 @@ class Movie(models.Model):
     def __str__(self):
         return self.name
 
-
 class Review(models.Model):    
     title = models.CharField(max_length=100)
     content = RichTextField()
     thumbnail = models.ImageField(upload_to='review/%Y/%m/%d', null=True, blank=True)    
+    views = models.IntegerField(default=0)
+    likes = models.IntegerField(default=0)        
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="review_created_by")
 

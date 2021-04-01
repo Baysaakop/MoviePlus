@@ -101,8 +101,9 @@ function CustomMenu (props) {
     }    
 
     const styleMenuItemMobile = {    
-        width: '100%',
-        height: '20%',
+        // width: '100%',
+        // height: '20%',
+        height: '48px',
         margin: '0',
         padding: '0',
         display: 'flex',
@@ -185,22 +186,29 @@ function CustomMenu (props) {
                     { collapsed ? (
                         <></>
                     ) : (
-                        <div style={{ width: '100%', height: '90vh', background: props.darkMode ? "#161b22" : "#fff" }}>                            
-                            <Button type="text" size="large" style={styleMenuItemMobile} href="/movies">
+                        <div style={{ background: props.darkMode ? "#161b22" : "#fff" }}>                            
+                            <Button block type="text" size="large" style={styleMenuItemMobile} href="/movies">
                                 Кино
                             </Button> 
-                            <Button type="text" size="large" style={styleMenuItemMobile} href="/series">
+                            <Button block type="text" size="large" style={styleMenuItemMobile} href="/series">
                                 Цуврал
                             </Button>                            
-                            <Button type="text" size="large" style={styleMenuItemMobile} href="/artists">
+                            <Button block type="text" size="large" style={styleMenuItemMobile} href="/artists">
                                 Уран бүтээлч
                             </Button>
-                            <Button type="text" size="large" style={styleMenuItemMobile} href="/posts">
+                            <Button block type="text" size="large" style={styleMenuItemMobile} href="/posts">
                                 Нийтлэл
                             </Button>
-                            <Button type="text" size="large" style={styleMenuItemMobile} href="/login">
-                                Нэвтрэх
-                            </Button>                            
+                            { user ? (
+                                <a href="/profile" style={styleMenuItemMobile}>
+                                    {user.profile.avatar ? <Avatar src={user.profile.avatar} size="default" /> : <Avatar icon={<UserOutlined />} size="default" />}
+                                    <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
+                                </a>
+                            ) : (
+                                <Button block type="text" size="large" style={styleMenuItemMobile} href="/login">
+                                    Нэвтрэх
+                                </Button> 
+                            )}                                                                
                         </div>
                     )}                             
                 </div>

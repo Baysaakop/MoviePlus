@@ -1,8 +1,8 @@
-.cover-container {
+.moviecard .cover-container {
     position: relative;        
 }
 
-.cover-overlay-top-left {
+.moviecard .cover-overlay-top-left {
     position: absolute;
     top: 8px;
     left: 8px;
@@ -12,7 +12,7 @@
     font-size: 16px; */
 }
 
-.cover-overlay-mid-center {
+.moviecard .cover-overlay-mid-center {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -25,7 +25,7 @@
     font-size: 16px; */
 }
 
-.cover-overlay-bot-right {
+.moviecard .cover-overlay-bot-right {
     position: absolute;
     padding: 4px;
     bottom: 8px;
@@ -36,40 +36,41 @@
     transition: all .6s ease;
 }
 
-.cover-overlay-bot-right .ant-btn-ghost {
+.moviecard .cover-overlay-bot-right .ant-btn-ghost {
     margin-bottom: 4px;
     background: transparent;
     border-color: #fff;
     color: #fff;
 }
 
-.cover-container:hover .cover-overlay-bot-right {
+.moviecard .cover-container:hover .cover-overlay-bot-right {
     opacity: 1;        
     background: rgba(0, 0, 0, 0.2);           
 }
-.cover-container:hover .cover-overlay-mid-center {
+
+.moviecard .cover-container:hover .cover-overlay-mid-center {
     opacity: 1;                   
 }
 
-.cover-overlay-bot-right .ant-btn-ghost:hover {
+.moviecard .cover-overlay-bot-right .ant-btn-ghost:hover {
     background: rgba(24, 144, 255, 0.7);
 }
 
-.cover-overlay-bot-right .ant-btn-primary {
+.moviecard .cover-overlay-bot-right .ant-btn-primary {
     margin-bottom: 4px;
     background: rgba(24, 144, 255, 1);
     border-color: #fff;
     color: #fff;
 }
 
-.cover-overlay-bot-right .ant-btn-primary:hover {
+.moviecard .cover-overlay-bot-right .ant-btn-primary:hover {
     background: rgba(24, 144, 255, 0.3);
 }
 
-.layout-dark .ant-card-actions {
+.layout-dark .moviecard .ant-card-actions {
     background-color: #161b22;    
 }
 
-.layout-dark .ant-card-actions .anticon {
+.layout-dark .moviecard .ant-card-actions .anticon {
     color: rgba(255, 255, 255, 0.85);
 }

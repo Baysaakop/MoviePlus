@@ -1,4 +1,4 @@
-import { List, Pagination, Typography } from 'antd';
+import { List } from 'antd';
 import React from 'react';
 import MovieCard from './MovieCard.js';
 

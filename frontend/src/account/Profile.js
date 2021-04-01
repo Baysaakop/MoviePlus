@@ -1,34 +1,43 @@
-import { Grid, Breadcrumb, Button, Result, Tabs, Typography } from 'antd';
+import { Grid, Breadcrumb, Button, Result, Tabs, Typography, Spin, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import api from '../api';
 import AccountDetail from './AccountDetail';
-import { CheckCircleOutlined, CloseCircleOutlined, LikeOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, LikeOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined, LoadingOutlined, FormOutlined } from '@ant-design/icons';
 import Logout from './Logout';
 import Moderator from './Moderator';
 import MoviesLiked from '../movie/MoviesLiked';
+import PostCreate from '../posts/PostCreate';
+
+const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 const { useBreakpoint } = Grid;
 
 function Profile (props) {
     const screens = useBreakpoint();
+    const [loading, setLoading] = useState(false);
     const [user, setUser] = useState();
 
     useEffect(() => {        
-        axios({
-            method: 'GET',
-            url: api.profile,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`
-            }
-        }).then(res => {            
-            console.log(res.data)
-            setUser(res.data)
-        }).catch(err => {
-            console.log(err)
-        })
+        if (props.token && props.token !== null) {
+            setLoading(true)
+            axios({
+                method: 'GET',
+                url: api.profile,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            }).then(res => {                            
+                setUser(res.data)                
+                setLoading(false)
+            }).catch(err => {                
+                console.log(err) 
+                message.error("Алдаа гарлаа. Хуудсыг дахин ачааллана уу.")    
+                setLoading(false)           
+            })                    
+        }
     }, [props.token])
 
     function getPadding() {
@@ -94,12 +103,19 @@ function Profile (props) {
                                 <Tabs.TabPane tab={<span><SettingOutlined style={{ fontSize: '18px' }} />Модератор цонх</span>} key="6">
                                     <Moderator />      
                                 </Tabs.TabPane>
+                                <Tabs.TabPane tab={<span><FormOutlined style={{ fontSize: '18px' }} />Нийтлэл оруулах</span>} key="7">
+                                    <PostCreate token={props.token} />
+                                </Tabs.TabPane>
                             </>
                         ) : (
                             <>
                             </>
                         )} 
                     </Tabs>                
+                ) : loading ? (
+                    <div style={{ width: '100%', height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Spin indicator={indicator} tip="Ачааллаж байна..." />
+                    </div>
                 ) : (
                     <Result
                         status="403"

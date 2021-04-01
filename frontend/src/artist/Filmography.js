@@ -113,7 +113,7 @@ function Filmography (props) {
     
     return (
         <div>
-            <Table bordered columns={columns} dataSource={movies} pagination={false} size="middle" />
+            <Table bordered columns={columns} dataSource={movies} pagination={{ pageSize: 10 }} size="middle" />
         </div>
     )
 }

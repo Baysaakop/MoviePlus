@@ -103,6 +103,7 @@ function ArtistCard (props) {
     return (
         <div>
             <Card             
+                className="moviecard"
                 size="small"
                 hoverable                 
                 style={{ width: '100%', height: 'auto', border: '0' }}

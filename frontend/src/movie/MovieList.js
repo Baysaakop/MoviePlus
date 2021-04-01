@@ -1,6 +1,8 @@
 import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form } from 'antd';
 import React, { useState, useEffect } from 'react';
 import MovieCard from './MovieCard';
+// import MovieCard2 from './MovieCard2';
+// import MovieCard3 from './MovieCard3';
 import axios from 'axios';  
 import api from '../api';
 
@@ -137,7 +139,7 @@ function MovieList() {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="genre" label="Төрөл сонгох">                                
+                            <Form.Item name="genre" label="Төрөл жанр сонгох">                                
                                 <Select                      
                                     // dropdownStyle={{ backgroundColor: '#161b22' }}                                
                                     showSearch                            
@@ -187,8 +189,8 @@ function MovieList() {
                         xs: 2,
                         sm: 3,
                         md: 4,
-                        lg: 5,
-                        xl: 6,
+                        lg: 4,
+                        xl: 5,
                         xxl: 6,
                     }}                                        
                     style={{ marginTop: '16px' }}                

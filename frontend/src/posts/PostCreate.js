@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Form, Input, Result, Typography, message } from 'antd';
+import {  Button, Form, Input, Result, Typography, message } from 'antd';
 import React, { useState } from 'react';
 import axios from 'axios';
 import api from '../api';
@@ -20,7 +20,7 @@ const PostCreate = (props) => {
         setContent(content)
     }
 
-    function onFinish (values) {
+    function onFinish (values) {        
         var formData = new FormData();
         formData.append('title', values.title);
         formData.append('content', content);        
@@ -28,10 +28,11 @@ const PostCreate = (props) => {
         formData.append('token', props.token);
         axios({
             method: 'POST',
-            url: `${api.posts}/`,
+            url: `${api.reviews}/`,
             data: formData,
             headers: {
-                'Content-Type': 'multipart/form-data'                          
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Token ${props.token}`                          
             }
         }).then(res => {                        
             if (res.status === 201 || res.status === 200) {                
@@ -45,83 +46,62 @@ const PostCreate = (props) => {
 
     return (
         <div>            
-            {props.token && props.token !== null ? (
-                <>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>
-                            <a href="/">Home</a>
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item>
-                            <a href="/posts">Posts</a>
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item>
-                            New
-                        </Breadcrumb.Item>
-                    </Breadcrumb>
-                    <div style={{ margin: '16px 0' }}>
-                        <Typography.Title level={3}>
-                            Write a new post
-                        </Typography.Title>       
-                        <Form                             
-                            form={form}  
-                            name="postform"              
-                            layout="vertical"
-                            style={{ padding: '16px' }}                 
-                            onFinish={onFinish}                              
-                        >
-                            <Form.Item
-                                label="Title"
-                                name="title"
-                                rules={[{ required: true, message: 'Гарчиг өгнө үү!' }]}
-                            >
-                                <Input />
-                            </Form.Item>        
-                            <Form.Item
-                                name="image"
-                                label="Thumbnail"                                
-                            >                       
-                                <div style={{ width: '100%', height: '200px' }}>
-                                    <ImageUpload onImageSelected={onImageSelected} imageUrl={undefined} />                        
-                                </div>
-                            </Form.Item>                     
-                            <Form.Item
-                                label="Content"
-                                name="post"
-                                rules={[{ required: true, message: 'Нийтлэлээ оруулна уу!' }]}
-                            >
-                                <Editor
-                                    apiKey='wpwv44irouwa2fnzez4rgccg20gz5bri6qmwlt4wbeuha01r'
-                                    initialValue=""
-                                    init={{
-                                        height: 500,
-                                        menubar: ['file', 'insert'],                                    
-                                        plugins: [
-                                            'advlist autolink lists link image imagetools charmap print preview anchor',
-                                            'searchreplace visualblocks code fullscreen',
-                                            'insertdatetime media table paste code help wordcount'
-                                        ],                                        
-                                        toolbar:
-                                            'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help | image'
-                                    }}                                    
-                                    onEditorChange={handleEditorChange}
-                                />
-                            </Form.Item>                                                        
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    Post
-                                </Button>
-                            </Form.Item>
-                        </Form>                        
-                    </div>                            
-                </>
-            ) : (
-                <Result
-                    status="403"
-                    title="403"
-                    subTitle="Sorry, you are not authorized to access this page."
-                    extra={<Button type="primary" href="/">Back Home</Button>}
-                />
-            )}
+            <div style={{ margin: '16px 0' }}>
+                <Typography.Title level={3}>
+                    Нийтлэл бичих
+                </Typography.Title>       
+                <Form                             
+                    form={form}  
+                    name="postform"              
+                    layout="vertical"
+                    style={{ padding: '16px' }}                 
+                    onFinish={onFinish}                              
+                >
+                    <Form.Item
+                        label="Гарчиг"
+                        name="title"
+                        rules={[{ required: true, message: 'Гарчиг өгнө үү!' }]}
+                    >
+                        <Input />
+                    </Form.Item>        
+                    <Form.Item
+                        name="image"
+                        label="Зураг"               
+                        rules={[{ required: true, message: 'Зураг оруулна уу!' }]}                 
+                    >                       
+                        <div style={{ width: '100%', height: '200px' }}>
+                            <ImageUpload width="400px" height="200px" onImageSelected={onImageSelected} imageUrl={undefined} />                        
+                        </div>
+                    </Form.Item>                     
+                    <Form.Item
+                        label="Контент"
+                        name="post"
+                        rules={[{ required: true, message: 'Контент оруулна уу!' }]}
+                    >
+                        <Editor
+                            apiKey='wpwv44irouwa2fnzez4rgccg20gz5bri6qmwlt4wbeuha01r'
+                            initialValue=""
+                            init={{
+                                height: 500,
+                                menubar: ['file', 'insert'],                                    
+                                plugins: [
+                                    'advlist autolink lists link image imagetools charmap print preview anchor',
+                                    'searchreplace visualblocks code fullscreen',
+                                    'insertdatetime media table paste code help wordcount'
+                                ],                                        
+                                toolbar:
+                                    'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help | image'
+                            }}                                    
+                            onEditorChange={handleEditorChange}
+                        />
+                    </Form.Item>                                                        
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Post
+                        </Button>
+                    </Form.Item>
+                </Form>                        
+            </div>  
         </div>
     )
 }

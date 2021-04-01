@@ -3,13 +3,14 @@ const baseUrl = "http://127.0.0.1:8000/"
 
 const api = {
     items: baseUrl + 'api/items/items',
-    posts: baseUrl + 'api/items/posts',
+    posts: baseUrl + 'api/items/posts',    
     movies: baseUrl + 'api/movies',
     ratings: baseUrl + 'api/movies/ratings',
     genres: baseUrl + 'api/movies/genres',
     productions: baseUrl + 'api/movies/productions',
     occupations: baseUrl + 'api/movies/occupations',
     artists: baseUrl + 'api/movies/artists',
+    reviews: baseUrl + 'api/movies/reviews',
     users: baseUrl + 'api/users',
     signin: baseUrl + 'rest-auth/login/',
     signup: baseUrl + 'rest-auth/registration/',

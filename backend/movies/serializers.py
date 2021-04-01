@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from .models import Genre, Rating, Production, Occupation, Artist, Member, Cast, Movie, Review
+from users.models import User, Profile
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,7 +52,19 @@ class MovieSerializer(serializers.ModelSerializer):
         model = Movie
         fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'member', 'cast', 'views', 'likes', 'watched', 'watchlist', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):            
+    class Meta:
+        model = Profile
+        fields = ('id', 'avatar', 'phone_number', 'birthday')    
+
+class UserSerializer(serializers.ModelSerializer):         
+    profile = ProfileSerializer(read_only=True)     
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'profile')    
+
+class ReviewSerializer(serializers.ModelSerializer):          
+    created_by = UserSerializer(read_only=True)  
     class Meta:
         model = Review
-        fields = ('id', 'title', 'content', 'thumbnail', 'created_by', 'created_at')    
+        fields = ('id', 'title', 'content', 'thumbnail', 'views', 'likes', 'created_by', 'created_at')    

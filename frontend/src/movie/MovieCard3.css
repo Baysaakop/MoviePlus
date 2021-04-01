@@ -1,0 +1,55 @@
+.moviecard3 .ant-card-body {
+    z-index: 1;
+}
+
+.moviecard3 .cover-container {
+    position: relative;        
+}
+
+.moviecard3 img.poster {
+    width: 100%;
+    height: 100%;
+    position: absolute;    
+    opacity: 0.8;
+    background-color: #000;
+}
+
+.moviecard3 .play {    
+    opacity: 1;
+    transition: all .6s ease;   
+    margin-top: -40px;     
+    padding: 0 16px;
+    text-align: right;
+}
+
+.moviecard3 .play .ant-btn-primary {
+    background-color: rgba(24, 144, 255, 1);
+    border-color: #fff;
+}
+
+.moviecard3 .cover-actions {
+    position: absolute;
+    top: 2%;   
+    width: 100%;    
+    display: flex;
+    justify-content: space-around;    
+    align-items: center;
+    opacity: 0.4;
+    transition: all .6s ease;
+}
+
+.moviecard3 .cover-actions .ant-btn {
+    border: 0;
+}
+
+.moviecard3 .cover-actions .ant-btn-ghost {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.moviecard3 .cover-actions .ant-btn-primary {
+    background-color: rgba(24, 144, 255, 1);
+}
+
+.moviecard3 .cover-container:hover .cover-actions {
+    opacity: 1;
+}

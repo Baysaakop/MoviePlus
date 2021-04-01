@@ -340,3 +340,43 @@ class MovieViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
+
+    def get_queryset(self):
+        queryset = Review.objects.all().order_by('-created_at')        
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.views = instance.views + 1        
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):       
+        print(request.data)       
+        user = Token.objects.get(key=request.data['token']).user                                
+        review = Review.objects.create(
+            title=request.data['title'],
+            created_by=user
+        )
+        if 'thumbnail' in request.data:
+            review.thumbnail=request.data['thumbnail']
+        if 'content' in request.data:
+            review.content=request.data['content']        
+        review.save()
+        serializer = ReviewSerializer(review)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):                         
+        review = self.get_object()                         
+        if 'title' in request.data:
+            review.title=request.data['title']
+        if 'thumbnail' in request.data:
+            review.thumbnail=request.data['thumbnail']
+        if 'content' in request.data:
+            review.content=request.data['content']          
+        review.save()
+        serializer = ReviewSerializer(review)
+        headers = self.get_success_headers(serializer.data)        
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)  

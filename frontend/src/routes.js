@@ -16,6 +16,7 @@ import MovieList from './movie/MovieList';
 import MovieDetail from './movie/MovieDetail';
 import ArtistList from './artist/ArtistList';
 import ArtistDetail from './artist/ArtistDetail';
+import PostList from './posts/PostList';
 
 function BaseRouter () {
     return (
@@ -31,6 +32,7 @@ function BaseRouter () {
             <Route exact path="/artists" component={ArtistList} />
             <Route exact path="/artists/:artistID" component={ArtistDetail} />
             {/* Posts urls */}
+            <Route exact path="/posts" component={PostList} />
             <Route exact path="/newpost" component={PostCreate} />
             {/* User urls */}
             <Route exact path="/login" component={Login} />

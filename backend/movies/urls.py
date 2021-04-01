@@ -8,6 +8,6 @@ router.register(r'productions', ProductionViewSet, basename='productions')
 router.register(r'occupations', OccupationViewSet, basename='occupations')
 router.register(r'artists', ArtistViewSet, basename='artists')
 router.register(r'members', MemberViewSet, basename='members')
-router.register(r'', MovieViewSet, basename='movies')
 router.register(r'reviews', ReviewViewSet, basename='reviews')
+router.register(r'', MovieViewSet, basename='movies')
 urlpatterns = router.urls
