@@ -257,11 +257,11 @@ function MovieCard3 (props) {
                                         {getGenres()}
                                     </Typography.Paragraph>
                                 </div>
-                                <div>
+                                {/* <div>
                                     <Typography.Paragraph ellipsis={{ rows: 5 }} style={{ color: '#aaa' }}>
                                         {props.movie.description}
                                     </Typography.Paragraph>
-                                </div>
+                                </div> */}
                             </div>
                         } 
                     />

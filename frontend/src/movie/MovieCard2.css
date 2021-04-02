@@ -2,78 +2,80 @@
     padding: 0;
 }
 
+.moviecard2 {
+    border: 0;
+}
+
 .moviecard2 .container {
-    position: relative;        
+    position: relative;
+    padding-bottom: 150%;    
 }
 
 .moviecard2 .poster {
     width: 100%;
-    height: 100%;
-    position: absolute;       
-    opacity: 0.4; 
+    height: 100%;        
+    object-fit: cover;       
+    position: absolute;
+    opacity: 0.5;
 }
 
-.moviecard2 .overlay-name {
+.moviecard2 .container .content {
     position: absolute;
-    top: 70%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    padding: 0 8px;    
-    text-align: center;    
-}
-
-.moviecard2 .overlay-score {
-    position: absolute;
-    top: 90%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    bottom: 0;        
+    color: #f1f1f1;
     width: 100%;    
-    text-align: center;
+    height: 100%;    
+    overflow: hidden;
 }
 
-.moviecard2 .overlay-play {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;    
-    text-align: center;
+.moviecard2 .container .content .top {
+    height: 50%;
+    background-image: linear-gradient(to top, rgb(8, 8, 8), rgba(8, 8, 8, 0.5));
+}
+
+.moviecard2 .container .content .actions {
+    height: 25%;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+}
+
+.moviecard2 .container .content .play {
+    height: 45%;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
     opacity: 0;
-    transition: all .6s ease;
+    transition: all 1s ease;
 }
 
+.moviecard2 .container .content .score {
+    height: 40%;
+    text-align: center;
+}
 
-.moviecard2 .container:hover .overlay-play,
-.moviecard2 .container:hover .overlay-actions {
+.moviecard2 .container .content .bot {
+    height: 50%;
+    background: rgb(8, 8, 8);
+    padding: 8px 16px;
+}
+
+.moviecard2 .container .content .actions .ant-btn-ghost {
+    border: 0;
+    color: #888;
+}
+
+.moviecard2 .container .content .actions .ant-btn-primary {
+    border: 0;
+    background: #1890ff;
+    color: #f1f1f1;
+}
+
+.moviecard2 .container .content:hover .play {
     opacity: 1;
 }
 
-.moviecard2 .overlay-play .ant-btn-primary {
-    background-color: rgba(24, 144, 255, 0.6);
-}
-
-.moviecard2 .overlay-play .ant-btn-primary:hover {
-    background-color: rgba(24, 144, 255, 1);
-    border-color: #fff;
-}
-
-.moviecard2 .overlay-actions {
-    position: absolute;
-    top: 2%;   
-    width: 100%;    
-    display: flex;
-    justify-content: space-around;    
-    align-items: center;
-    opacity: 0.4;
-    transition: all .6s ease;
-}
-
-.moviecard2 .overlay-actions .ant-btn-ghost,
-.moviecard2 .overlay-actions .ant-btn-primary {
-    border: 0;
-}
-
-.moviecard2 .overlay-actions .ant-btn-primary {
-    background: rgba(24, 144, 255, 1);
+.moviecard2 .container .content:hover .actions .ant-btn  {
+    color: #FFF;
 }

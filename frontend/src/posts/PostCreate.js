@@ -97,7 +97,7 @@ const PostCreate = (props) => {
                     </Form.Item>                                                        
                     <Form.Item>
                         <Button type="primary" htmlType="submit">
-                            Post
+                            Нийтлэх
                         </Button>
                     </Form.Item>
                 </Form>                        

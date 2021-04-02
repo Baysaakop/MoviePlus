@@ -342,7 +342,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
 
     def get_queryset(self):
-        queryset = Review.objects.all().order_by('-created_at')        
+        queryset = Review.objects.all().order_by('-created_at')  
+        user = self.request.query_params.get('name', None)
+        if user is not None:
+            queryset = queryset.filter(created_by__id=user)      
         return queryset
 
     def retrieve(self, request, *args, **kwargs):

@@ -1,8 +1,8 @@
 import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form } from 'antd';
 import React, { useState, useEffect } from 'react';
 import MovieCard from './MovieCard';
-// import MovieCard2 from './MovieCard2';
-// import MovieCard3 from './MovieCard3';
+import MovieCard2 from './MovieCard2';
+import MovieCard3 from './MovieCard3';
 import axios from 'axios';  
 import api from '../api';
 
@@ -185,19 +185,19 @@ function MovieList() {
                 </Form>
                 <List                        
                     grid={{
-                        gutter: 16,
+                        gutter: 32,
                         xs: 2,
-                        sm: 3,
-                        md: 4,
-                        lg: 4,
-                        xl: 5,
-                        xxl: 6,
+                        sm: 2,
+                        md: 3,
+                        lg: 3,
+                        xl: 4,
+                        xxl: 4,
                     }}                                        
                     style={{ marginTop: '16px' }}                
                     dataSource={movies ? movies : undefined}
                     renderItem={item => (
                         <List.Item>
-                            <MovieCard movie={item} />
+                            <MovieCard2 movie={item} />
                         </List.Item>
                     )}
                 />

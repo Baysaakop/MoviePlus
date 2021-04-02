@@ -70,25 +70,27 @@ function PostList (props) {
                     dataSource={posts ? posts : undefined}
                     renderItem={item => (                        
                         <List.Item>
-                            <Card 
-                                hoverable
-                                cover={
-                                    <img alt="thumbnail" src={item.thumbnail} />
-                                }
-                                style={{
-                                    border: 0
-                                }}
-                            >
-                                <Meta
-                                    avatar={<Avatar shape="circle" src={item.created_by.profile.avatar} />}
-                                    title={item.title}
-                                    description={
-                                        <Typography.Paragraph ellipsis={{ rows: 4 }}>
-                                            <div dangerouslySetInnerHTML={{__html: item.content }} />                                            
-                                        </Typography.Paragraph>
+                            <a href={`/posts/${item.id}`}>
+                                <Card 
+                                    hoverable
+                                    cover={
+                                        <img alt="thumbnail" src={item.thumbnail} />
                                     }
-                                />
-                            </Card>
+                                    style={{
+                                        border: 0
+                                    }}
+                                >
+                                    <Meta
+                                        avatar={<Avatar shape="circle" src={item.created_by.profile.avatar} />}
+                                        title={item.title}
+                                        description={
+                                            <Typography.Paragraph ellipsis={{ rows: 4 }}>
+                                                <div dangerouslySetInnerHTML={{__html: item.content }} />                                            
+                                            </Typography.Paragraph>
+                                        }
+                                    />
+                                </Card>
+                            </a>
                         </List.Item>
                     )}
                 />
