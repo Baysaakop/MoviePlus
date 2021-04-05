@@ -7,6 +7,7 @@ import axios from 'axios';
 import api from '../api';
 import { connect } from "react-redux";
 import Modal from 'antd/lib/modal/Modal';
+import { Link } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
 
@@ -196,9 +197,9 @@ function MovieCard (props) {
                 style={{ width: '100%', height: 'auto', border: '0' }}
                 cover={
                     <div className="cover-container" style={{ paddingBottom: '150%', overflow: 'hidden' }}>
-                        <a href={`/movies/${props.movie.id}`}>
+                        <Link to={`/movies/${props.movie.id}`}>
                             <img src={props.movie.poster ? props.movie.poster : blank} alt="poster" style={{ width: '100%', height: '100%', position: 'absolute' }} />
-                        </a>
+                        </Link>
                         <div className="cover-overlay-top-left">
                             <Avatar size="large" style={{ background: '#161b22', border: '1px solid orange', color: 'orange', fontFamily: 'Nerko One, cursive', fontSize: '20px' }}>
                                 {parseInt(props.movie.score)}
@@ -250,7 +251,7 @@ function MovieCard (props) {
                     </div>
                 }
             >
-                <a href={`/movies/${props.movie.id}`}>
+                <Link to={`/movies/${props.movie.id}`}>
                     <Meta 
                         title={<Tooltip title={props.movie.name}>{props.movie.name}</Tooltip>} 
                         description={
@@ -260,7 +261,7 @@ function MovieCard (props) {
                             </div>
                         } 
                     />
-                </a>                
+                </Link>                
             </Card>             
         </div>        
     )

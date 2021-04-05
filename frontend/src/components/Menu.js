@@ -131,29 +131,39 @@ function CustomMenu (props) {
                         </Link>
                     </div>
                     <div style={{ width: '60%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/movies') ? 'primary' : 'default' } size="large" href="/movies" style={{ marginLeft: '8px' }}>
-                            Кино
-                        </Button>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/series') ? 'primary' : 'default' } size="large" href="/series" style={{ marginLeft: '8px' }}>
-                            Цуврал
-                        </Button>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/artists') ? 'primary' : 'default' } size="large" href="/artists" style={{ marginLeft: '8px' }}>
-                            Уран бүтээлч
-                        </Button>
-                        <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" href="/posts" style={{ marginLeft: '8px' }}>
-                            Нийтлэл
-                        </Button>
+                        <Link to="/movies">
+                            <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/movies') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
+                                Кино
+                            </Button>
+                        </Link>
+                        <Link to="/series">
+                            <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/series') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
+                                Цуврал
+                            </Button>
+                        </Link>
+                        <Link to="/artists">
+                            <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/artists') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
+                                У/Бүтээлч
+                            </Button>
+                        </Link>
+                        <Link to="/posts">
+                            <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
+                                Нийтлэл
+                            </Button>
+                        </Link>
                     </div>
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                         { user ? (
-                            <a href="/profile">
+                            <Link to="/profile">
                                 {user.profile.avatar ? <Avatar src={user.profile.avatar} size="large" /> : <Avatar icon={<UserOutlined />} size="large" />}
                                 <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
-                            </a>
+                            </Link>
                         ) : (
-                            <Button ghost={scrollTop || props.darkMode} type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'default' } size="large" href="/login">
-                                Нэвтрэх
-                            </Button>
+                            <Link to="/login">
+                                <Button ghost={scrollTop || props.darkMode} type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'default' } size="large">
+                                    Нэвтрэх
+                                </Button>
+                            </Link>
                         )}                        
                     </div>                   
                 </div>                                
@@ -187,27 +197,37 @@ function CustomMenu (props) {
                         <></>
                     ) : (
                         <div style={{ background: props.darkMode ? "#161b22" : "#fff" }}>                            
-                            <Button block type="text" size="large" style={styleMenuItemMobile} href="/movies">
-                                Кино
-                            </Button> 
-                            <Button block type="text" size="large" style={styleMenuItemMobile} href="/series">
-                                Цуврал
-                            </Button>                            
-                            <Button block type="text" size="large" style={styleMenuItemMobile} href="/artists">
-                                Уран бүтээлч
-                            </Button>
-                            <Button block type="text" size="large" style={styleMenuItemMobile} href="/posts">
-                                Нийтлэл
-                            </Button>
+                            <Link to="/movies">
+                                <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                    Кино
+                                </Button> 
+                            </Link>
+                            <Link to="/series">
+                                <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                    Цуврал
+                                </Button>       
+                            </Link>                     
+                            <Link to="/artists">
+                                <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                    Уран бүтээлч
+                                </Button>
+                            </Link>
+                            <Link to="/posts">
+                                <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                    Нийтлэл
+                                </Button>
+                            </Link>
                             { user ? (
-                                <a href="/profile" style={styleMenuItemMobile}>
+                                <Link to="/profile" style={styleMenuItemMobile}>
                                     {user.profile.avatar ? <Avatar src={user.profile.avatar} size="default" /> : <Avatar icon={<UserOutlined />} size="default" />}
                                     <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
-                                </a>
+                                </Link>
                             ) : (
-                                <Button block type="text" size="large" style={styleMenuItemMobile} href="/login">
-                                    Нэвтрэх
-                                </Button> 
+                                <Link to="/login">
+                                    <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                        Нэвтрэх
+                                    </Button> 
+                                </Link>
                             )}                                                                
                         </div>
                     )}                             

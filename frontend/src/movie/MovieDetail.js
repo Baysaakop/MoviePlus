@@ -2,13 +2,12 @@ import { Grid, Avatar, Button, Col, List, message, Row, Spin, Statistic, Tabs, T
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, EyeOutlined, LikeOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, EyeOutlined, HeartOutlined, LikeOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import GenreTag from '../components/GenreTag';
 import { connect } from "react-redux";
 
 const { useBreakpoint } = Grid;
-
 const spinIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function MovieDetail (props) {
@@ -182,7 +181,7 @@ function MovieDetail (props) {
         }  
     }
 
-    function score (value) {            
+    function score (value) {                    
         if (user !== null && user !== undefined) {    
             const data = {            
                 token: props.token,
@@ -234,7 +233,7 @@ function MovieDetail (props) {
     }
 
     return (
-        <div style={{ marginTop: '80px', minHeight: '80vh' }}>
+        <div className="moviedetail" style={{ marginTop: '80px', minHeight: '80vh' }}>
             { movie ? (
                 <div>
                     <div style={{ height: `${getHeight()}px` }}>
@@ -301,63 +300,45 @@ function MovieDetail (props) {
                                                 <iframe title={movie.name} width="100%" height={getHeight()} src={movie.trailer} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                             </div>
                                         </Modal>
-                                        { user && user.profile.likes.find(x => x.id === movie.id) !== null && user.profile.likes.find(x => x.id === movie.id) !== undefined ? (
-                                            <Tooltip title="Таалагдсан">
-                                                <Button size="large" type="primary" shape="circle" icon={<LikeOutlined />} onClick={like} />
-                                            </Tooltip>
-                                        ) : (
-                                            <Tooltip title="Таалагдсан">
-                                                <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} onClick={like} />
-                                            </Tooltip>
-                                        )}         
-                                        { user && user.profile.watched.find(x => x.id === movie.id) !== null && user.profile.watched.find(x => x.id === movie.id) !== undefined ? (
-                                            <Tooltip title="Үзсэн">
-                                                <Button size="large" type="primary" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }} onClick={watched}  />} />
-                                            </Tooltip>
-                                        ) : (
-                                            <Tooltip title="Үзсэн">
-                                                <Button size="large" type="ghost" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }} onClick={watched}  />} />
-                                            </Tooltip>
-                                        )}
-                                        { user && user.profile.watchlist.find(x => x.id === movie.id) !== null && user.profile.watchlist.find(x => x.id === movie.id) !== undefined ? (
-                                            <Tooltip title="Дараа үзэх">
-                                                <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={watchlist} />
-                                            </Tooltip>
-                                        ) : (
-                                            <Tooltip title="Дараа үзэх">
-                                                <Button size="large" type="ghost" shape="circle" icon={<PlusOutlined />} onClick={watchlist} />
-                                            </Tooltip>
-                                        )}                                                                                                                                                                
+                                        <Tooltip title="Таалагдсан">
+                                            <Button className="like" size="large" type={user && user.profile.likes.find(x => x.id === movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<HeartOutlined />} onClick={like}></Button>
+                                        </Tooltip>
+                                        <Tooltip title="Үзсэн">
+                                            <Button className="watched" size="large" type={user && user.profile.watched.find(x => x.id === movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<CheckOutlined />} onClick={watched}></Button>
+                                        </Tooltip>
+                                        <Tooltip title="Дараа үзэх">
+                                            <Button className="watchlist" size="large" type={user && user.profile.watchlist.find(x => x.id === movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<PlusOutlined />} onClick={watchlist}></Button>
+                                        </Tooltip>           
                                         <span style={{ fontSize: '16px' }}>                                                
                                             {user && user.profile.scores.find(x => x.movie.id === movie.id) !== null && user.profile.scores.find(x => x.movie.id === movie.id) !== undefined ? (
                                                 <>
                                                     <Tooltip title="Үнэлгээ өгөх">
-                                                        <Button size="large" type="primary" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                                        <Button className="rate" size="large" type="primary" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
                                                     </Tooltip>
                                                     {rateVisible ? 
                                                         <>
-                                                            Таны үнэлгээ: <Rate onChange={score} defaultValue={parseInt(user.profile.scores.find(x => x.movie.id === movie.id).score / 20)} />
-                                                            {` (${parseInt(user.profile.scores.find(x => x.movie.id === movie.id).score / 20)})`}
+                                                            Таны үнэлгээ: <Rate allowHalf onChange={score} defaultValue={user.profile.scores.find(x => x.movie.id === movie.id).score / 20} />
+                                                            {` (${user.profile.scores.find(x => x.movie.id === movie.id).score / 10})`}
                                                         </>
                                                     : <></>}
                                                 </>
                                             ) : 
                                                 <>
                                                     <Tooltip title="Үнэлгээ өгөх">
-                                                        <Button size="large" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                                        <Button className="rate" size="large" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
                                                     </Tooltip>
                                                     {rateVisible ? 
                                                         <>
-                                                            Таны үнэлгээ: <Rate onChange={score} />
+                                                            Таны үнэлгээ: <Rate allowHalf onChange={score} />
                                                             {` (Хоосон)`}
                                                         </>
                                                     : <></>}                                                        
                                                 </>
                                             }
-                                        </span>
+                                        </span>              
                                     </div>    
                                     <div className="rating" style={{ margin: '16px 0' }}>
-                                        <Statistic title="Үнэлгээ" value={movie.score} prefix={<StarFilled style={{ color: 'gold' }} />} suffix={<span>/100 <span style={{ fontSize: '16px' }}>({movie.score_count} үнэлгээнээс)</span></span>} />                                        
+                                        <Statistic title="Үнэлгээ" value={parseFloat(movie.score / 10)} prefix={<StarFilled style={{ color: 'gold' }} />} suffix={<span>/10 <span style={{ fontSize: '16px' }}>({movie.score_count} үнэлгээнээс)</span></span>} />                                        
                                     </div>                                
                                     <div className="infotabs">
                                         <Tabs defaultActiveKey="1">
@@ -421,10 +402,7 @@ function MovieDetail (props) {
                                                     )}
                                                 />
                                             </Tabs.TabPane>
-                                            <Tabs.TabPane tab="Зураг" key="4">
-                                                <Typography.Title level={5}>Зураг</Typography.Title>
-                                            </Tabs.TabPane>
-                                            <Tabs.TabPane tab="Сэтгэгдэл" key="5">
+                                            <Tabs.TabPane tab="Сэтгэгдэл" key="4">
                                                 <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>
                                             </Tabs.TabPane>
                                         </Tabs>

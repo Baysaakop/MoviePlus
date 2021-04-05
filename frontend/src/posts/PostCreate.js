@@ -1,4 +1,4 @@
-import {  Button, Form, Input, Result, Typography, message } from 'antd';
+import {  Button, Form, Input, Typography, message } from 'antd';
 import React, { useState } from 'react';
 import axios from 'axios';
 import api from '../api';

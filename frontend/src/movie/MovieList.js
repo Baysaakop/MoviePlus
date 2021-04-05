@@ -1,10 +1,14 @@
-import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form } from 'antd';
+import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import MovieCard from './MovieCard';
 import MovieCard2 from './MovieCard2';
 import MovieCard3 from './MovieCard3';
 import axios from 'axios';  
 import api from '../api';
+import { Link } from 'react-router-dom';
+import { LoadingOutlined } from '@ant-design/icons';
+
+const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 const { useBreakpoint } = Grid;
 const { Option } = Select;
@@ -34,11 +38,6 @@ function MovieList() {
                 console.log(err.message);
             }) 
         }; 
-        // let name = getLocationSearch(props.location.search);
-        // setSearch(name)
-        // form.setFieldsValue({            
-        //     name: name           
-        // }) 
        getMovies(name, genre, page, order)
     }, [name, genre, page, order])   
 
@@ -69,15 +68,6 @@ function MovieList() {
             console.log(err.message)
         });        
     }
-
-    // function getLocationSearch(value) {    
-    //     if (value && value !== null && value.length > 0 && value.includes("=")) {
-    //         let res = value.split("=");            
-    //         return res[1];
-    //     } else {
-    //         return "";
-    //     }    
-    // }
 
     function onNameSearch(value) {        
         setName(value);
@@ -120,7 +110,7 @@ function MovieList() {
             <div style={{ padding: getPadding() }}>
                 <Breadcrumb>
                     <Breadcrumb.Item>
-                        <a href="/">Нүүр</a>
+                        <Link to="/">Нүүр</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         Кино
@@ -183,33 +173,43 @@ function MovieList() {
                         </Col>
                     </Row>
                 </Form>
-                <List                        
-                    grid={{
-                        gutter: 32,
-                        xs: 2,
-                        sm: 2,
-                        md: 3,
-                        lg: 3,
-                        xl: 4,
-                        xxl: 4,
-                    }}                                        
-                    style={{ marginTop: '16px' }}                
-                    dataSource={movies ? movies : undefined}
-                    renderItem={item => (
-                        <List.Item>
-                            <MovieCard2 movie={item} />
-                        </List.Item>
-                    )}
-                />
-                <Pagination
-                    current={page}
-                    total={total}
-                    pageSize={12}
-                    hideOnSinglePage={true}
-                    showSizeChanger={false}
-                    showTotal={showTotal}
-                    onChange={onPageChange}
-                />
+                { movies ? (
+                    <>
+                        <List                        
+                            grid={{
+                                gutter: 32,
+                                xs: 2,
+                                sm: 2,
+                                md: 3,
+                                lg: 3,
+                                xl: 4,
+                                xxl: 5,
+                            }}                                                            
+                            style={{ marginTop: '16px' }}                
+                            dataSource={movies ? movies : undefined}
+                            renderItem={item => (
+                                <List.Item>
+                                    <MovieCard2 movie={item} />
+                                </List.Item>
+                            )} 
+                            
+                        />
+                        <Pagination
+                            current={page}
+                            total={total}
+                            pageSize={12}
+                            hideOnSinglePage={true}
+                            showSizeChanger={false}
+                            showTotal={showTotal}
+                            onChange={onPageChange}
+                        />
+                    </>
+                ) : (
+                    <div style={{ display: 'flex', justifyContent: 'center' , alignItems: 'center', width: '100%', height: '70vh'}}>
+                        <Spin indicator={indicator} tip="Ачааллаж байна..." />
+                    </div>
+                )}
+                
             </div>
         </div>
     );

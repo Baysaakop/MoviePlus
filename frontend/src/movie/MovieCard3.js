@@ -121,16 +121,6 @@ function MovieCard3 (props) {
         }         
     }
 
-    function formatCount(count) {
-        if (count >= 1000000) {
-            return (count / 1000000).toFixed(1).toString() + "M";
-        } else if (count >= 1000) {
-            return (count / 1000).toFixed(1).toString() + "K";
-        } else {
-            return count.toString();
-        }
-    }
-
     function getWidth() {
         if (screens.xxl) {
             return 1200            

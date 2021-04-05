@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';  
 import api from '../api';
+import { Link } from 'react-router-dom';
 import { Grid, Card, List, Avatar, Breadcrumb, Typography } from 'antd';
 
 const { Meta } = Card;
@@ -48,7 +49,7 @@ function PostList (props) {
             <div style={{ padding: getPadding() }}>
                 <Breadcrumb>
                     <Breadcrumb.Item>
-                        <a href="/">Нүүр</a>
+                        <Link to="/">Нүүр</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         Нийтлэл
@@ -70,7 +71,7 @@ function PostList (props) {
                     dataSource={posts ? posts : undefined}
                     renderItem={item => (                        
                         <List.Item>
-                            <a href={`/posts/${item.id}`}>
+                            <Link to={`/posts/${item.id}`}>
                                 <Card 
                                     hoverable
                                     cover={
@@ -90,7 +91,7 @@ function PostList (props) {
                                         }
                                     />
                                 </Card>
-                            </a>
+                            </Link>
                         </List.Item>
                     )}
                 />

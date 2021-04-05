@@ -1,6 +1,7 @@
 import { List } from 'antd';
 import React from 'react';
-import MovieCard from './MovieCard.js';
+import MovieCard from './MovieCard';
+import MovieCard2 from './MovieCard2';
 
 function MoviesLiked (props) {    
     return (
@@ -11,16 +12,16 @@ function MoviesLiked (props) {
                     xs: 2,
                     sm: 2,
                     md: 3,
-                    lg: 4,
-                    xl: 5,
-                    xxl: 5,
+                    lg: 3,
+                    xl: 4,
+                    xxl: 4,
                 }}                      
-                pagination={{ pageSize: 10 }}                  
+                pagination={{ pageSize: 12 }}                  
                 style={{ marginTop: '16px' }}                
                 dataSource={props.movies ? props.movies : undefined}
                 renderItem={item => (
                     <List.Item>
-                        <MovieCard movie={item} />
+                        <MovieCard2 movie={item} />
                     </List.Item>
                 )}
             />

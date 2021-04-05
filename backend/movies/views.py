@@ -343,9 +343,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Review.objects.all().order_by('-created_at')  
-        user = self.request.query_params.get('name', None)
-        if user is not None:
-            queryset = queryset.filter(created_by__id=user)      
+        id = self.request.query_params.get('user', None)     
+        if id is not None:
+            queryset = queryset.filter(created_by__id=id)      
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
@@ -356,7 +356,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):       
-        print(request.data)       
         user = Token.objects.get(key=request.data['token']).user                                
         review = Review.objects.create(
             title=request.data['title'],

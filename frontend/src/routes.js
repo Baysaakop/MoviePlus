@@ -18,11 +18,14 @@ import ArtistList from './artist/ArtistList';
 import ArtistDetail from './artist/ArtistDetail';
 import PostList from './posts/PostList';
 import PostDetail from './posts/PostDetail';
+import About from './containers/About';
+import SeriesList from './series/SeriesList';
 
 function BaseRouter () {
     return (
         <Switch>
             <Route exact path="/" component={Home} />
+            <Route exact path="/about" component={About} />
             {/* Item urls */}
             {/* <Route exact path="/items" component={ItemList} />
             <Route exact path="/items/:itemID" component={ItemDetail} />
@@ -32,6 +35,7 @@ function BaseRouter () {
             <Route exact path="/movies/:movieID" component={MovieDetail} />
             <Route exact path="/artists" component={ArtistList} />
             <Route exact path="/artists/:artistID" component={ArtistDetail} />
+            <Route exact path="/series" component={SeriesList} />
             {/* Posts urls */}
             <Route exact path="/posts" component={PostList} />
             <Route exact path="/posts/:postID" component={PostDetail} />

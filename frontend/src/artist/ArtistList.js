@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';  
 import api from '../api';
 import ArtistCard from './ArtistCard';
+import { Link } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
 const { Option } = Select;
@@ -85,17 +86,17 @@ function ArtistList () {
 
     function getPadding() {
         if (screens.xxl) {
-            return '24px 15% 0 15%';
+            return '16px 15%'
         } else if (screens.xl) {
-            return '24px 15% 0 15%';
-        } else if ( screens.lg) {
-            return '24px 15% 0 15%';
+            return '16px 10%'
+        } else if (screens.lg) {
+            return '16px 8%'
         } else if (screens.md) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         } else if (screens.sm) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         } else if (screens.xs) {
-            return '16px 5% 0 5%';
+            return '16px 5%'
         }
     }
 
@@ -104,7 +105,7 @@ function ArtistList () {
             <div style={{ padding: getPadding() }}>
                 <Breadcrumb>
                     <Breadcrumb.Item>
-                        <a href="/">Нүүр</a>
+                        <Link to="/">Нүүр</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         Уран бүтээлч
@@ -168,7 +169,7 @@ function ArtistList () {
                         xs: 3,
                         sm: 3,
                         md: 4,
-                        lg: 6,
+                        lg: 5,
                         xl: 6,
                         xxl: 8,
                     }}                                        

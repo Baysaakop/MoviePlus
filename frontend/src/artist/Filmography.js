@@ -80,6 +80,7 @@ function Filmography (props) {
             dataIndex: 'score',
             key: 'score',
             align: 'center',            
+            render: item => item / 10
         },
         {
             title: <EyeOutlined style={{ fontSize: '18px' }} />,
@@ -113,7 +114,7 @@ function Filmography (props) {
     
     return (
         <div>
-            <Table bordered columns={columns} dataSource={movies} pagination={{ pageSize: 10 }} size="middle" />
+            <Table bordered columns={columns} dataSource={movies} pagination={{ pageSize: 20 }} size="middle" />
         </div>
     )
 }

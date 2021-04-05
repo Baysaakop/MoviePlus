@@ -29,20 +29,19 @@
 }
 
 .moviecard2 .container .content .top {
-    height: 50%;
+    height: 60%;
     background-image: linear-gradient(to top, rgb(8, 8, 8), rgba(8, 8, 8, 0.5));
 }
 
 .moviecard2 .container .content .actions {
     height: 25%;
     display: flex; 
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    padding: 8px;
 }
 
 .moviecard2 .container .content .play {
-    height: 45%;
+    height: 40%;
     display: flex; 
     justify-content: center;
     align-items: center;
@@ -51,7 +50,7 @@
 }
 
 .moviecard2 .container .content .score {
-    height: 40%;
+    height: 35%;
     text-align: center;
 }
 
@@ -67,9 +66,40 @@
 }
 
 .moviecard2 .container .content .actions .ant-btn-primary {
-    border: 0;
-    background: #1890ff;
+    border: 0;    
     color: #f1f1f1;
+}
+
+.moviecard2 .container .content .actions .ant-btn-primary.like {
+    background: #c0392b;
+}
+
+.moviecard2 .container .content .actions .ant-btn-primary.watched {
+    background: #2ecc71;
+}
+
+.moviecard2 .container .content .actions .ant-btn-primary.watchlist {
+    background: #3498db;
+}
+
+.moviecard2 .container .content .actions .ant-btn-primary.rate {
+    background: #f39c12;
+}
+
+.moviecard2 .container .content .actions .ant-btn-ghost.like:hover {
+    background: #c0392b;
+}
+
+.moviecard2 .container .content .actions .ant-btn-ghost.watched:hover {
+    background: #2ecc71;
+}
+
+.moviecard2 .container .content .actions .ant-btn-ghost.watchlist:hover {
+    background: #3498db;
+}
+
+.moviecard2 .container .content .actions .ant-btn-ghost.rate:hover {
+    background: #f39c12;
 }
 
 .moviecard2 .container .content:hover .play {

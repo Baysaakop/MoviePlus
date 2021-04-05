@@ -6,6 +6,7 @@ import './Layout.css';
 import { FacebookFilled, GithubFilled, InstagramOutlined, TwitterOutlined, YoutubeFilled } from '@ant-design/icons';
 import SunIcon from '../icons/SunIcon';
 import MoonIcon from '../icons/MoonIcon';
+import { Link } from 'react-router-dom';
 
 const { Header, Content, Footer } = Layout;
 
@@ -54,7 +55,7 @@ function CustomLayout (props) {
     const styleFooter = {    
         background: darkMode ? '#161b22' : '#fff',    
         color: darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',
-        padding: 0,                            
+        padding: '16px',                            
         minHeight: '200px',
         width: '100%',    
         display: 'flex',
@@ -87,7 +88,7 @@ function CustomLayout (props) {
                     </Tooltip>
                 </div>
             </Content>
-            <Footer className="footer" style={styleFooter}>                
+            <Footer className="footer" style={styleFooter}>                                
                 <div>
                     <Tooltip title="Facebook">
                         <Button shape="circle" icon={<FacebookFilled />} style={{ margin: '8px' }} size="large" /> 
@@ -104,7 +105,7 @@ function CustomLayout (props) {
                     <Tooltip title="Github">
                         <Button shape="circle" icon={<GithubFilled />} style={{ margin: '8px' }} size="large" /> 
                     </Tooltip>
-                    <p>
+                    <p>                                                                       
                         © 2021 Movie Plus Project. All Rights Reserved. Designed and developed by On Plus Tech.
                     </p>
                 </div>                

@@ -1,13 +1,16 @@
-import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col } from 'antd';
+import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col, Avatar } from 'antd';
 import React, { useState, useEffect } from 'react';
 import './Home.css';
 import axios from 'axios';  
 import api from '../api';
 import MovieCard from '../movie/MovieCard';
-import { CaretRightOutlined, CheckOutlined, LikeOutlined, PlusOutlined } from '@ant-design/icons';
+import MovieCard2 from '../movie/MovieCard2';
+import { CaretRightOutlined, CheckOutlined, DesktopOutlined, LikeOutlined, PlusOutlined, ReadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import MovieTrendTable from '../movie/MovieTrendTable';
 import GenreTag from '../components/GenreTag';
 import Modal from 'antd/lib/modal/Modal';
+import { Link } from 'react-router-dom';
+import Paragraph from 'antd/lib/typography/Paragraph';
 
 const { useBreakpoint } = Grid;
 
@@ -15,6 +18,7 @@ function Home (props) {
     const screens = useBreakpoint();
     const [latest, setLatest] = useState();
     const [toprated, setToprated] = useState();
+    const [posts, setPosts] = useState();
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
@@ -34,19 +38,27 @@ function Home (props) {
         }).catch(err => {
             console.log(err.message)
         });
+        axios({
+            method: 'GET',
+            url: `${api.reviews}`
+        }).then(res => {                                          
+            setPosts(res.data.results)
+        }).catch(err => {
+            console.log(err.message)
+        });
     }, [])       
 
     function getListNumber() {        
         if (screens.xxl) {
-            return 4
+            return 3
         } else if (screens.xl) {
-            return 4
+            return 3
         } else if (screens.lg) {
-            return 3
-        } else if (screens.md) {
             return 4
-        } else if (screens.sm) {
+        } else if (screens.md) {
             return 3
+        } else if (screens.sm) {
+            return 2
         } else if (screens.xs) {
             return 2
         }
@@ -97,6 +109,16 @@ function Home (props) {
             return '16px 5%'
         } else if (screens.xs) {
             return '16px 5%'
+        }
+    }
+
+    function formatCount(count) {
+        if (count >= 1000000) {
+            return (count / 1000000).toFixed(1).toString() + "M";
+        } else if (count >= 1000) {
+            return (count / 1000).toFixed(1).toString() + "K";
+        } else {
+            return count.toString();
         }
     }
 
@@ -177,7 +199,7 @@ function Home (props) {
             </div>     
             <div style={{ padding: getPadding() }}>
                 <Row gutter={[16, 16]}>
-                    <Col xs={24} sm={24} md={24} lg={16}>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={16}>
                         <div className="latestmovies" style={{ marginTop: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
@@ -193,18 +215,18 @@ function Home (props) {
                                 grid={{
                                     gutter: 16,
                                     xs: 2,
-                                    sm: 3,
-                                    md: 4,
-                                    lg: 3,
-                                    xl: 4,
-                                    xxl: 4,
+                                    sm: 2,
+                                    md: 3,
+                                    lg: 4,
+                                    xl: 3,
+                                    xxl: 3,
                                 }}                                      
                                 style={{ marginTop: '16px' }}
                                 pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
                                 dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
                                 renderItem={item => (
                                     <List.Item>
-                                        <MovieCard movie={item} />
+                                        <MovieCard2 movie={item} />
                                     </List.Item>
                                 )}
                             />
@@ -224,25 +246,25 @@ function Home (props) {
                                 grid={{
                                     gutter: 16,
                                     xs: 2,
-                                    sm: 3,
-                                    md: 4,
-                                    lg: 3,
-                                    xl: 4,
-                                    xxl: 4,
+                                    sm: 2,
+                                    md: 3,
+                                    lg: 4,
+                                    xl: 3,
+                                    xxl: 3,
                                 }}                                        
                                 style={{ marginTop: '16px' }}
                                 pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
                                 dataSource={toprated ? toprated.slice(0, getListNumber() * 3) : undefined}
                                 renderItem={item => (
                                     <List.Item>
-                                        <MovieCard movie={item} />
+                                        <MovieCard2 movie={item} />
                                     </List.Item>
                                 )}
                             />
                         </div> 
                     </Col>
-                    <Col xs={24} sm={24} md={24} lg={8}>
-                        <div className="trendmovies" style={{ marginTop: '16px' }}>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+                        {/* <div className="trendmovies" style={{ marginTop: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <Typography.Title level={4} style={{ margin: 0 }}>Энэ сарын тренд</Typography.Title>
@@ -254,9 +276,66 @@ function Home (props) {
                                 </div>
                             </div>
                             <MovieTrendTable data={toprated ? toprated.slice(0, 10) : undefined} />
+                        </div>  */}
+                        <div className="latestnews" style={{ marginTop: '16px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div>
+                                    <Typography.Title level={4} style={{ margin: 0 }}>Шинэ нийтлэл</Typography.Title>
+                                </div>
+                                <div>
+                                    <Button type="primary" href="/posts">
+                                        Бүгд
+                                    </Button>
+                                </div>
+                            </div>
+                            <List
+                                itemLayout="horizontal"
+                                dataSource={posts ? posts.slice(0, 2) : undefined}
+                                style={{ marginTop: '8px' }}
+                                renderItem={item => (
+                                    <List.Item>
+                                        <List.Item.Meta 
+                                            avatar={<Avatar src={item.created_by.profile.avatar} />}
+                                            title={
+                                                <>                                                    
+                                                    <Link to={`/posts/${item.id}`}>{item.title}</Link>
+                                                    <img src={item.thumbnail} alt="thumbnail" style={{ maxHeight: '250px', width: '100%', height: 'auto', objectFit: 'scale-down' }} />                                                    
+                                                </>
+                                            }                             
+                                            description={
+                                                <>
+                                                    <Paragraph ellipsis={{ rows: 4 }}><div dangerouslySetInnerHTML={{__html: item.content }} /></Paragraph>
+                                                    <div style={{ textAlign: 'end' }}>
+                                                        <Typography.Text>- {item.created_by.username}</Typography.Text>
+                                                    </div>
+                                                </>
+                                            }                                                           
+                                        />          
+                                        {/* <img src={item.thumbnail} alt="thumbnail" style={{ width: '100%', height: 'auto', objectFit: 'scale-down' }} /> */}
+                                    </List.Item>
+                                )}
+                            />
                         </div> 
                     </Col>
                 </Row>      
+                <Row gutter={[16, 16]} style={{ padding: '128px 0' }}>
+                    <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
+                        <VideoCameraOutlined style={{ fontSize: '32px' }} />
+                        <Typography.Title level={4}>225 Кино</Typography.Title>
+                    </Col>
+                    <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
+                        <DesktopOutlined style={{ fontSize: '32px' }} />
+                        <Typography.Title level={4}>53 Цуврал</Typography.Title>
+                    </Col>
+                    <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
+                        <UserOutlined style={{ fontSize: '32px' }} />
+                        <Typography.Title level={4}>{formatCount(1252)} У/Бүтээлч</Typography.Title>
+                    </Col>
+                    <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
+                        <ReadOutlined style={{ fontSize: '32px' }} />
+                        <Typography.Title level={4}>{formatCount(495)} Нийтлэл</Typography.Title>
+                    </Col>
+                </Row>
             </div>               
         </div>
     )

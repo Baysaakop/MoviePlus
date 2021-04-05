@@ -1,18 +1,16 @@
-import { Grid, Button, Card, Tooltip, message, Typography, Statistic, Rate } from 'antd';
+import { Grid, Button, Card, Tooltip, message, Typography, Rate } from 'antd';
 import React, { useEffect, useState } from 'react';
 import './MovieCard2.css';
-import { CheckOutlined, PlusOutlined, LikeOutlined, CaretRightOutlined, StarFilled, HeartOutlined, StarOutlined, PlayCircleOutlined, PlayCircleFilled } from '@ant-design/icons';
+import { CheckOutlined, PlusOutlined, HeartOutlined, StarOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import blank from './blank.jpg';
 import axios from 'axios';
 import api from '../api';
 import { connect } from "react-redux";
 import GenreTag from '../components/GenreTag';
-import Avatar from 'antd/lib/avatar/avatar';
 import Modal from 'antd/lib/modal/Modal';
+import { Link } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
-
-const { Meta } = Card;
 
 function MovieCard2 (props) {
     const screens = useBreakpoint();  
@@ -189,17 +187,23 @@ function MovieCard2 (props) {
                         <div className="top">
                             <div className="actions">
                                 <Tooltip title="Таалагдсан">
-                                    <Button size="middle" type={user && user.profile.likes.find(x => x.id === props.movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<LikeOutlined />} onClick={like}></Button>
+                                    <Button className="like" size="middle" type={user && user.profile.likes.find(x => x.id === props.movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<HeartOutlined />} onClick={like}></Button>
                                 </Tooltip>
                                 <Tooltip title="Үзсэн">
-                                    <Button size="middle" type={user && user.profile.watched.find(x => x.id === props.movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<CheckOutlined />} onClick={watched}></Button>
+                                    <Button className="watched" size="middle" type={user && user.profile.watched.find(x => x.id === props.movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<CheckOutlined />} onClick={watched}></Button>
                                 </Tooltip>
                                 <Tooltip title="Дараа үзэх">
-                                    <Button size="middle" type={user && user.profile.watchlist.find(x => x.id === props.movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<PlusOutlined />} onClick={watchlist}></Button>
+                                    <Button className="watchlist" size="middle" type={user && user.profile.watchlist.find(x => x.id === props.movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<PlusOutlined />} onClick={watchlist}></Button>
                                 </Tooltip>
-                                <Tooltip title="Үнэлгээ өгөх">
-                                    <Button size="middle" type="ghost" shape="circle" icon={<StarOutlined />}></Button>
-                                </Tooltip>
+                                {user && user.profile.scores.find(x => x.movie.id === props.movie.id) !== undefined ? (
+                                    <Tooltip title="Үнэлгээ өгөх">
+                                        <Button className="rate" size="middle" type="primary" shape="circle">{user.profile.scores.find(x => x.movie.id === props.movie.id).score / 10}</Button>
+                                    </Tooltip>
+                                ) : (
+                                    <Tooltip title="Үнэлгээ өгөх">
+                                        <Button className="rate" size="middle" type="ghost" shape="circle" icon={<StarOutlined />}></Button>
+                                    </Tooltip>
+                                )}                                
                             </div>
                             <div className="play">
                                 <Button type="ghost" size="large" shape="circle" icon={<PlayCircleOutlined style={{ fontSize: '32px' }} />} style={{ border: 0, width: '50px', height: '50px', paddingTop: '9px' }} onClick={showModal}></Button>                                    
@@ -215,26 +219,36 @@ function MovieCard2 (props) {
                                     </div>
                                 </Modal>
                             </div>
-                            <a href={`/movies/${props.movie.id}`}>                                                            
+                            <Link to={`/movies/${props.movie.id}`}>                                                            
                                 <div className="score">
-                                    <Rate disabled allowHalf defaultValue={(props.movie.score / 20)} />                                    
-                                    <Typography.Title level={2} style={{ color: '#FFF' }}>{(props.movie.score / 10).toFixed(1)}</Typography.Title>
+                                    <Rate disabled allowHalf defaultValue={parseFloat(props.movie.score / 20)} />                                    
+                                    <Typography.Title level={screens.xs ? 3 : 2} style={{ color: '#FFF' }}>{(props.movie.score / 10).toFixed(1)}</Typography.Title>
                                 </div>
-                            </a>
+                            </Link>
                         </div>
-                        <a href={`/movies/${props.movie.id}`}>
-                            <div className="bot">
-                                <Typography.Title level={3} style={{ textAlign: 'center', fontWeight: 'normal', color: '#FFF' }}>{props.movie.name}</Typography.Title> 
-                                <Typography.Paragraph ellipsis={{ rows: 4 }} style={{ color: '#888' }}>
-                                    {props.movie.description}
-                                </Typography.Paragraph>
-                                {/* {props.movie.genre.map(g => {
-                                    return (                    
-                                        <GenreTag genre={g.name} />
-                                    )                                            
-                                })} */}                            
+                        <Link to={`/movies/${props.movie.id}`}>
+                            <div className="bot">                                
+                                { screens.xs ? (
+                                    <div style={{ position: 'absolute', bottom: '8px' }}>
+                                        <Typography.Title level={4} style={{ textAlign: 'center', fontWeight: 'normal', color: '#FFF' }}>{props.movie.name}</Typography.Title>                         
+                                    </div>  
+                                ) : (
+                                    <>
+                                        <Typography.Title level={3} style={{ textAlign: 'center', fontWeight: 'normal', color: '#FFF' }}>{props.movie.name}</Typography.Title> 
+                                        {/* <Typography.Paragraph ellipsis={{ rows: 4 }} style={{ color: '#888' }}>
+                                            {props.movie.description}
+                                        </Typography.Paragraph> */}
+                                        <div style={{ position: 'absolute', bottom: '8px' }}>
+                                            {props.movie.genre.map(g => {
+                                                return (                    
+                                                    <GenreTag genre={g.name} />
+                                                )                                            
+                                            })}                        
+                                        </div>  
+                                    </>
+                                )}
                             </div>        
-                        </a>                    
+                        </Link>                    
                     </div>                                                        
                 </div>                
             </Card>             

@@ -1,7 +1,7 @@
-import { Button, Card, Tooltip, message } from 'antd';
+import { Button, Card, Tooltip, message, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import '../movie/MovieCard.css';
-import { EyeOutlined, UserAddOutlined, HeartOutlined } from '@ant-design/icons';
+import { UserAddOutlined, LikeOutlined } from '@ant-design/icons';
 import blank from '../movie/blank.jpg';
 import axios from 'axios';
 import api from '../api';
@@ -100,24 +100,21 @@ function ArtistCard (props) {
         }
     }
 
+    function getOccupation(occupations) {
+        const res = []
+        occupations.forEach(item => {
+            res.push(item.name)
+        })
+        return res.toString()
+    }
+
     return (
         <div>
             <Card             
                 className="moviecard"
                 size="small"
                 hoverable                 
-                style={{ width: '100%', height: 'auto', border: '0' }}
-                actions={[
-                    <Tooltip title={formatCount(props.artist.views)}>
-                        <EyeOutlined key="views" />
-                    </Tooltip>,
-                    <Tooltip title={formatCount(props.artist.likes)}>
-                        <HeartOutlined key="likes" />
-                    </Tooltip>,
-                    <Tooltip title={formatCount(props.artist.followers)}>
-                        <UserAddOutlined key="watched" />
-                    </Tooltip>,                      
-                ]}
+                style={{ width: '100%', height: 'auto', border: '0' }}                
                 cover={
                     <div className="cover-container" style={{ paddingBottom: '100%', overflow: 'hidden' }}>
                         <a href={`/artists/${props.artist.id}`}>
@@ -131,11 +128,11 @@ function ArtistCard (props) {
                         <div className="cover-overlay-bot-right">         
                             { user && user.profile.artist_likes.find(x => x.id === props.artist.id) !== null && user.profile.artist_likes.find(x => x.id === props.artist.id) !== undefined ? (
                                 <Tooltip title="Таалагдсан">
-                                    <Button size="large" type="primary" shape="circle" icon={<HeartOutlined />} onClick={like} />
+                                    <Button size="large" type="primary" shape="circle" icon={<LikeOutlined />} onClick={like} />
                                 </Tooltip>
                             ) : (
                                 <Tooltip title="Таалагдсан">
-                                    <Button size="large" type="ghost" shape="circle" icon={<HeartOutlined />} onClick={like} />
+                                    <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} onClick={like} />
                                 </Tooltip>
                             )} 
                             { user && user.profile.artist_followed.find(x => x.id === props.artist.id) !== null && user.profile.artist_followed.find(x => x.id === props.artist.id) !== undefined ? (
@@ -152,7 +149,16 @@ function ArtistCard (props) {
                 }
             >
                 <a href={`/artists/${props.artist.id}`}>
-                    <Meta title={<Tooltip title={props.artist.name}>{props.artist.name}</Tooltip>} description={props.artist.birthday ? props.artist.birthday.toString().slice(0, 4) : '----'} />
+                    <Meta 
+                        title={<Tooltip title={props.artist.name}>{props.artist.name}</Tooltip>} 
+                        description={
+                            <Tooltip title={getOccupation(props.artist.occupation)}>
+                                <Typography.Paragraph ellipsis={true}>
+                                {getOccupation(props.artist.occupation)}
+                                </Typography.Paragraph>
+                            </Tooltip>
+                        } 
+                    />
                 </a>                     
             </Card>
         </div>

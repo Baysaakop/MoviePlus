@@ -8,17 +8,39 @@
     background: rgba(24, 144, 255, 1);
 }
 
-/* .layout-light .moviedetail .actions .ant-btn-ghost:hover {
-    background: rgba(24, 144, 255, 0.7);
+.detail .actions .ant-btn-primary {
+    border: 0;    
+    color: #f1f1f1;
 }
 
-.layout-dark .moviedetail .actions .ant-btn-ghost {
-    margin-right: 8px;
-    background: transparent;
-    border-color: #000;
-    color: #000;
+.detail .actions .ant-btn-primary.like {
+    background: #c0392b;
 }
 
-.layout-dark .moviedetail .actions .ant-btn-ghost:hover {
-    background: rgba(24, 144, 255, 0.7);
-} */
+.detail .actions .ant-btn-primary.watched {
+    background: #2ecc71;
+}
+
+.detail .actions .ant-btn-primary.watchlist {
+    background: #3498db;
+}
+
+.detail .actions .ant-btn-primary.rate {
+    background: #f39c12;
+}
+
+.detail .actions .ant-btn-ghost.like:hover {
+    background: #c0392b;
+}
+
+.detail .actions .ant-btn-ghost.watched:hover {
+    background: #2ecc71;
+}
+
+.detail .actions .ant-btn-ghost.watchlist:hover {
+    background: #3498db;
+}
+
+.detail .actions .ant-btn-ghost.rate:hover {
+    background: #f39c12;
+}
