@@ -3,6 +3,7 @@ import axios from 'axios';
 import api from '../api';
 import { Link } from 'react-router-dom';
 import { Grid, Card, List, Avatar, Breadcrumb, Typography } from 'antd';
+import moment from 'moment';
 
 const { Meta } = Card;
 const { useBreakpoint } = Grid;
@@ -85,9 +86,15 @@ function PostList (props) {
                                         avatar={<Avatar shape="circle" src={item.created_by.profile.avatar} />}
                                         title={item.title}
                                         description={
-                                            <Typography.Paragraph ellipsis={{ rows: 4 }}>
-                                                <div dangerouslySetInnerHTML={{__html: item.content }} />                                            
-                                            </Typography.Paragraph>
+                                            <>
+                                                <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                                                    <div dangerouslySetInnerHTML={{__html: item.content }} />                                            
+                                                </Typography.Paragraph>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <div><Typography.Text>{moment(item.created_at).format("YYYY-MM-DD")}</Typography.Text></div>
+                                                    <div><Typography.Text>- {item.created_by.username}</Typography.Text></div>
+                                                </div>
+                                            </>
                                         }
                                     />
                                 </Card>

@@ -2,7 +2,7 @@ import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography } from
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { HeartOutlined, UserAddOutlined, EyeOutlined, LoadingOutlined } from '@ant-design/icons';
+import { HeartOutlined, UserAddOutlined, EyeOutlined, LoadingOutlined, LikeOutlined } from '@ant-design/icons';
 import '../movie/MovieDetail.css';
 import { connect } from "react-redux";
 import Filmography from './Filmography';
@@ -19,7 +19,7 @@ function ArtistDetail (props) {
     useEffect(() => {               
         getArtist()     
         getUser()   
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     function getHeight() {
         if (screens.xxl) {
@@ -203,11 +203,11 @@ function ArtistDetail (props) {
                                     <div className="actions" style={{ marginTop: '16px' }}>                                                                                
                                     { user && user.profile.artist_likes.find(x => x.id === artist.id) !== null && user.profile.artist_likes.find(x => x.id === artist.id) !== undefined ? (
                                         <Tooltip title="Таалагдсан">
-                                            <Button size="large" type="primary" shape="circle" icon={<HeartOutlined />} onClick={like} />
+                                            <Button size="large" type="primary" shape="circle" icon={<LikeOutlined />} onClick={like} />
                                         </Tooltip>
                                     ) : (
                                         <Tooltip title="Таалагдсан">
-                                            <Button size="large" type="ghost" shape="circle" icon={<HeartOutlined />} onClick={like} />
+                                            <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} onClick={like} />
                                         </Tooltip>
                                     )} 
                                     { user && user.profile.artist_followed.find(x => x.id === artist.id) !== null && user.profile.artist_followed.find(x => x.id === artist.id) !== undefined ? (

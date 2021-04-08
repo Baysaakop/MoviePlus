@@ -1,8 +1,7 @@
 import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
-import MovieCard from './MovieCard';
+// import MovieCard from './MovieCard';
 import MovieCard2 from './MovieCard2';
-import MovieCard3 from './MovieCard3';
 import axios from 'axios';  
 import api from '../api';
 import { Link } from 'react-router-dom';
@@ -39,7 +38,7 @@ function MovieList() {
             }) 
         }; 
        getMovies(name, genre, page, order)
-    }, [name, genre, page, order])   
+    }, [name, genre, page, order])   // eslint-disable-line react-hooks/exhaustive-deps
 
     function getMovies(name, genre, page, order) {
         var url = api.movies + "?"

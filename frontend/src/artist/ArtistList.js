@@ -34,7 +34,7 @@ function ArtistList () {
             }) 
         }; 
         getArtists(name, occupation, page, order)
-    }, [name, occupation, page, order])
+    }, [name, occupation, page, order]) // eslint-disable-line react-hooks/exhaustive-deps
 
     function getArtists(name, occupation, page, order) {
         var url = api.artists + "?"

@@ -54,7 +54,7 @@ function MovieAdd (props) {
             crew: [''],
             cast: ['']
         })
-    }, [])
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     function onArtistSearch(value) {                
         axios({

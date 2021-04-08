@@ -20,7 +20,7 @@ function MovieCard (props) {
 
     useEffect(() => {              
         getUser()        
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     function getUser() {        
         if (props.token && props.token !== null) {

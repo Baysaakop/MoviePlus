@@ -83,7 +83,7 @@
 }
 
 .moviecard2 .container .content .actions .ant-btn-primary.rate {
-    background: #f39c12;
+    background: #e9950e;
 }
 
 .moviecard2 .container .content .actions .ant-btn-ghost.like:hover {
@@ -99,7 +99,7 @@
 }
 
 .moviecard2 .container .content .actions .ant-btn-ghost.rate:hover {
-    background: #f39c12;
+    background: #e9950e;
 }
 
 .moviecard2 .container .content:hover .play {

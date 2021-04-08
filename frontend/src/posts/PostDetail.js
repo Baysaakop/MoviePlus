@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import api from '../api';
 import { connect } from "react-redux";
-import { Grid, Breadcrumb, message, Spin, Typography, Row, Col, Tooltip, Button } from 'antd';
+import { Grid, Breadcrumb, message, Spin, Typography, Row, Col, Tooltip, Button, Avatar } from 'antd';
 import { CommentOutlined, EyeOutlined, FormOutlined, LikeOutlined, LoadingOutlined, ShareAltOutlined, UserAddOutlined } from '@ant-design/icons';
-import Avatar from 'antd/lib/avatar/avatar';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +18,7 @@ function PostDetail (props) {
 
     useEffect(() => {               
         getPost()     
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     function getPost() {
         setLoading(true)

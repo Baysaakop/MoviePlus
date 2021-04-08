@@ -21,7 +21,7 @@ function MovieDetail (props) {
 
     useEffect(() => {               
         getMovie()        
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     function getWidth() {
         if (screens.xxl) {

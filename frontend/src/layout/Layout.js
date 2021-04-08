@@ -6,7 +6,6 @@ import './Layout.css';
 import { FacebookFilled, GithubFilled, InstagramOutlined, TwitterOutlined, YoutubeFilled } from '@ant-design/icons';
 import SunIcon from '../icons/SunIcon';
 import MoonIcon from '../icons/MoonIcon';
-import { Link } from 'react-router-dom';
 
 const { Header, Content, Footer } = Layout;
 

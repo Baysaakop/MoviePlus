@@ -10,7 +10,7 @@ function Filmography (props) {
 
     useEffect(() => {
         getMovies()
-    }, [])
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     function getMovies() {
         var url = api.movies + "?artist=" + props.id             

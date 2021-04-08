@@ -19,7 +19,7 @@ function MovieCard2 (props) {
 
     useEffect(() => {              
         getUser()        
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     function getUser() {        
         if (props.token && props.token !== null) {
@@ -119,16 +119,6 @@ function MovieCard2 (props) {
         } else {
             message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
         }         
-    }
-
-    function formatCount(count) {
-        if (count >= 1000000) {
-            return (count / 1000000).toFixed(1).toString() + "M";
-        } else if (count >= 1000) {
-            return (count / 1000).toFixed(1).toString() + "K";
-        } else {
-            return count.toString();
-        }
     }
 
     function getWidth() {
