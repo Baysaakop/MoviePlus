@@ -66,7 +66,7 @@ function GenreTag (props) {
 
     return (
         color ? (
-            <Tag color={color} style={{ margin: '4px' }}>{props.genre}</Tag>
+            <Tag color={color} style={{ margin: '4px', fontSize: '14px' }}>{props.genre}</Tag>
         ) : (
             <></>
         )       

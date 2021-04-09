@@ -1,12 +1,11 @@
-import { Grid, Avatar, Button, Card, Tooltip, message } from 'antd';
+import { Grid, Button, Card, Tooltip, Modal, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import './MovieCard.css';
-import { CheckOutlined, PlusOutlined, LikeOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { CheckOutlined, PlusOutlined, LikeOutlined, CaretRightOutlined, StarFilled } from '@ant-design/icons';
 import blank from './blank.jpg';
 import axios from 'axios';
 import api from '../api';
 import { connect } from "react-redux";
-import Modal from 'antd/lib/modal/Modal';
 import { Link } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
@@ -180,20 +179,6 @@ function MovieCard (props) {
                 className="moviecard"
                 size="small"
                 hoverable                 
-                // actions={[
-                //     <Tooltip title={formatCount(props.movie.views)}>
-                //         <EyeOutlined key="views" />
-                //     </Tooltip>,
-                //     <Tooltip title={props.movie.likes}>
-                //         <LikeOutlined key="likes" />
-                //     </Tooltip>,
-                //     <Tooltip title={props.movie.watched}>
-                //         <CheckCircleOutlined key="watched" />
-                //     </Tooltip>,
-                //     <Tooltip title={props.movie.watchlist}>
-                //         <PlusCircleOutlined key="watchlist" />
-                //     </Tooltip>,                       
-                // ]}
                 style={{ width: '100%', height: 'auto', border: '0' }}
                 cover={
                     <div className="cover-container" style={{ paddingBottom: '150%', overflow: 'hidden' }}>
@@ -201,9 +186,12 @@ function MovieCard (props) {
                             <img src={props.movie.poster ? props.movie.poster : blank} alt="poster" style={{ width: '100%', height: '100%', position: 'absolute' }} />
                         </Link>
                         <div className="cover-overlay-top-left">
-                            <Avatar size="large" style={{ background: '#161b22', border: '1px solid orange', color: 'orange', fontFamily: 'Nerko One, cursive', fontSize: '20px' }}>
+                            {/* <Avatar size="large" style={{ background: '#161b22', border: '1px solid orange', color: 'orange', fontFamily: 'Nerko One, cursive', fontSize: '20px' }}>
                                 {parseInt(props.movie.score)}
-                            </Avatar> 
+                            </Avatar>  */}
+                            <div style={{ background: 'rgba(0, 0, 0, 0.8)', color: '#fff', borderRadius: '5px', padding: '4px', fontSize: '18px' }}>
+                                <StarFilled style={{ color: 'yellow' }} /> {parseInt(props.movie.score)}
+                            </div>
                         </div>
                         <div className="cover-overlay-bot-right">        
                             <Tooltip title="Трэйлэр үзэх">

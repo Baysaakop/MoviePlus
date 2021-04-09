@@ -1,16 +1,19 @@
-import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col, Avatar } from 'antd';
+import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col, Avatar, Tabs, Card } from 'antd';
 import React, { useState, useEffect } from 'react';
 import './Home.css';
 import axios from 'axios';  
 import api from '../api';
-// import MovieCard from '../movie/MovieCard';
+import MovieCard from '../movie/MovieCard';
 import MovieCard2 from '../movie/MovieCard2';
 import { CaretRightOutlined, CheckOutlined, DesktopOutlined, LikeOutlined, PlusOutlined, ReadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 // import MovieTrendTable from '../movie/MovieTrendTable';
 import GenreTag from '../components/GenreTag';
 import Modal from 'antd/lib/modal/Modal';
 import { Link } from 'react-router-dom';
-import Paragraph from 'antd/lib/typography/Paragraph';
+import CountUp from 'react-countup';
+import moment from 'moment';
+
+const { Paragraph } = Typography
 
 const { useBreakpoint } = Grid;
 
@@ -50,7 +53,7 @@ function Home (props) {
 
     function getListNumber() {        
         if (screens.xxl) {
-            return 3
+            return 4
         } else if (screens.xl) {
             return 3
         } else if (screens.lg) {
@@ -150,7 +153,7 @@ function Home (props) {
                                             <Search placeholder="Кино эсвэл цувралын нэрийг бичнэ үү" onSearch={onSearch} size="large" enterButton />
                                         </div> */}
                                         <div style={{ position: 'absolute', left: screens.xxl ? '15%' : screens.xl ? '10%' : screens.lg ? '8%' : '5%', bottom: '10%', padding: '16px' }}>
-                                            <Typography.Title level={2} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>
+                                            <Typography.Title level={1} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>
                                             <p style={{ color: '#f1f1f1' }}>Найруулагч: Christopher Nolan</p>
                                             <div className="info">
                                                 { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
@@ -199,144 +202,303 @@ function Home (props) {
             </div>     
             <div style={{ padding: getPadding() }}>
                 <Row gutter={[16, 16]}>
-                    <Col xs={24} sm={24} md={24} lg={24} xl={16}>
-                        <div className="latestmovies" style={{ marginTop: '16px' }}>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={18}>
+                        <div className="movies" style={{ marginTop: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
-                                    <Typography.Title level={4} style={{ margin: 0 }}>Шинээр нэмэгдсэн</Typography.Title>
+                                    <Typography.Title level={4} style={{ margin: 0 }}>КИНО</Typography.Title>
                                 </div>
                                 <div>
-                                    <Button type="primary" href="/movies">
+                                    <Button type="ghost" href="/movies">
                                         Бүгд
                                     </Button>
                                 </div>
                             </div>
-                            <List                        
-                                grid={{
-                                    gutter: 16,
-                                    xs: 2,
-                                    sm: 2,
-                                    md: 3,
-                                    lg: 4,
-                                    xl: 3,
-                                    xxl: 3,
-                                }}                                      
-                                style={{ marginTop: '16px' }}
-                                pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
-                                dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
-                                renderItem={item => (
-                                    <List.Item>
-                                        <MovieCard2 movie={item} />
-                                    </List.Item>
-                                )}
-                            />
-                        </div>
-                        <div className="topmovies" style={{ marginTop: '16px' }}>
+                            <Tabs defaultActiveKey="1">
+                                <Tabs.TabPane tab="Одоо гарч буй" key="1">                                    
+                                    <List                        
+                                        grid={{
+                                            gutter: 16,
+                                            xs: 2,
+                                            sm: 2,
+                                            md: 3,
+                                            lg: 4,
+                                            xl: 3,
+                                            xxl: 4,
+                                        }}                                      
+                                        style={{ marginTop: '16px' }}
+                                        pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
+                                        dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
+                                        renderItem={item => (
+                                            <List.Item>
+                                                <MovieCard2 movie={item} />
+                                            </List.Item>
+                                        )}
+                                    /> 
+                                </Tabs.TabPane>
+                                <Tabs.TabPane tab="Удахгүй гарах" key="2">
+                                    <List                        
+                                        grid={{
+                                            gutter: 16,
+                                            xs: 2,
+                                            sm: 2,
+                                            md: 3,
+                                            lg: 4,
+                                            xl: 3,
+                                            xxl: 4,
+                                        }}                                      
+                                        style={{ marginTop: '16px' }}
+                                        pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
+                                        dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
+                                        renderItem={item => (
+                                            <List.Item>
+                                                <MovieCard2 movie={item} />
+                                            </List.Item>
+                                        )}
+                                    /> 
+                                </Tabs.TabPane>           
+                                <Tabs.TabPane tab="Шинээр нэмэгдсэн" key="3">
+                                    <List                        
+                                        grid={{
+                                            gutter: 16,
+                                            xs: 2,
+                                            sm: 2,
+                                            md: 3,
+                                            lg: 4,
+                                            xl: 3,
+                                            xxl: 4,
+                                        }}                                      
+                                        style={{ marginTop: '16px' }}
+                                        pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
+                                        dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
+                                        renderItem={item => (
+                                            <List.Item>
+                                                <MovieCard2 movie={item} />
+                                            </List.Item>
+                                        )}
+                                    /> 
+                                </Tabs.TabPane>                    
+                                <Tabs.TabPane tab="Өндөр үнэлгээтэй" key="4">
+                                    <List                        
+                                        grid={{
+                                            gutter: 16,
+                                            xs: 2,
+                                            sm: 2,
+                                            md: 3,
+                                            lg: 4,
+                                            xl: 3,
+                                            xxl: 4,
+                                        }}                                        
+                                        style={{ marginTop: '16px' }}
+                                        pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
+                                        dataSource={toprated ? toprated.slice(0, getListNumber() * 3) : undefined}
+                                        renderItem={item => (
+                                            <List.Item>
+                                                <MovieCard2 movie={item} />
+                                            </List.Item>
+                                        )}
+                                    /> 
+                                </Tabs.TabPane>
+                            </Tabs>                            
+                        </div>     
+                        <div className="series" style={{ marginTop: '32px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
-                                    <Typography.Title level={4}  style={{ margin: 0 }}>Өндөр үнэлгээтэй</Typography.Title>
+                                    <Typography.Title level={4} style={{ margin: 0 }}>ТВ ЦУВРАЛ</Typography.Title>
                                 </div>
                                 <div>
-                                    <Button type="primary" href="/movies">
+                                    <Button type="ghost" href="/movies">
                                         Бүгд
                                     </Button>
                                 </div>
                             </div>
-                            <List                        
-                                grid={{
-                                    gutter: 16,
-                                    xs: 2,
-                                    sm: 2,
-                                    md: 3,
-                                    lg: 4,
-                                    xl: 3,
-                                    xxl: 3,
-                                }}                                        
-                                style={{ marginTop: '16px' }}
-                                pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
-                                dataSource={toprated ? toprated.slice(0, getListNumber() * 3) : undefined}
-                                renderItem={item => (
-                                    <List.Item>
-                                        <MovieCard2 movie={item} />
-                                    </List.Item>
-                                )}
-                            />
-                        </div> 
+                            <Tabs defaultActiveKey="1">
+                                <Tabs.TabPane tab="Одоо гарч буй" key="1">
+                                    <List                        
+                                        grid={{
+                                            gutter: 16,
+                                            xs: 2,
+                                            sm: 2,
+                                            md: 3,
+                                            lg: 4,
+                                            xl: 3,
+                                            xxl: 4,
+                                        }}                                      
+                                        style={{ marginTop: '16px' }}
+                                        pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
+                                        dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
+                                        renderItem={item => (
+                                            <List.Item>
+                                                <MovieCard2 movie={item} />
+                                            </List.Item>
+                                        )}
+                                    /> 
+                                </Tabs.TabPane>
+                                <Tabs.TabPane tab="Удахгүй гарах" key="2">
+                                    <List                        
+                                        grid={{
+                                            gutter: 16,
+                                            xs: 2,
+                                            sm: 2,
+                                            md: 3,
+                                            lg: 4,
+                                            xl: 3,
+                                            xxl: 4,
+                                        }}                                      
+                                        style={{ marginTop: '16px' }}
+                                        pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
+                                        dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
+                                        renderItem={item => (
+                                            <List.Item>
+                                                <MovieCard2 movie={item} />
+                                            </List.Item>
+                                        )}
+                                    /> 
+                                </Tabs.TabPane>           
+                                <Tabs.TabPane tab="Шинээр нэмэгдсэн" key="3">
+                                    <List                        
+                                        grid={{
+                                            gutter: 16,
+                                            xs: 2,
+                                            sm: 2,
+                                            md: 3,
+                                            lg: 4,
+                                            xl: 3,
+                                            xxl: 4,
+                                        }}                                      
+                                        style={{ marginTop: '16px' }}
+                                        pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
+                                        dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
+                                        renderItem={item => (
+                                            <List.Item>
+                                                <MovieCard2 movie={item} />
+                                            </List.Item>
+                                        )}
+                                    /> 
+                                </Tabs.TabPane>                    
+                                <Tabs.TabPane tab="Өндөр үнэлгээтэй" key="4">
+                                    <List                        
+                                        grid={{
+                                            gutter: 16,
+                                            xs: 2,
+                                            sm: 2,
+                                            md: 3,
+                                            lg: 4,
+                                            xl: 3,
+                                            xxl: 4,
+                                        }}                                        
+                                        style={{ marginTop: '16px' }}
+                                        pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
+                                        dataSource={toprated ? toprated.slice(0, getListNumber() * 3) : undefined}
+                                        renderItem={item => (
+                                            <List.Item>
+                                                <MovieCard2 movie={item} />
+                                            </List.Item>
+                                        )}
+                                    /> 
+                                </Tabs.TabPane>
+                            </Tabs>                            
+                        </div>                   
                     </Col>
-                    <Col xs={24} sm={24} md={24} lg={24} xl={8}>
-                        {/* <div className="trendmovies" style={{ marginTop: '16px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <Typography.Title level={4} style={{ margin: 0 }}>Энэ сарын тренд</Typography.Title>
-                                </div>
-                                <div>
-                                    <Button type="primary" href="/movies">
-                                        Бүгд
-                                    </Button>
-                                </div>
-                            </div>
-                            <MovieTrendTable data={toprated ? toprated.slice(0, 10) : undefined} />
-                        </div>  */}
-                        <div className="latestnews" style={{ marginTop: '16px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <Typography.Title level={4} style={{ margin: 0 }}>Шинэ нийтлэл</Typography.Title>
-                                </div>
-                                <div>
-                                    <Button type="primary" href="/posts">
-                                        Бүгд
-                                    </Button>
-                                </div>
-                            </div>
-                            <List
-                                itemLayout="horizontal"
-                                dataSource={posts ? posts.slice(0, 2) : undefined}
-                                style={{ marginTop: '8px' }}
-                                renderItem={item => (
-                                    <List.Item>
-                                        <List.Item.Meta 
-                                            avatar={<Avatar src={item.created_by.profile.avatar} />}
-                                            title={
-                                                <>                                                    
-                                                    <Link to={`/posts/${item.id}`}>{item.title}</Link>
-                                                    <img src={item.thumbnail} alt="thumbnail" style={{ maxHeight: '250px', width: '100%', height: 'auto', objectFit: 'scale-down' }} />                                                    
-                                                </>
-                                            }                             
-                                            description={
-                                                <>
-                                                    <Paragraph ellipsis={{ rows: 4 }}><div dangerouslySetInnerHTML={{__html: item.content }} /></Paragraph>
-                                                    <div style={{ textAlign: 'end' }}>
-                                                        <Typography.Text>- {item.created_by.username}</Typography.Text>
-                                                    </div>
-                                                </>
-                                            }                                                           
-                                        />          
-                                        {/* <img src={item.thumbnail} alt="thumbnail" style={{ width: '100%', height: 'auto', objectFit: 'scale-down' }} /> */}
-                                    </List.Item>
-                                )}
-                            />
-                        </div> 
+                    <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                        <div style={{ marginTop: '16px', padding: '16px' }}>
+                            <Typography.Title level={2}> Реклам зар сурталчилгаа</Typography.Title>
+                        </div>                                                
                     </Col>
-                </Row>      
-                <Row gutter={[16, 16]} style={{ padding: '128px 0' }}>
+                </Row>                      
+            </div>          
+            <div style={{ background: '#161b22', padding: getPadding(), margin: '48px 0' }}>
+                <Row gutter={[16, 16]} style={{ padding: '32px 0' }}>
                     <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
                         <VideoCameraOutlined style={{ fontSize: '32px' }} />
-                        <Typography.Title level={4}>225 Кино</Typography.Title>
+                        <Typography.Title level={4}>
+                            <CountUp end={253} delay={5} /> Кино                            
+                        </Typography.Title>
                     </Col>
                     <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
-                        <DesktopOutlined style={{ fontSize: '32px' }} />
-                        <Typography.Title level={4}>53 Цуврал</Typography.Title>
+                        <DesktopOutlined style={{ fontSize: '32px' }} />                        
+                        <Typography.Title level={4}>
+                            <CountUp end={46} delay={5} /> Цуврал                            
+                        </Typography.Title>
                     </Col>
                     <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
                         <UserOutlined style={{ fontSize: '32px' }} />
-                        <Typography.Title level={4}>{formatCount(1252)} У/Бүтээлч</Typography.Title>
+                        <Typography.Title level={4}>
+                            <CountUp end={1252} delay={5} /> У/Бүтээлч                            
+                        </Typography.Title>                        
                     </Col>
                     <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
-                        <ReadOutlined style={{ fontSize: '32px' }} />
-                        <Typography.Title level={4}>{formatCount(495)} Нийтлэл</Typography.Title>
+                        <ReadOutlined style={{ fontSize: '32px' }} />                        
+                        <Typography.Title level={4}>
+                            <CountUp end={495} delay={5} /> Нийтлэл                           
+                        </Typography.Title>
+                    </Col>
+                </Row>     
+            </div>
+            <div style={{ padding: getPadding(), margin: '48px 0' }}>
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} sm={24} md={24} lg={18}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                                <Typography.Title level={4} style={{ margin: 0 }}>МЭДЭЭЛЭЛ</Typography.Title>
+                            </div>
+                            <div>
+                                <Button type="ghost" href="/movies">
+                                    Бүгд
+                                </Button>
+                            </div>
+                        </div>
+                        <List                        
+                            grid={{
+                                gutter: 16,
+                                xs: 2,
+                                sm: 2,
+                                md: 3,
+                                lg: 4,
+                                xl: 3,
+                                xxl: 3,
+                            }}                                        
+                            style={{ marginTop: '16px' }}                    
+                            dataSource={posts ? posts.slice(0, 3) : undefined}
+                            renderItem={item => (
+                                <List.Item>
+                                    <Link to={`/posts/${item.id}`}>
+                                        <Card
+                                            hoverable
+                                            style={{ width: '100%', border: 0 }}
+                                            cover={<img src={item.thumbnail} alt="thumbnail" />}
+                                        >
+                                            <Card.Meta 
+                                                avatar={<Avatar src={item.created_by.profile.avatar} />}
+                                                title={item.title}
+                                                description={
+                                                    <div>
+                                                        <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                                                            <div dangerouslySetInnerHTML={{__html: item.content }} />                                            
+                                                        </Typography.Paragraph>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <div><Typography.Text>{moment(item.created_at).format("YYYY-MM-DD")}</Typography.Text></div>
+                                                            <div><Typography.Text>- {item.created_by.username}</Typography.Text></div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            />
+                                        </Card>
+                                    </Link>
+                                </List.Item>
+                            )}
+                        /> 
                     </Col>
                 </Row>
-            </div>               
+                
+            </div>
+            <div style={{ padding: getPadding(), margin: '48px 0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <Typography.Title level={4} style={{ margin: 0 }}>АШИГЛАХ ЗААВАР</Typography.Title>
+                    </div>
+                </div>                
+            </div>
         </div>
     )
 }

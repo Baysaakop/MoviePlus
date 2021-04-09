@@ -69,15 +69,18 @@ function MovieList() {
     }
 
     function onNameSearch(value) {        
-        setName(value);
+        setPage(1)
+        setName(value)
     }
 
     function selectGenre (value) {        
-        setGenre(value);
+        setPage(1)
+        setGenre(value)
     }
 
     function selectOrder (value) {
-        setOrder(value);
+        setPage(1)
+        setOrder(value)
     }
 
     function onPageChange (pageNum, pageSize) {        

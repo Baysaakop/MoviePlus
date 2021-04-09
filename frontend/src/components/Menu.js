@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './Menu.css';
-import { Button, Grid } from 'antd';
+import { Button, Grid, Avatar } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
-import { DesktopOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
+import { MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 // import logo from './onplus-logo.png';
 import axios from 'axios';
 import api from '../api';
-import Avatar from 'antd/lib/avatar/avatar';
+import MovieIcon from '../icons/MovieIcon';
+
 const { useBreakpoint } = Grid;
 
 function CustomMenu (props) {    
@@ -19,13 +20,8 @@ function CustomMenu (props) {
     const [user, setUser] = useState();
 
     useEffect(() => {                        
-        setCurrent(props.location.pathname)
-        if (props.location.pathname === '/') {
-            setScrollTop(true)
-            window.addEventListener('scroll', onScroll, true);
-        } else {
-            setScrollTop(false)
-        }
+        setCurrent(props.location.pathname)        
+        window.addEventListener('scroll', onScroll, true)
         if (props.token && props.token !== null) {
             axios({
                 method: 'GET',
@@ -52,7 +48,11 @@ function CustomMenu (props) {
         if (window.scrollY > 0) {
             setScrollTop(false)
         } else {
-            setScrollTop(true)
+            if (props.location.pathname === '/') {
+                setScrollTop(true)                
+            } else {
+                setScrollTop(false)
+            }            
         }        
     }
 
@@ -73,7 +73,7 @@ function CustomMenu (props) {
     }
 
     const styleHeaderWeb = {        
-        background: scrollTop ? 'rgba(0, 0, 0, 0.5)' : props.darkMode ? '#161b22' : '#fff',            
+        background: scrollTop ? 'rgba(0, 0, 0, 0)' : props.darkMode ? '#161b22' : '#fff',            
         display: 'flex',
         justifyContent: 'space-around', 
         alignItems: 'center',
@@ -89,7 +89,7 @@ function CustomMenu (props) {
         justifyContent: 'space-between', 
         alignItems: 'center',
         height: '80px',
-        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)',
+        // boxShadow: '0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)',
         padding: getPadding()
     }
     
@@ -122,34 +122,46 @@ function CustomMenu (props) {
                         <Link to="/">
                             <div style={styleLogo}>         
                                 <div style={{ display: 'flex', alignItems: 'center' }}>                                    
-                                    <DesktopOutlined style={{ fontSize: '24px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
+                                    <MovieIcon style={{ fontSize: '32px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
                                 </div>
                                 <div style={{ fontSize: '24px', marginLeft: '8px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }}>                        
-                                    Movie+                    
+                                    MOVIE+                    
                                 </div>                        
                             </div>       
                         </Link>
                     </div>
                     <div style={{ width: '60%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Link to="/movies">
-                            <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/movies') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
-                                Кино
+                            <Button type={current && current.startsWith('/movies') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
+                                КИНО
                             </Button>
+                            {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/movies') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
+                                Кино
+                            </Button> */}
                         </Link>
                         <Link to="/series">
-                            <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/series') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
-                                Цуврал
+                            <Button type={current && current.startsWith('/series') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
+                                ЦУВРАЛ
                             </Button>
+                            {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/series') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
+                                Цуврал
+                            </Button> */}
                         </Link>
                         <Link to="/artists">
-                            <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/artists') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
-                                У/Бүтээлч
+                            <Button type={current && current.startsWith('/artists') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
+                                У/БҮТЭЭЛЧ
                             </Button>
+                            {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/artists') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
+                                У/Бүтээлч
+                            </Button> */}
                         </Link>
                         <Link to="/posts">
-                            <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
-                                Нийтлэл
+                            <Button type={current && current.startsWith('/posts') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
+                                МЭДЭЭЛЭЛ
                             </Button>
+                            {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
+                                Нийтлэл
+                            </Button> */}
                         </Link>
                     </div>
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
@@ -160,8 +172,8 @@ function CustomMenu (props) {
                             </Link>
                         ) : (
                             <Link to="/login">
-                                <Button ghost={scrollTop || props.darkMode} type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'default' } size="large">
-                                    Нэвтрэх
+                                <Button type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'ghost' } size="large">
+                                    НЭВТРЭХ
                                 </Button>
                             </Link>
                         )}                        
@@ -174,7 +186,7 @@ function CustomMenu (props) {
                             <Link to="/">
                                 <div style={styleLogo}>         
                                     <div style={{ display: 'flex', alignItems: 'center' }}>                                        
-                                        <DesktopOutlined style={{ fontSize: '24px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
+                                        <MovieIcon style={{ fontSize: '32px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
                                     </div>
                                     <div style={{ fontSize: '24px', marginLeft: '8px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }}>                        
                                         Movie+                        

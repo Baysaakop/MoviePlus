@@ -65,18 +65,22 @@ function ArtistList () {
     }
 
     function onNameSearch(value) {        
+        setPage(1)
         setName(value);
     }
 
     function selectOccupation (value) {        
+        setPage(1)
         setOccupation(value);
     }
 
     function selectOrder (value) {
+        setPage(1)
         setOrder(value);
     }
 
     function onPageChange (pageNum, pageSize) {        
+        setPage(1)
         setPage(pageNum)
     }
 
