@@ -1,16 +1,19 @@
-import {  Button, Form, Input, Typography, message } from 'antd';
+import {  Button, Form, Input, Typography, message, InputNumber, Select } from 'antd';
 import React, { useState } from 'react';
 import axios from 'axios';
 import api from '../api';
 import ImageUpload from '../components/ImageUpload';
 import { connect } from "react-redux";
 import { Editor } from '@tinymce/tinymce-react';
-import './PostCreate.css';
+import './ReviewCreate.css';
+
+const { Option } = Select;
 
 const PostCreate = (props) => {
     const [form] = Form.useForm()    
     const [image, setImage] = useState();
     const [content, setContent] = useState();
+    const [movies, setMovies] = useState(); 
 
     const onImageSelected = (path) => {
         setImage(path);
@@ -20,11 +23,26 @@ const PostCreate = (props) => {
         setContent(content)
     }
 
-    function onFinish (values) {        
+    function onMovieSearch(value) {                
+        axios({
+            method: 'GET',                        
+            url: api.movies + "?name=" + value
+        })
+        .then(res => {                        
+            setMovies(res.data.results);            
+        })        
+        .catch(err => {
+            console.log(err.message);
+        })      
+    }
+
+    function onFinish (values) {                
         var formData = new FormData();
         formData.append('title', values.title);
         formData.append('content', content);        
         formData.append('thumbnail', image);
+        formData.append('score', values.score);
+        formData.append('movie', values.movie);
         formData.append('token', props.token);
         axios({
             method: 'POST',
@@ -72,7 +90,36 @@ const PostCreate = (props) => {
                         <div style={{ width: '100%', height: '200px' }}>
                             <ImageUpload width="400px" height="200px" onImageSelected={onImageSelected} imageUrl={undefined} />                        
                         </div>
-                    </Form.Item>                     
+                    </Form.Item>         
+                    <Form.Item
+                        name="score"
+                        label="Оноо (10-аас)"
+                    >
+                        <InputNumber min={0} max={10} defaultValue={0} />
+                    </Form.Item> 
+                    <Form.Item
+                        name="movie"
+                        label="Кино"
+                    >
+                        <Select 
+                            showSearch
+                            onSearch={onMovieSearch}                                
+                            placeholder="Кино сонгох"                                                
+                            optionFilterProp="children"                                                             
+                        >
+                            { movies ? (
+                                <>
+                                    {movies.map(item => {
+                                        return (
+                                            <Option key={item.id}>{item.name}</Option>
+                                        )
+                                    })}
+                                </>
+                            ) : (
+                                <></>
+                            )}
+                        </Select> 
+                    </Form.Item>            
                     <Form.Item
                         label="Контент"
                         name="post"

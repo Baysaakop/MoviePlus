@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import './Home.css';
 import axios from 'axios';  
 import api from '../api';
-import MovieCard from '../movie/MovieCard';
 import MovieCard2 from '../movie/MovieCard2';
 import { CaretRightOutlined, CheckOutlined, DesktopOutlined, LikeOutlined, PlusOutlined, ReadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 // import MovieTrendTable from '../movie/MovieTrendTable';
@@ -12,8 +11,6 @@ import Modal from 'antd/lib/modal/Modal';
 import { Link } from 'react-router-dom';
 import CountUp from 'react-countup';
 import moment from 'moment';
-
-const { Paragraph } = Typography
 
 const { useBreakpoint } = Grid;
 
@@ -115,16 +112,6 @@ function Home (props) {
         }
     }
 
-    function formatCount(count) {
-        if (count >= 1000000) {
-            return (count / 1000000).toFixed(1).toString() + "M";
-        } else if (count >= 1000) {
-            return (count / 1000).toFixed(1).toString() + "K";
-        } else {
-            return count.toString();
-        }
-    }
-
     const showModal = () => {        
         setModalVisible(true);
     }
@@ -153,8 +140,7 @@ function Home (props) {
                                             <Search placeholder="Кино эсвэл цувралын нэрийг бичнэ үү" onSearch={onSearch} size="large" enterButton />
                                         </div> */}
                                         <div style={{ position: 'absolute', left: screens.xxl ? '15%' : screens.xl ? '10%' : screens.lg ? '8%' : '5%', bottom: '10%', padding: '16px' }}>
-                                            <Typography.Title level={1} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>
-                                            <p style={{ color: '#f1f1f1' }}>Найруулагч: Christopher Nolan</p>
+                                            <Typography.Title level={1} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>                                            
                                             <div className="info">
                                                 { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
                                                 <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин |</Typography.Text>

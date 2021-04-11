@@ -38,7 +38,7 @@ function CustomMenu (props) {
         } else {
             setUser(undefined)
         }        
-    }, [props.location, props.token])
+    }, [props.location, props.token]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleMenuCollapsed = () => {
         setCollapsed(!collapsed);
@@ -157,7 +157,7 @@ function CustomMenu (props) {
                         </Link>
                         <Link to="/posts">
                             <Button type={current && current.startsWith('/posts') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
-                                МЭДЭЭЛЭЛ
+                                НИЙТЛЭЛ
                             </Button>
                             {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
                                 Нийтлэл

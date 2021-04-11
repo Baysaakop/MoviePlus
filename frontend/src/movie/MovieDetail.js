@@ -1,11 +1,13 @@
-import { Grid, Avatar, Button, Col, List, message, Row, Spin, Statistic, Tabs, Tooltip, Typography, Modal, Rate } from 'antd';
+import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Modal, Rate } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, EyeOutlined, HeartOutlined, LikeOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, EyeOutlined, HeartOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import GenreTag from '../components/GenreTag';
 import { connect } from "react-redux";
+import MovieMembers from './MovieMembers';
+import MovieCast from './MovieCast';
 
 const { useBreakpoint } = Grid;
 const spinIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -16,8 +18,6 @@ function MovieDetail (props) {
     const [movie, setMovie] = useState();
     const [modalVisible, setModalVisible] = useState(false);
     const [rateVisible, setRateVisible] = useState(false);
-    // const [width, setWidth] = useState(0);
-    // const [height, setHeight] = useState(0);
 
     useEffect(() => {               
         getMovie()        
@@ -254,7 +254,7 @@ function MovieDetail (props) {
                                         <Typography.Text>{formatCount(movie.views)}</Typography.Text>
                                     </Col>
                                     <Col span={6} style={{ textAlign: 'center' }}>
-                                        <LikeOutlined style={{ fontSize: '20px' }} />
+                                        <HeartOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
                                         <Typography.Text>{formatCount(movie.likes)}</Typography.Text>
                                     </Col>
@@ -338,7 +338,14 @@ function MovieDetail (props) {
                                         </span>              
                                     </div>    
                                     <div className="rating" style={{ margin: '16px 0' }}>
-                                        <Statistic title="Үнэлгээ" value={parseFloat(movie.score / 10)} prefix={<StarFilled style={{ color: 'gold' }} />} suffix={<span>/10 <span style={{ fontSize: '16px' }}>({movie.score_count} үнэлгээнээс)</span></span>} />                                        
+                                        {/* <Statistic title="Үнэлгээ" value={parseFloat(movie.score / 10)} prefix={<StarFilled style={{ color: 'gold' }} />} suffix={<span>/10 <span style={{ fontSize: '16px' }}>({movie.score_count} үнэлгээнээс)</span></span>} />                                         */}
+                                        <Typography.Text>Үнэлгээ:</Typography.Text>
+                                        <span>
+                                        <Typography.Title level={1} style={{ margin: 0 }}>{parseFloat(movie.score / 10)} <span style={{ fontSize: '24px' }}>/ 10</span></Typography.Title>                                        
+                                        </span>
+                                        <Rate disabled allowHalf defaultValue={movie.score / 20} />
+                                        <br />
+                                        <Typography.Text> ({movie.score_count} үнэлгээнээс)</Typography.Text>
                                     </div>                                
                                     <div className="infotabs">
                                         <Tabs defaultActiveKey="1">
@@ -350,57 +357,11 @@ function MovieDetail (props) {
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Бүрэлдэхүүн" key="2">
                                                 <Typography.Title level={5}>Баг бүрэлдэхүүн</Typography.Title>
-                                                <List                                                                                                        
-                                                    itemLayout="horizontal"                                                    
-                                                    dataSource={movie.member ? movie.member : undefined}
-                                                    renderItem={item => (
-                                                    <List.Item>                                                        
-                                                        <List.Item.Meta
-                                                            avatar={
-                                                                <a href={`/artists/${item.artist.id}`}>
-                                                                    <Avatar size="large" src={item.artist.avatar} />
-                                                                </a>
-                                                            }
-                                                            title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}
-                                                            description={item.artist.occupation.map(occupation => {
-                                                                return (
-                                                                    <span>{occupation.name} </span>
-                                                                )
-                                                            })}
-                                                        />
-                                                        <Typography.Text>
-                                                            {item.role.name}
-                                                        </Typography.Text>                                                        
-                                                    </List.Item>
-                                                    )}
-                                                />
+                                                <MovieMembers data={movie.member} />
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Жүжигчид" key="3">
                                                 <Typography.Title level={5}>Жүжигчид</Typography.Title>
-                                                <List                                                                                                        
-                                                    itemLayout="horizontal"                                                    
-                                                    dataSource={movie.cast ? movie.cast : undefined}
-                                                    renderItem={item => (
-                                                    <List.Item>                                                        
-                                                        <List.Item.Meta
-                                                            avatar={
-                                                                <a href={`/artists/${item.artist.id}`}>
-                                                                    <Avatar size="large" src={item.artist.avatar} />
-                                                                </a>
-                                                            }
-                                                            title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}
-                                                            description={item.artist.occupation.map(occupation => {
-                                                                return (
-                                                                    <span>{occupation.name} </span>
-                                                                )
-                                                            })}
-                                                        />
-                                                        <Typography.Text>
-                                                            {item.role_name}
-                                                        </Typography.Text>                                                        
-                                                    </List.Item>
-                                                    )}
-                                                />
+                                                <MovieCast data={movie.cast} />                                                
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Сэтгэгдэл" key="4">
                                                 <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>

@@ -8,7 +8,7 @@ import { CheckCircleOutlined, CloseCircleOutlined, LikeOutlined, PlusCircleOutli
 import Logout from './Logout';
 import Moderator from './Moderator';
 import MoviesLiked from '../movie/MoviesLiked';
-import PostCreate from '../posts/PostCreate';
+import ReviewCreate from '../reviews/ReviewCreate';
 
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -92,25 +92,25 @@ function Profile (props) {
                                 <Typography.Title level={5}>Дараа үзэх кино</Typography.Title>
                                 <MoviesLiked movies={user.profile.watchlist} />                 
                             </div>  
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab={<span><CloseCircleOutlined style={{ fontSize: '18px' }} />Гарах</span>} key="5">
-                            <div style={{ padding: '8px' }}>
-                                <Logout />
-                            </div>        
-                        </Tabs.TabPane>
+                        </Tabs.TabPane>                        
                         { user.profile.role === "1" || user.profile.role === "2" ? (
                             <>
                                 <Tabs.TabPane tab={<span><SettingOutlined style={{ fontSize: '18px' }} />Модератор цонх</span>} key="6">
                                     <Moderator />      
                                 </Tabs.TabPane>
                                 <Tabs.TabPane tab={<span><FormOutlined style={{ fontSize: '18px' }} />Нийтлэл оруулах</span>} key="7">
-                                    <PostCreate token={props.token} />
+                                    <ReviewCreate token={props.token} />
                                 </Tabs.TabPane>
                             </>
                         ) : (
                             <>
                             </>
                         )} 
+                        <Tabs.TabPane tab={<span><CloseCircleOutlined style={{ fontSize: '18px' }} />Гарах</span>} key="5">
+                            <div style={{ padding: '8px' }}>
+                                <Logout />
+                            </div>        
+                        </Tabs.TabPane>
                     </Tabs>                
                 ) : loading ? (
                     <div style={{ width: '100%', height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

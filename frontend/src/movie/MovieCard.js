@@ -44,7 +44,7 @@ function MovieCard (props) {
         if (user !== null && user !== undefined) {
             const data = {            
                 token: props.token,
-                like: true
+                like: false
             }            
             axios({
                 method: 'PUT',
@@ -71,7 +71,7 @@ function MovieCard (props) {
         if (user !== null && user !== undefined) {
             const data = {            
                 token: props.token,
-                watched: true
+                watched: false
             }            
             axios({
                 method: 'PUT',
@@ -98,7 +98,7 @@ function MovieCard (props) {
         if (user !== null && user !== undefined) {
             const data = {            
                 token: props.token,
-                watchlist: true
+                watchlist: false
             }            
             axios({
                 method: 'PUT',

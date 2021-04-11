@@ -128,6 +128,9 @@ class ArtistViewSet(viewsets.ModelViewSet):
         if 'like' in request.data:
             user = Token.objects.get(key=request.data['token']).user
             profile = Profile.objects.get(user=user)
+            is_detail = request.data['like']            
+            if (is_detail == True):
+                artist.views = artist.views - 1
             if artist in profile.artist_likes.all():
                 profile.artist_likes.remove(artist)
                 artist.likes = artist.likes - 1                
@@ -138,6 +141,9 @@ class ArtistViewSet(viewsets.ModelViewSet):
         if 'follow' in request.data:
             user = Token.objects.get(key=request.data['token']).user
             profile = Profile.objects.get(user=user)
+            is_detail = request.data['follow']            
+            if (is_detail == True):
+                artist.views = artist.views - 1
             if artist in profile.artist_followed.all():
                 profile.artist_followed.remove(artist)
                 artist.followers = artist.followers - 1                
@@ -279,16 +285,22 @@ class MovieViewSet(viewsets.ModelViewSet):
         if 'like' in request.data:
             user = Token.objects.get(key=request.data['token']).user
             profile = Profile.objects.get(user=user)
+            is_detail = request.data['like']            
+            if (is_detail == True):
+                movie.views = movie.views - 1
             if movie in profile.likes.all():
                 profile.likes.remove(movie)
                 movie.likes = movie.likes - 1                
             else:
                 profile.likes.add(movie)
-                movie.likes = movie.likes + 1
+                movie.likes = movie.likes + 1            
             profile.save()
         if 'watched' in request.data:
             user = Token.objects.get(key=request.data['token']).user
             profile = Profile.objects.get(user=user)
+            is_detail = request.data['watched']            
+            if (is_detail == True):
+                movie.views = movie.views - 1
             if movie in profile.watched.all():
                 profile.watched.remove(movie)
                 movie.watched = movie.watched - 1
@@ -299,6 +311,9 @@ class MovieViewSet(viewsets.ModelViewSet):
         if 'watchlist' in request.data:
             user = Token.objects.get(key=request.data['token']).user
             profile = Profile.objects.get(user=user)
+            is_detail = request.data['watchlist']            
+            if (is_detail == True):
+                movie.views = movie.views - 1
             if movie in profile.watchlist.all():
                 profile.watchlist.remove(movie)
                 movie.watchlist = movie.watchlist - 1
@@ -310,6 +325,7 @@ class MovieViewSet(viewsets.ModelViewSet):
             score = int(request.data['score'])
             user = Token.objects.get(key=request.data['token']).user            
             profile = Profile.objects.get(user=user)
+            movie.views = movie.views - 1
             # Remove score
             if (score == 0):
                 score_obj = profile.scores.get(movie=movie)              
@@ -361,6 +377,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
             title=request.data['title'],
             created_by=user
         )
+        if 'movie' in request.data:
+            movie=Movie.objects.get(id=int(request.data['movie']))
+            review.movie=movie
+        if 'score' in request.data:
+            review.score=int(request.data['score'])
         if 'thumbnail' in request.data:
             review.thumbnail=request.data['thumbnail']
         if 'content' in request.data:
@@ -374,10 +395,28 @@ class ReviewViewSet(viewsets.ModelViewSet):
         review = self.get_object()                         
         if 'title' in request.data:
             review.title=request.data['title']
+        if 'movie' in request.data:
+            movie=Movie.objects.get(id=int(request.data['movie']))
+            review.movie=movie
+        if 'score' in request.data:
+            review.score=int(request.data['score'])
         if 'thumbnail' in request.data:
             review.thumbnail=request.data['thumbnail']
         if 'content' in request.data:
             review.content=request.data['content']          
+        if 'like' in request.data:
+            user = Token.objects.get(key=request.data['token']).user
+            profile = Profile.objects.get(user=user)
+            is_detail = request.data['like']            
+            if (is_detail == True):
+                review.views = review.views - 1
+            if review in profile.review_likes.all():
+                profile.review_likes.remove(review)
+                review.likes = review.likes - 1                
+            else:
+                profile.review_likes.add(review)
+                review.likes = review.likes + 1
+            profile.save()
         review.save()
         serializer = ReviewSerializer(review)
         headers = self.get_success_headers(serializer.data)        

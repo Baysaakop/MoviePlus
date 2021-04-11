@@ -4,20 +4,16 @@ import Home from './containers/Home';
 import Login from './account/Login';
 import Signup from './account/Signup';
 import Profile from './account/Profile';
-// import ItemList from './item/ItemList';
-// import ItemDetail from './item/ItemDetail';
-// import ItemCreate from './item/ItemCreate';
-// import ItemUpdate from './item/ItemUpdate';
 import Logout from './account/Logout';
 import PasswordReset from './account/PasswordReset';
 import PasswordResetConfirm from './account/PasswordResetConfirm';
-import PostCreate from './posts/PostCreate';
 import MovieList from './movie/MovieList';
 import MovieDetail from './movie/MovieDetail';
 import ArtistList from './artist/ArtistList';
 import ArtistDetail from './artist/ArtistDetail';
-import PostList from './posts/PostList';
-import PostDetail from './posts/PostDetail';
+import PostCreate from './reviews/ReviewCreate';
+import PostList from './reviews/ReviewList';
+import PostDetail from './reviews/ReviewDetail';
 import About from './containers/About';
 import SeriesList from './series/SeriesList';
 
@@ -26,11 +22,6 @@ function BaseRouter () {
         <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/about" component={About} />
-            {/* Item urls */}
-            {/* <Route exact path="/items" component={ItemList} />
-            <Route exact path="/items/:itemID" component={ItemDetail} />
-            <Route exact path="/newitem" component={ItemCreate} />
-            <Route exact path="/updateitem/:itemID" component={ItemUpdate} /> */}
             <Route exact path="/movies" component={MovieList} />
             <Route exact path="/movies/:movieID" component={MovieDetail} />
             <Route exact path="/artists" component={ArtistList} />

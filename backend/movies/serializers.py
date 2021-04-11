@@ -64,7 +64,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'profile')    
 
 class ReviewSerializer(serializers.ModelSerializer):          
+    movie = MovieSerializer(read_only=True)
     created_by = UserSerializer(read_only=True)  
     class Meta:
         model = Review
-        fields = ('id', 'title', 'content', 'thumbnail', 'views', 'likes', 'created_by', 'created_at')    
+        fields = ('id', 'title', 'content', 'thumbnail', 'movie', 'views', 'likes', 'score', 'created_by', 'created_at')    

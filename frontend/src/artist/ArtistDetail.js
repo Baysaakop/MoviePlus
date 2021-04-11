@@ -2,7 +2,7 @@ import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography } from
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { HeartOutlined, UserAddOutlined, EyeOutlined, LoadingOutlined, LikeOutlined } from '@ant-design/icons';
+import { UserAddOutlined, EyeOutlined, LoadingOutlined, LikeOutlined } from '@ant-design/icons';
 import '../movie/MovieDetail.css';
 import { connect } from "react-redux";
 import Filmography from './Filmography';
@@ -175,7 +175,7 @@ function ArtistDetail (props) {
                                         <Typography.Text>{formatCount(artist.views)}</Typography.Text>
                                     </Col>
                                     <Col span={8} style={{ textAlign: 'center' }}>
-                                        <HeartOutlined style={{ fontSize: '20px' }} />
+                                        <LikeOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
                                         <Typography.Text>{formatCount(artist.likes)}</Typography.Text>
                                     </Col>
