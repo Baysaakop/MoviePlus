@@ -1,12 +1,40 @@
 import { List, Typography, Avatar } from "antd";
+import { useEffect, useState } from "react";
+import axios from 'axios'
+import api from '../api'
 
 function MovieCast (props) {    
+
+    const [members, setMembers] = useState()
+
+    useEffect(() => {
+        axios({
+            method: 'GET',
+            url: api.members + "?movie=" + props.id
+        })
+        .then(res => {                   
+            let data = res.data.results;                 
+            const result = []        
+            data.forEach(member => {
+                member.role.forEach(role => {
+                    if (role.id === 1 && !result.includes(member)) {
+                        result.push(member)
+                    }
+                })
+            })
+            setMembers(result);        
+        })        
+        .catch(err => {
+            console.log(err.message);
+        })      
+    }, [props.id])
+
 
     return (
         <div>
             <List                                                                                                        
                 itemLayout="horizontal"                                                    
-                dataSource={props.data}
+                dataSource={members ? members : undefined}
                 renderItem={item => (
                 <List.Item>                                                        
                     <List.Item.Meta

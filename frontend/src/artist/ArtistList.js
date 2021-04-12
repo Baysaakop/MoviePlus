@@ -188,7 +188,7 @@ function ArtistList () {
                 <Pagination
                     current={page}
                     total={total}
-                    pageSize={12}
+                    pageSize={24}
                     hideOnSinglePage={true}
                     showSizeChanger={false}
                     showTotal={showTotal}

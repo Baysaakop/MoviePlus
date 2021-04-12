@@ -48,20 +48,6 @@ class Artist(models.Model):
     def __str__(self):
         return self.name
 
-class Member(models.Model):    
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
-    role = models.ForeignKey(Occupation, on_delete=models.CASCADE, null=True, blank=True)        
-
-    def __str__(self):
-        return self.artist.name
-
-class Cast(models.Model):    
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
-    role_name = models.CharField(max_length=100, null=True, blank=True)
-
-    def __str__(self):
-        return self.artist.name
-
 class Movie(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)    
@@ -71,8 +57,7 @@ class Movie(models.Model):
     rating = models.ForeignKey(Rating, on_delete=models.CASCADE, null=True, blank=True)
     genre = models.ManyToManyField(Genre, null=True, blank=True)    
     production = models.ManyToManyField(Production, null=True, blank=True)
-    member = models.ManyToManyField(Member, null=True, blank=True)
-    cast = models.ManyToManyField(Cast, null=True, blank=True)
+    # member = models.ManyToManyField(Member, null=True, blank=True)    
     views = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)    
     watched = models.IntegerField(default=0)    
@@ -82,11 +67,22 @@ class Movie(models.Model):
     poster = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     landscape = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     trailer = models.CharField(max_length=200, null=True, blank=True)
+    is_released = models.BooleanField(default=False)
+    in_theater = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='movie_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)            
 
     def __str__(self):
         return self.name
+
+class Member(models.Model):    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, blank=True, null=True)
+    role = models.ManyToManyField(Occupation, null=True, blank=True)        
+    role_name = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.artist.name
 
 class Review(models.Model):    
     title = models.CharField(max_length=100)

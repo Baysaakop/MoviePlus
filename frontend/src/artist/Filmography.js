@@ -40,12 +40,9 @@ function Filmography (props) {
         const roles = []
         movie.member.forEach(mem => {
             if (mem.artist.id === props.id) {
-                roles.push(mem.role.name)
-            }            
-        })
-        movie.cast.forEach(mem => {
-            if (mem.artist.id === props.id) {
-                roles.push("Жүжигчин")
+                mem.role.forEach(role => {
+                    roles.push(role.name)
+                })                
             }            
         })
         return roles.toString()

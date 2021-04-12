@@ -106,7 +106,7 @@ function ArtistCard (props) {
                 hoverable                 
                 style={{ width: '100%', height: 'auto', border: '0' }}                
                 cover={
-                    <div className="cover-container" style={{ paddingBottom: '100%', overflow: 'hidden' }}>
+                    <div className="cover-container" style={{ paddingBottom: '150%', overflow: 'hidden' }}>
                         <a href={`/artists/${props.artist.id}`}>
                             <img src={props.artist.avatar ? props.artist.avatar : blank} alt="poster" style={{ position: 'absolute', width: '100%', height: '100%' }} />
                         </a>

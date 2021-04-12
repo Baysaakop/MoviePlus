@@ -1,4 +1,4 @@
-import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col, Avatar, Tabs, Card } from 'antd';
+import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col, Avatar, Tabs, Card, Rate } from 'antd';
 import React, { useState, useEffect } from 'react';
 import './Home.css';
 import axios from 'axios';  
@@ -6,7 +6,6 @@ import api from '../api';
 import MovieCard2 from '../movie/MovieCard2';
 import { CaretRightOutlined, CheckOutlined, DesktopOutlined, LikeOutlined, PlusOutlined, ReadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 // import MovieTrendTable from '../movie/MovieTrendTable';
-import GenreTag from '../components/GenreTag';
 import Modal from 'antd/lib/modal/Modal';
 import { Link } from 'react-router-dom';
 import CountUp from 'react-countup';
@@ -141,18 +140,26 @@ function Home (props) {
                                         </div> */}
                                         <div style={{ position: 'absolute', left: screens.xxl ? '15%' : screens.xl ? '10%' : screens.lg ? '8%' : '5%', bottom: '10%', padding: '16px' }}>
                                             <Typography.Title level={1} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>                                            
-                                            <div className="info">
-                                                { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
-                                                <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин |</Typography.Text>
+                                            {/* <div className="info">
+                                                { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name}</Typography.Text> : <></> }
+                                                <br />
+                                                <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин</Typography.Text>
+                                                <br />
                                                 <Typography.Text type="secondary"> Нээлт: {movie.releasedate}</Typography.Text>
-                                            </div>
-                                            <div className="genre" style={{ marginTop: '8px' }}>
+                                            </div>                                             */}
+                                            {/* <div className="genre" style={{ marginTop: '8px' }}>
                                                 {movie.genre.map(g => {
                                                     return (                                                
                                                         <GenreTag genre={g.name} />
                                                     )                                            
                                                 })}
-                                            </div>
+                                            </div> */}
+                                            <Typography.Text>Үнэлгээ:</Typography.Text>
+                                            <span>
+                                            <Typography.Title level={1} style={{ margin: 0 }}>{parseFloat(movie.score / 10)} <span style={{ fontSize: '24px' }}>/ 10</span></Typography.Title>                                        
+                                            </span>
+                                            <Rate disabled allowHalf defaultValue={movie.score / 20} />
+                                            <br />                                            
                                             <div className="actions" style={{ marginTop: '16px' }}>                                        
                                                 <Tooltip title="Трэйлэр үзэх">
                                                     <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={showModal} />

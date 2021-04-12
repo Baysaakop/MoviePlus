@@ -7,55 +7,55 @@ function GenreTag (props) {
 
     useEffect(() => {
         switch(props.genre) {
-            case 'Тулаант':
+            case 'Action':
                 setColor('#30336b')
                 break
-            case 'Адал явдалт':
+            case 'Adventure':
                 setColor('#3867d6')
                 break
-            case 'Намтарчилсан':
+            case 'Biography':
                 setColor('#0fb9b1')
                 break
-            case 'Инээдмийн':
+            case 'Comedy':
                 setColor('#fed330')
                 break
-            case 'Гэмт хэрэг':
+            case 'Crime':
                 setColor('#d63031')
                 break
-            case 'Драм':
+            case 'Drama':
                 setColor('#22a6b3')
                 break
-            case 'Зөгнөлт':
+            case 'Fantasy':
                 setColor('#6ab04c')
                 break
-            case 'Гангстер':
+            case 'Gangster':
                 setColor('#ffa801')
                 break          
-            case 'Түүхэн':
+            case 'Historical':
                 setColor('#05c46b')
                 break
-            case 'Аймшгийн':
+            case 'Horror':
                 setColor('#1e272e')
                 break
-            case 'Хөгжим':
+            case 'Musical':
                 setColor('#9b59b6')
                 break
-            case 'Нууцлаг':
+            case 'Mystery':
                 setColor('#2c3e50')
                 break
-            case 'Хайр дурлал':
+            case 'Romance':
                 setColor('#c0392b')
                 break          
-            case 'Ш/У зөгнөлт':
+            case 'Sci-Fi':
                 setColor('#130f40')
                 break
-            case 'Триллер':
+            case 'Thriller':
                 setColor('#2d3436')
                 break
-            case 'Дайн':
+            case 'War':
                 setColor('#7f8c8d')
                 break
-            case 'Вестерн':
+            case 'Wester':
                 setColor('#f39c12')
                 break
             default:

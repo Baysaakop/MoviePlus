@@ -100,7 +100,8 @@ body {
 .layout-dark .ant-input:focus,
 .layout-dark .ant-input:hover,
 .layout-dark .ant-select-selection-item-remove,
-.layout-dark .ant-space-item {
+.layout-dark .ant-space-item,
+.layout-dark .ant-radio-wrapper {
     color: rgba(255, 255, 255, 0.85);
 }
 

@@ -290,15 +290,16 @@ function MovieDetail (props) {
                                             <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={showModal} />
                                         </Tooltip>
                                         <Modal 
-                                            title={movie.name}      
+                                            centered                                            
+                                            title={movie.name}                                              
                                             visible={modalVisible}
                                             footer={null}                    
-                                            onCancel={hideModal}                                                   
+                                            onCancel={hideModal}                                                      
                                             width={getWidth()}
-                                        >
+                                        >                                                                                        
                                             <div>
-                                                <iframe title={movie.name} width="100%" height={getHeight()} src={movie.trailer} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                            </div>
+                                                <iframe title={movie.name} width="100%" height={getHeight()} src={movie.trailer} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                                                
+                                            </div> 
                                         </Modal>
                                         <Tooltip title="Таалагдсан">
                                             <Button className="like" size="large" type={user && user.profile.likes.find(x => x.id === movie.id) !== undefined ? "primary" : "ghost"} shape="circle" icon={<HeartOutlined />} onClick={like}></Button>
@@ -357,11 +358,11 @@ function MovieDetail (props) {
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Бүрэлдэхүүн" key="2">
                                                 <Typography.Title level={5}>Баг бүрэлдэхүүн</Typography.Title>
-                                                <MovieMembers data={movie.member} />
+                                                <MovieMembers id={movie.id} />
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Жүжигчид" key="3">
                                                 <Typography.Title level={5}>Жүжигчид</Typography.Title>
-                                                <MovieCast data={movie.cast} />                                                
+                                                <MovieCast id={movie.id} />                                                
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Сэтгэгдэл" key="4">
                                                 <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>

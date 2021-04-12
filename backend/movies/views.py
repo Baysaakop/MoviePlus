@@ -2,8 +2,8 @@ import json
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Cast, Movie, Review
-from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ArtistSerializer, MemberSerializer, CastSerializer, MovieSerializer, ReviewSerializer
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review
+from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ArtistSerializer, MemberSerializer, MovieSerializer, ReviewSerializer
 from rest_framework import viewsets, filters
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -156,14 +156,6 @@ class ArtistViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)        
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)       
 
-class MemberViewSet(viewsets.ModelViewSet):
-    serializer_class = MemberSerializer
-    queryset = Member.objects.all()
-
-class CastViewSet(viewsets.ModelViewSet):
-    serializer_class = CastSerializer
-    queryset = Cast.objects.all()
-
 class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
@@ -179,7 +171,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         if genre is not None:
             queryset = queryset.filter(genre__id=genre)
         if artist is not None:
-            queryset = queryset.filter(Q(member__artist__id=artist) | Q(cast__artist__id=artist)).distinct().order_by('releasedate')
+            queryset = queryset.filter(member__artist__id=artist).distinct().order_by('releasedate')
         if order is not None:
             if (order == 'created_at'):
                 queryset = queryset.order_by('-created_at')
@@ -222,24 +214,18 @@ class MovieViewSet(viewsets.ModelViewSet):
             movie.poster=request.data['poster']
         if 'landscape' in request.data:
             movie.landscape=request.data['landscape']
+        if 'is_released' in request.data:
+            movie.is_released=request.data['is_released']
+        if 'in_theater' in request.data:
+            movie.in_theater=request.data['in_theater']
         if 'rating' in request.data:            
             rating = Rating.objects.get(id=int(request.data['rating']))
             movie.rating=rating   
+        if 'trailer' in request.data:
+            movie.trailer=request.data['trailer']
         if 'genre' in request.data:            
             for item in request.data['genre']:
                 movie.genre.add(int(item))     
-        if 'crew' in request.data:  
-            for c in request.data['crew']:           
-                artist = Artist.objects.get(id=int(c['artist']))             
-                role = Occupation.objects.get(id=int(c['role']))
-                member, created = Member.objects.get_or_create(artist=artist, role=role)                
-                movie.member.add(member)
-        if 'cast' in request.data:  
-            for c in request.data['cast']:       
-                artist = Artist.objects.get(id=int(c['actor']))             
-                role_name = str(c['role_name'])                 
-                cast, created = Cast.objects.get_or_create(artist=artist, role_name=role_name)    
-                movie.cast.add(cast)
 
         movie.save()
         serializer = MovieSerializer(movie)
@@ -257,10 +243,16 @@ class MovieViewSet(viewsets.ModelViewSet):
             movie.duration=request.data['duration']
         if 'releasedate' in request.data:
             movie.releasedate=request.data['releasedate']
+        if 'trailer' in request.data:
+            movie.trailer=request.data['trailer']
         if 'poster' in request.data:
             movie.poster=request.data['poster']
         if 'landscape' in request.data:
             movie.landscape=request.data['landscape']
+        if 'is_released' in request.data:
+            movie.is_released=request.data['is_released']
+        if 'in_theater' in request.data:
+            movie.in_theater=request.data['in_theater']
         if 'rating' in request.data:            
             rating = Rating.objects.get(id=int(request.data['rating']))
             movie.rating=rating   
@@ -268,20 +260,6 @@ class MovieViewSet(viewsets.ModelViewSet):
             movie.genre.clear()   
             for item in request.data['genre']:
                 movie.genre.add(int(item))     
-        if 'crew' in request.data:  
-            movie.member.clear()
-            for c in request.data['crew']:           
-                artist = Artist.objects.get(id=int(c['artist']))             
-                role = Occupation.objects.get(id=int(c['role']))
-                member, created = Member.objects.get_or_create(artist=artist, role=role)                
-                movie.member.add(member)
-        if 'cast' in request.data:  
-            movie.cast.clear()
-            for c in request.data['cast']:       
-                artist = Artist.objects.get(id=int(c['actor']))             
-                role_name = str(c['role_name'])                 
-                cast, created = Cast.objects.get_or_create(artist=artist, role_name=role_name)    
-                movie.cast.add(cast)
         if 'like' in request.data:
             user = Token.objects.get(key=request.data['token']).user
             profile = Profile.objects.get(user=user)
@@ -326,6 +304,7 @@ class MovieViewSet(viewsets.ModelViewSet):
             user = Token.objects.get(key=request.data['token']).user            
             profile = Profile.objects.get(user=user)
             movie.views = movie.views - 1
+            print(score)
             # Remove score
             if (score == 0):
                 score_obj = profile.scores.get(movie=movie)              
@@ -352,6 +331,51 @@ class MovieViewSet(viewsets.ModelViewSet):
         serializer = MovieSerializer(movie)
         headers = self.get_success_headers(serializer.data)        
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)  
+
+class MemberViewSet(viewsets.ModelViewSet):
+    serializer_class = MemberSerializer
+    queryset = Member.objects.all()
+
+    def get_queryset(self):
+        queryset = Member.objects.all()       
+        artist = self.request.query_params.get('artist', None)
+        movie = self.request.query_params.get('movie', None)        
+        if artist is not None:
+            queryset = queryset.filter(artist__id=artist)
+        if movie is not None:
+            queryset = queryset.filter(movie__id=movie)       
+        return queryset
+
+    def create(self, request, *args, **kwargs):           
+        print(request.data)
+        artist = Artist.objects.get(id=int(request.data['artist']))
+        movie = Movie.objects.get(id=int(request.data['movie']))
+        role = request.data['role']
+        role_name = request.data['role_name']
+        member = Member.objects.create(
+            artist=artist,
+            movie=movie,
+            role_name=role_name
+        )
+        for r in role:
+            member.role.add(r)        
+        member.save()
+        serializer = MemberSerializer(member)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):                         
+        member = self.get_object()      
+        role = request.data['role']
+        role_name = request.data['role_name']
+        member.role.clear()
+        for r in role:
+            member.role.add(r)  
+        member.role_name = role_name                 
+        member.save()
+        serializer = MemberSerializer(member)
+        headers = self.get_success_headers(serializer.data)        
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)       
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer

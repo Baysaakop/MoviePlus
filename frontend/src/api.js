@@ -10,6 +10,7 @@ const api = {
     productions: baseUrl + 'api/movies/productions',
     occupations: baseUrl + 'api/movies/occupations',
     artists: baseUrl + 'api/movies/artists',
+    members: baseUrl + 'api/movies/members',
     reviews: baseUrl + 'api/movies/reviews',
     users: baseUrl + 'api/users',
     signin: baseUrl + 'rest-auth/login/',

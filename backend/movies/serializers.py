@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Cast, Movie, Review
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review
 from users.models import User, Profile
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -29,28 +29,21 @@ class ArtistSerializer(serializers.ModelSerializer):
         model = Artist
         fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 'views', 'likes', 'followers', 'created_by', 'created_at')  
 
-class MemberSerializer(serializers.ModelSerializer):
-    artist = ArtistSerializer(read_only=True)
-    role = OccupationSerializer(read_only=True)
-    class Meta:
-        model = Member
-        fields = ('id', 'artist', 'role')    
-
-class CastSerializer(serializers.ModelSerializer):
-    artist = ArtistSerializer(read_only=True)    
-    class Meta:
-        model = Cast
-        fields = ('id', 'artist', 'role_name')    
-
 class MovieSerializer(serializers.ModelSerializer):
     rating = RatingSerializer(read_only=True)
     genre = GenreSerializer(read_only=True, many=True)
     production = ProductionSerializer(read_only=True, many=True)
-    member = MemberSerializer(read_only=True, many=True)
-    cast = CastSerializer(read_only=True, many=True)
     class Meta:
         model = Movie
-        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'member', 'cast', 'views', 'likes', 'watched', 'watchlist', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
+        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'is_released', 'in_theater', 'genre', 'production', 'views', 'likes', 'watched', 'watchlist', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
+
+class MemberSerializer(serializers.ModelSerializer):
+    artist = ArtistSerializer(read_only=True)
+    movie = MovieSerializer(read_only=True)
+    role = OccupationSerializer(read_only=True, many=True)
+    class Meta:
+        model = Member
+        fields = ('id', 'artist', 'movie', 'role', 'role_name')    
 
 class ProfileSerializer(serializers.ModelSerializer):            
     class Meta:

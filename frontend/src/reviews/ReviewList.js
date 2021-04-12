@@ -136,7 +136,7 @@ function PostList (props) {
                                 </div>
                                 <div>
                                     <Link to={`/posts/${item.id}`}>
-                                        <Button type="ghost" style={{ alignSelf: 'flex-end' }}>Үргэжлүүлэх</Button>
+                                        <Button type="ghost" style={{ alignSelf: 'flex-end' }}>Унших</Button>
                                     </Link>
                                 </div>
                             </div>
@@ -146,7 +146,7 @@ function PostList (props) {
                 <Pagination
                     current={1}
                     total={total}
-                    pageSize={12}
+                    pageSize={24}
                     hideOnSinglePage={true}
                     showSizeChanger={false}
                     showTotal={showTotal}

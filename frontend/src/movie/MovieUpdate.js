@@ -1,5 +1,5 @@
-import { DeleteOutlined, MinusCircleOutlined, PlusCircleOutlined, ToolOutlined } from '@ant-design/icons';
-import { Typography, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker, message, Spin } from 'antd';
+import { DeleteOutlined, ToolOutlined } from '@ant-design/icons';
+import { Typography, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker, message, Spin, Radio } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ImageUpload from '../components/ImageUpload';
 import axios from 'axios';
@@ -16,8 +16,6 @@ function MovieUpdate (props) {
     const [landscape, setLandscape] = useState();
     const [ratings, setRatings] = useState(); 
     const [genres, setGenres] = useState(); 
-    const [occupations, setOccupations] = useState(); 
-    const [artists, setArtists] = useState(); 
     const [movies, setMovies] = useState();
     const [loading, setLoading] = useState();
     const [selection, setSelection] = useState(); 
@@ -42,17 +40,7 @@ function MovieUpdate (props) {
         })        
         .catch(err => {
             console.log(err.message);
-        }) 
-        axios({
-            method: 'GET',                        
-            url: api.occupations
-        })
-        .then(res => {                        
-            setOccupations(res.data.results);            
-        })        
-        .catch(err => {
-            console.log(err.message);
-        }) 
+        })         
     }, [])
 
     function onMovieSearch(value) {                
@@ -71,64 +59,22 @@ function MovieUpdate (props) {
     }
 
     function selectMovie (value) {                        
-        const target = movies.find(x => x.id === parseInt(value))             
-        console.log(target)           
-        let temp = []
-        if (target.member && target.member.length > 0) {            
-            target.member.forEach(m => {
-                let cur = temp.find(x => x.id === m.artist.id);
-                if (!cur || cur === null) {
-                    temp.push(m.artist)   
-                }                
-            })            
-        }
-        if (target.cast && target.cast.length > 0) {            
-            target.cast.forEach(m => {
-                let cur = temp.find(x => x.id === m.artist.id);
-                if (!cur || cur === null) {
-                    temp.push(m.artist)   
-                }  
-            })            
-        }
-        setArtists(temp)
+        const target = movies.find(x => x.id === parseInt(value))                     
         form.setFieldsValue({
             name: target.name !== null ? target.name : "",
             description: target.description !== null ? target.description : "",
             plot: target.plot !== null ? target.plot : "",
             duration: target.duration !== null ? target.duration : "",
             releasedate: target.releasedate !== null ? moment(target.releasedate) : undefined,
+            is_released: target.is_released,
+            in_theater: target.in_theater,
             rating: target.rating !== null ? target.rating.id.toString() : undefined ,                  
             genre: target.genre !== null && target.genre.length > 0 ? getIDsFromArray(target.genre) : undefined, 
-            crew: target.member !== null && target.member.length > 0 ? getMembers(target.member) : undefined,              
-            cast: target.cast !== null && target.cast.length > 0 ? getCast(target.cast) : undefined,                                                                                                                 
+            trailer: target.trailer !== null ? target.trailer : "",                                                                                                            
         })     
         setPoster(target.poster)        
         setLandscape(target.landscape)        
         setSelection(target)
-    }
-
-    function getMembers(members) {        
-        let res = []
-        members.forEach(member => {
-            let d = {
-                artist: member.artist.id.toString(),
-                role: member.role.id.toString()
-            }            
-            res.push(d)
-        })
-        return res
-    }
-
-    function getCast(cast) {        
-        let res = []
-        cast.forEach(member => {
-            let d = {
-                actor: member.artist.id.toString(),
-                role_name: member.role_name
-            }            
-            res.push(d)
-        })
-        return res
     }
 
     function getIDsFromArray (array) {
@@ -152,45 +98,6 @@ function MovieUpdate (props) {
         return true;
     }
 
-    function compareCrew (crew, members) {
-        if (crew.length !== members.length) {
-            return false;
-        }
-        let i;
-        for (i = 0; i < crew.length; i++) {
-            if (crew[i].artist !== members[i].id.toString() && crew[i].artist !== members[i].name) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    function compareCast (cast, members) {
-        if (cast.length !== members.length) {
-            return false;
-        }
-        let i;
-        for (i = 0; i < cast.length; i++) {
-            if (cast[i].actor !== members[i].id.toString() && cast[i].actor !== members[i].name) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    function onArtistSearch(value) {                
-        axios({
-            method: 'GET',                        
-            url: api.artists + "?name=" + value
-        })
-        .then(res => {                        
-            setArtists(res.data.results);            
-        })        
-        .catch(err => {
-            console.log(err.message);
-        })      
-    }
-
     function onFinish (values) {      
         console.log(values)            
         if (selection) {
@@ -212,17 +119,20 @@ function MovieUpdate (props) {
             if (values.duration && values.duration !== selection.duration) {            
                 data['duration'] = values.duration;
             }
+            if (values.is_released && values.is_released !== selection.is_released) {            
+                data['is_released'] = values.is_released;
+            }
+            if (values.in_theater && values.in_theater !== selection.in_theater) {            
+                data['in_theater'] = values.in_theater;
+            }
             if (values.rating && values.rating !== selection.rating.id.toString()) {            
                 data['rating'] = values.rating;
             }
             if (values.genre && !compareM2M(values.genre, selection.genre)) {
                 data['genre'] = values.genre;
             }
-            if (values.crew && !compareCrew(values.crew, selection.member)) {
-                data['crew'] = values.crew;
-            }
-            if (values.cast && !compareCast(values.cast, selection.cast)) {
-                data['cast'] = values.cast;
+            if (values.trailer && values.trailer !== selection.trailer) {            
+                data['trailer'] = values.trailer;
             }
             var formData = new FormData();
             if (poster && poster !== selection.poster) {
@@ -404,6 +314,27 @@ function MovieUpdate (props) {
                             </Form.Item>
                         </Col>
                     </Row>
+                    <Form.Item name="trailer" label="Трейлер:">
+                        <Input />
+                    </Form.Item>
+                    <Row gutter={16}>       
+                        <Col xs={24} sm={12}>                        
+                            <Form.Item name="is_released" label="Нээлтээ хийсэн:">                               
+                                <Radio.Group defaultValue={false}>
+                                    <Radio value={true}>Тийм</Radio>
+                                    <Radio value={false}>Үгүй</Radio>
+                                </Radio.Group> 
+                            </Form.Item>
+                        </Col>             
+                        <Col xs={24} sm={12}>                        
+                            <Form.Item name="in_theater" label="Одоо гарч буй:">                               
+                                <Radio.Group defaultValue={false}>
+                                    <Radio value={true}>Тийм</Radio>
+                                    <Radio value={false}>Үгүй</Radio>
+                                </Radio.Group>          
+                            </Form.Item>
+                        </Col>                                   
+                    </Row>
                     <Row gutter={16}>       
                         <Col xs={24} sm={12} md={12} lg={8}>                        
                             <Form.Item name="poster" label="Постер:">                               
@@ -415,143 +346,7 @@ function MovieUpdate (props) {
                                 <ImageUpload image={landscape} onImageSelected={onLandscapeSelected} height="300px" width="600px" />                        
                             </Form.Item>
                         </Col>                                   
-                    </Row>
-                    <Row gutter={[16, 16]}>
-                        <Col span={11} style={{ marginBottom: '8px' }}>
-                            <Typography.Text>Баг бүрэлдэхүүн</Typography.Text>                                
-                        </Col>
-                        <Col span={11}>
-                            <Typography.Text>Үүрэг</Typography.Text>
-                        </Col>
-                        <Col span={2}></Col>                    
-                    </Row>
-                    <Form.List name="crew">                                                        
-                        {(fields, { add, remove }) => (
-                        <>
-                            {fields.map(field => (
-                            <Row key={field.key} gutter={[8, 8]} style={{ width: '100%' }}>
-                                <Col span={11}>
-                                    <Form.Item
-                                    {...field}
-                                        name={[field.name, 'artist']}
-                                        fieldKey={[field.fieldKey, 'artist']}                                                
-                                    >
-                                        <Select 
-                                            showSearch
-                                            onSearch={onArtistSearch}                                
-                                            placeholder="Уран бүтээлч"                                                
-                                            optionFilterProp="children"                                                             
-                                        >
-                                            { artists ? (
-                                                <>
-                                                    { artists.map(item => {
-                                                        return (
-                                                            <Option key={item.id}>{item.name}</Option>
-                                                        )
-                                                    })}
-                                                </>
-                                            ) : (
-                                                <></>
-                                            )}
-                                        </Select> 
-                                    </Form.Item>
-                                </Col>
-                                <Col span={11}>
-                                    <Form.Item
-                                    {...field}
-                                        name={[field.name, 'role']}
-                                        fieldKey={[field.fieldKey, 'role']}                                      
-                                    >
-                                        <Select 
-                                            showSearch                                                              
-                                            placeholder="Үүрэг"                                                
-                                            optionFilterProp="children"                                                             
-                                        >
-                                            { occupations ? (
-                                                <>
-                                                    { occupations.map(item => {
-                                                        return (
-                                                            <Option key={item.id}>{item.name}</Option>
-                                                        )
-                                                    })}
-                                                </>
-                                            ) : (
-                                                <></>
-                                            )}
-                                        </Select> 
-                                    </Form.Item>   
-                                </Col>
-                                <Col span={2}>
-                                    <Form.Item>
-                                        <PlusCircleOutlined onClick={() => add()} style={{ marginRight: '8px', fontSize: '20px', color: '#888' }} />
-                                        <MinusCircleOutlined onClick={() => remove(field.name)} style={{ fontSize: '20px', color: '#888' }} />
-                                    </Form.Item>  
-                                </Col>
-                            </Row>
-                            ))}                                
-                        </>
-                        )}                                                                                                            
-                    </Form.List>
-                    <Row gutter={[16, 16]}>
-                        <Col span={11} style={{ marginBottom: '8px' }}>
-                            <Typography.Text>Жүжигчид</Typography.Text>                                
-                        </Col>
-                        <Col span={11}>
-                            <Typography.Text>Дүр</Typography.Text>
-                        </Col>
-                        <Col span={2}></Col>                    
-                    </Row>
-                    <Form.List name="cast">                                                        
-                        {(fields, { add, remove }) => (
-                        <>
-                            {fields.map(field => (
-                            <Row key={field.key} gutter={[8, 8]} style={{ width: '100%' }}>
-                                <Col span={11}>
-                                    <Form.Item
-                                    {...field}
-                                        name={[field.name, 'actor']}
-                                        fieldKey={[field.fieldKey, 'actor']}                                                 
-                                    >
-                                        <Select 
-                                            showSearch
-                                            onSearch={onArtistSearch}                                
-                                            placeholder="Уран бүтээлч"                                                
-                                            optionFilterProp="children"                                                             
-                                        >
-                                            { artists ? (
-                                                <>
-                                                    {artists.map(item => {
-                                                        return (
-                                                            <Option key={item.id}>{item.name}</Option>
-                                                        )
-                                                    })}
-                                                </>
-                                            ) : (
-                                                <></>
-                                            )}
-                                        </Select> 
-                                    </Form.Item>
-                                </Col>
-                                <Col span={11}>
-                                    <Form.Item
-                                    {...field}
-                                        name={[field.name, 'role_name']}
-                                        fieldKey={[field.fieldKey, 'role_name']}                                      
-                                    >
-                                        <Input placeholder="Дүр" /> 
-                                    </Form.Item>   
-                                </Col>
-                                <Col span={2}>
-                                    <Form.Item>
-                                        <PlusCircleOutlined onClick={() => add()} style={{ marginRight: '8px', fontSize: '20px', color: '#888' }} />
-                                        <MinusCircleOutlined onClick={() => remove(field.name)} style={{ fontSize: '20px', color: '#888' }} />
-                                    </Form.Item>  
-                                </Col>
-                            </Row>
-                            ))}                                
-                        </>
-                        )}                                                                                                            
-                    </Form.List>               
+                    </Row>                                                      
                     <Form.Item>
                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                             <Popconfirm title="Засах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>

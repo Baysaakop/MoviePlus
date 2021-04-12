@@ -6,6 +6,7 @@ import api from '../api';
 import { DeleteOutlined, ToolOutlined } from '@ant-design/icons';
 import { connect } from "react-redux";
 import moment from 'moment';
+import Filmography from './Filmography';
 
 const { TextArea, Search } = Input;
 const { Option } = Select;
@@ -264,6 +265,9 @@ function ArtistUpdate (props) {
                             </Form.Item> 
                         </Col>
                     </Row>   
+                    <Form.Item label="Уран бүтээлүүд">
+                        <Filmography id={selection.id} />
+                    </Form.Item>                    
                     <Form.Item>
                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                             <Popconfirm title="Засах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
