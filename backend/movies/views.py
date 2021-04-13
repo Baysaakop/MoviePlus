@@ -50,7 +50,7 @@ class ArtistViewSet(viewsets.ModelViewSet):
         occupation = self.request.query_params.get('occupation', None)
         order = self.request.query_params.get('order', None)
         if name is not None:
-            queryset = queryset.filter(name__istartswith=name)
+            queryset = queryset.filter(name__icontains=name)
         if occupation is not None:
             queryset = queryset.filter(occupation__id=occupation)
         if order is not None:
@@ -156,6 +156,16 @@ class ArtistViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)        
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)       
 
+def calculateScore(id):
+    scores = Score.objects.filter(movie__id=id)
+    if scores is None:
+        return 0
+    else:
+        total = 0
+        for score in scores:
+            total = total + score.score        
+        return int(total / scores.count())
+
 class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
@@ -167,7 +177,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         order = self.request.query_params.get('order', None)
         artist = self.request.query_params.get('artist', None)
         if name is not None:
-            queryset = queryset.filter(name__istartswith=name)
+            queryset = queryset.filter(name__icontains=name)
         if genre is not None:
             queryset = queryset.filter(genre__id=genre)
         if artist is not None:
@@ -233,8 +243,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):                         
-        movie = self.get_object()                 
-        # user = Token.objects.get(key=request.data['token']).user        
+        movie = self.get_object()                         
         if 'description' in request.data:
             movie.description=request.data['description']
         if 'plot' in request.data:
@@ -303,29 +312,35 @@ class MovieViewSet(viewsets.ModelViewSet):
             score = int(request.data['score'])
             user = Token.objects.get(key=request.data['token']).user            
             profile = Profile.objects.get(user=user)
-            movie.views = movie.views - 1
-            print(score)
+            movie.views = movie.views - 1            
             # Remove score
             if (score == 0):
                 score_obj = profile.scores.get(movie=movie)              
-                if (movie.score_count == 1):
-                    movie.score = 0
-                    movie.score_count = 0
-                else:
-                    movie.score = int(((movie.score * movie.score_count) - score_obj.score) / (movie.score_count - 1))
-                    movie.score_count = movie.score_count - 1
+                # if (movie.score_count == 1):
+                #     movie.score = 0
+                #     movie.score_count = 0
+                # else:
+                #     movie.score = int(((movie.score * movie.score_count) - score_obj.score) / (movie.score_count - 1))
+                #     movie.score_count = movie.score_count - 1
                 profile.scores.remove(score_obj)
+                movie.score = calculateScore(movie.id)
+                movie.score_count = movie.score_count - 1
             else:
                 score_obj, created = profile.scores.get_or_create(movie=movie)
                 score_obj.score = score
                 score_obj.save()
-                # New score
-                if created:                                
-                    movie.score = int(((movie.score * movie.score_count) + score) / (movie.score_count + 1))
+                if created:
+                    movie.score = calculateScore(movie.id)
                     movie.score_count = movie.score_count + 1
-                # Update score
                 else:
-                    movie.score = int(((movie.score * (movie.score_count - 1)) + score) / movie.score_count )
+                    movie.score = calculateScore(movie.id)                    
+                # New score
+                # if created:                                
+                #     movie.score = int(((movie.score * movie.score_count) + score) / (movie.score_count + 1))
+                #     movie.score_count = movie.score_count + 1
+                # # Update score
+                # else:
+                #     movie.score = int(((movie.score * (movie.score_count - 1)) + score) / movie.score_count )
             profile.save()
         movie.save()
         serializer = MovieSerializer(movie)

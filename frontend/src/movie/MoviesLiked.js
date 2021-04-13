@@ -3,7 +3,8 @@ import React from 'react';
 // import MovieCard from './MovieCard';
 import MovieCard2 from './MovieCard2';
 
-function MoviesLiked (props) {    
+function MoviesLiked (props) {        
+
     return (
         <div>            
             <List                        

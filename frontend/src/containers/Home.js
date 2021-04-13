@@ -433,7 +433,7 @@ function Home (props) {
                     <Col xs={24} sm={24} md={24} lg={18}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                                <Typography.Title level={4} style={{ margin: 0 }}>МЭДЭЭЛЭЛ</Typography.Title>
+                                <Typography.Title level={4} style={{ margin: 0 }}>НИЙТЛЭЛ</Typography.Title>
                             </div>
                             <div>
                                 <Button type="ghost" href="/movies">

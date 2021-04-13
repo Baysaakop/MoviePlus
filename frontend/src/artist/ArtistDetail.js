@@ -162,7 +162,7 @@ function ArtistDetail (props) {
             { artist ? (
                 <div>
                     <div style={{ height: `${getHeight()}px` }}>
-                        <div style={{ width: '100%', height: '100%', opacity: '1', backgroundColor: '#0d1117' }} />                       
+                        <div style={{ width: '100%', height: '100%' }} />                       
                     </div>
                     <div style={{ padding: getPadding() }} className="detail">
                         <Row gutter={[16, 16]} style={{ marginTop: '-20%', paddingBottom: '40px' }}>
@@ -228,29 +228,7 @@ function ArtistDetail (props) {
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Уран бүтээлүүд" key="2">
                                                 <Typography.Title level={5}>Уран бүтээлүүд</Typography.Title>
-                                                <Filmography id={artist.id} />
-                                                {/* <List                                                                                                        
-                                                    itemLayout="horizontal"                                                    
-                                                    dataSource={movie.member ? movie.member : undefined}
-                                                    renderItem={item => (
-                                                    <List.Item>                                                        
-                                                        <List.Item.Meta
-                                                            avatar={
-                                                                <Avatar size="large" src={item.artist.avatar} />
-                                                            }
-                                                            title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}
-                                                            description={item.artist.occupation.map(occupation => {
-                                                                return (
-                                                                    <span>{occupation.name} </span>
-                                                                )
-                                                            })}
-                                                        />
-                                                        <Typography.Text>
-                                                            {item.role.name}
-                                                        </Typography.Text>                                                        
-                                                    </List.Item>
-                                                    )}
-                                                /> */}
+                                                <Filmography id={artist.id} />       
                                             </Tabs.TabPane>                                            
                                             <Tabs.TabPane tab="Зураг" key="3">
                                                 <Typography.Title level={5}>Зураг</Typography.Title>

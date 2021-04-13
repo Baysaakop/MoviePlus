@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const { useBreakpoint } = Grid;
 
-function PostDetail (props) {
+function ReviewDetail (props) {
     const screens = useBreakpoint();    
     const [user, setUser] = useState();
     const [post, setPost] = useState();  
@@ -147,20 +147,20 @@ function PostDetail (props) {
                                 <img src={post.thumbnail} alt="thumbnail" style={{ maxHeight: '300px', width: '100%', height: 'auto', objectFit: 'scale-down'  }} />
                                 <Typography.Paragraph style={{ marginTop: '16px', padding: '8px' }}>
                                     <div dangerouslySetInnerHTML={{__html: post.content }} />                                            
-                                </Typography.Paragraph>                                
+                                </Typography.Paragraph>                                                               
                                 <Row gutter={[16, 16]}>
                                     <Col xs={24} sm={24} md={18}>
                                         <Tooltip title="Үзсэн">
-                                            <Button type="ghost" size="large" icon={<EyeOutlined />} style={{ marginLeft: '8px', border: 0 }}>{formatCount(post.views)}</Button>
+                                            <Button type="ghost" size="large" icon={<EyeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(post.views)}</Button>
                                         </Tooltip>                        
                                         <Tooltip title="Таалагдсан">
-                                            <Button type={user && user.profile.review_likes.find(x => x.id === post.id) !== undefined ? "primary" : "ghost"} onClick={like} size="large" icon={<LikeOutlined />} style={{ marginLeft: '8px', border: 0 }}>{formatCount(post.likes)}</Button>
+                                            <Button type={user && user.profile.review_likes.find(x => x.id === post.id) !== undefined ? "primary" : "ghost"} onClick={like} size="large" icon={<LikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(post.likes)}</Button>
                                         </Tooltip>
                                         <Tooltip title="Сэтгэгдэл">
-                                            <Button type="ghost" size="large" icon={<CommentOutlined />} style={{ marginLeft: '8px', border: 0 }}>15</Button>
+                                            <Button type="ghost" size="large" icon={<CommentOutlined />} style={{ marginLeft: '8px' }}>15</Button>
                                         </Tooltip>
                                         <Tooltip title="Хуваалцах">
-                                            <Button type="ghost" size="large" icon={<ShareAltOutlined />} style={{ marginLeft: '8px', border: 0 }}>241</Button>
+                                            <Button type="ghost" size="large" icon={<ShareAltOutlined />} style={{ marginLeft: '8px' }}>241</Button>
                                         </Tooltip>
                                     </Col>
                                     <Col xs={24} sm={24} md={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -259,4 +259,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(PostDetail);
+export default connect(mapStateToProps)(ReviewDetail);

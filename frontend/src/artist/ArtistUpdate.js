@@ -126,10 +126,10 @@ function ArtistUpdate (props) {
                 }
             }).then(res => {                        
                 if (res.status === 201 || res.status === 200) {                
-                    message.info("Засварлалаа.");
+                    message.info("Амжилттай");
                 }             
             }).catch(err => {   
-                message.error("Амжилтгүй боллоо."); 
+                message.error("Амжилтгүй"); 
                 console.log(err);            
             })
         } else {

@@ -27,19 +27,7 @@ function MovieMembers (props) {
         .catch(err => {
             console.log(err.message);
         })      
-    }, [props.id])
-
-    function getMembers (data) {        
-        const result = []        
-        data.forEach(member => {
-            member.role.forEach(role => {
-                if (role.id !== 1 && !result.includes(member)) {
-                    result.push(member)
-                }
-            })
-        })
-        return result
-    }
+    }, [props.id])    
 
     function getRoles (data) {        
         const result = []
@@ -61,7 +49,7 @@ function MovieMembers (props) {
                     <List.Item.Meta
                         avatar={
                             <a href={`/artists/${item.artist.id}`}>
-                                <Avatar size="large" src={item.artist.avatar} />
+                                <Avatar size={48} src={item.artist.avatar} />
                             </a>
                         }
                         title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}

@@ -204,7 +204,7 @@ function MovieAdd (props) {
                 <Row gutter={16}>       
                     <Col xs={24} sm={12}>                        
                         <Form.Item name="is_released" label="Нээлтээ хийсэн:">                               
-                            <Radio.Group defaultValue={false}>
+                            <Radio.Group defaultValue={true}>
                                 <Radio value={true}>Тийм</Radio>
                                 <Radio value={false}>Үгүй</Radio>
                             </Radio.Group> 

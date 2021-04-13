@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import api from '../api';
 import AccountDetail from './AccountDetail';
-import { CheckCircleOutlined, CloseCircleOutlined, LikeOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined, LoadingOutlined, FormOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined, LoadingOutlined, FormOutlined, HeartOutlined } from '@ant-design/icons';
 import Logout from './Logout';
 import Moderator from './Moderator';
 import MoviesLiked from '../movie/MoviesLiked';
 import ReviewCreate from '../reviews/ReviewCreate';
+import ReviewUpdate from '../reviews/ReviewUpdate';
 
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -29,7 +30,8 @@ function Profile (props) {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${props.token}`
                 }
-            }).then(res => {                            
+            }).then(res => {               
+                console.log(res.data)             
                 setUser(res.data)                
                 setLoading(false)
             }).catch(err => {                
@@ -75,7 +77,7 @@ function Profile (props) {
                                 <AccountDetail user={user ? user : undefined} token={props.token} />
                             </div>
                         </Tabs.TabPane>                        
-                        <Tabs.TabPane tab={<span><LikeOutlined style={{ fontSize: '18px' }} />Таалагдсан кино</span>} key="2">
+                        <Tabs.TabPane tab={<span><HeartOutlined style={{ fontSize: '18px' }} />Таалагдсан кино</span>} key="2">
                             <div style={{ padding: '8px' }}>
                                 <Typography.Title level={5}>Таалагдсан кино</Typography.Title>
                                 <MoviesLiked movies={user.profile.likes} />                 
@@ -100,6 +102,9 @@ function Profile (props) {
                                 </Tabs.TabPane>
                                 <Tabs.TabPane tab={<span><FormOutlined style={{ fontSize: '18px' }} />Нийтлэл оруулах</span>} key="7">
                                     <ReviewCreate token={props.token} />
+                                </Tabs.TabPane>
+                                <Tabs.TabPane tab={<span><FormOutlined style={{ fontSize: '18px' }} />Нийтлэл засах</span>} key="8">
+                                    <ReviewUpdate token={props.token} userID={user.id} />
                                 </Tabs.TabPane>
                             </>
                         ) : (

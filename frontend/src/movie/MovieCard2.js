@@ -196,7 +196,7 @@ function MovieCard2 (props) {
                                 )}                                
                             </div>
                             <div className="play">
-                                <Button type="ghost" size="large" shape="circle" icon={<PlayCircleOutlined style={{ fontSize: '32px' }} />} style={{ border: 0, width: '50px', height: '50px', paddingTop: '9px' }} onClick={showModal}></Button>                                    
+                                <Button type="ghost" size="large" shape="circle" icon={<PlayCircleOutlined style={{ fontSize: '32px', color: '#FFF' }} />} style={{ border: 0, width: '50px', height: '50px', paddingTop: '9px' }} onClick={showModal}></Button>                                    
                                 <Modal 
                                     title={props.movie.name}      
                                     visible={modalVisible}

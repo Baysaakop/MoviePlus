@@ -3,13 +3,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import api from '../api';
 import ImageUpload from '../components/ImageUpload';
-import { connect } from "react-redux";
 import { Editor } from '@tinymce/tinymce-react';
 import './ReviewCreate.css';
 
 const { Option } = Select;
 
-const PostCreate = (props) => {
+const ReviewCreate = (props) => {
     const [form] = Form.useForm()    
     const [image, setImage] = useState();
     const [content, setContent] = useState();
@@ -41,8 +40,12 @@ const PostCreate = (props) => {
         formData.append('title', values.title);
         formData.append('content', content);        
         formData.append('thumbnail', image);
-        formData.append('score', values.score);
-        formData.append('movie', values.movie);
+        if (values.score && values.score > 0) {
+            formData.append('score', values.score);
+        }
+        if (values.movie && values.movie !== null) {
+            formData.append('movie', values.movie);
+        }        
         formData.append('token', props.token);
         axios({
             method: 'POST',
@@ -54,10 +57,10 @@ const PostCreate = (props) => {
             }
         }).then(res => {                        
             if (res.status === 201 || res.status === 200) {                
-                message.info("Saved successfully")
+                message.info("Амжилттай")
             }             
         }).catch(err => {
-            message.error(err.message)
+            message.error("Амжилтгүй")
             console.log(err)
         })
     };
@@ -88,7 +91,7 @@ const PostCreate = (props) => {
                         rules={[{ required: true, message: 'Зураг оруулна уу!' }]}                 
                     >                       
                         <div style={{ width: '100%', height: '200px' }}>
-                            <ImageUpload width="400px" height="200px" onImageSelected={onImageSelected} imageUrl={undefined} />                        
+                            <ImageUpload width="400px" height="200px" onImageSelected={onImageSelected} image={undefined} />                        
                         </div>
                     </Form.Item>         
                     <Form.Item
@@ -153,10 +156,4 @@ const PostCreate = (props) => {
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        token: state.token
-    }
-}
-
-export default connect(mapStateToProps)(PostCreate);
+export default ReviewCreate;

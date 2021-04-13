@@ -8,7 +8,7 @@ import moment from 'moment';
 
 const { useBreakpoint } = Grid;
 
-function PostList (props) {
+function ReviewList (props) {
     const screens = useBreakpoint();
     const [posts, setPosts] = useState();
     const [page, setPage] = useState(1);
@@ -157,5 +157,5 @@ function PostList (props) {
     )
 }
 
-export default PostList;
+export default ReviewList;
 

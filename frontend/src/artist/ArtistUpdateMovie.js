@@ -73,8 +73,7 @@ function ArtistUpdateMovie (props) {
         })
     }
 
-    function onFinish (values) {
-        console.log(values)
+    function onFinish (values) {        
         const data = {
             role: values.role ? values.role : undefined,
             role_name: values.role_name ? values.role_name : ""
@@ -88,14 +87,28 @@ function ArtistUpdateMovie (props) {
                 'Authorization': `Token ${props.token}`            
             }
         }).then(res => {                        
-            if (res.status === 201 || res.status === 200) {      
-                console.log(res)                                
+            if (res.status === 201 || res.status === 200) {                                            
                 message.success("Амжилттай")        
             }             
         }).catch(err => {   
             message.error("Амжилтгүй боллоо."); 
             console.log(err);            
         }) 
+    }
+
+    function onDelete () {
+        axios({
+            method: 'DELETE',
+            url: `${api.members}/${member.id}/`            
+        }).then(res => {                        
+            if (res.status === 204 || res.status === 200) {                                            
+                message.success("Устгалаа")        
+            }     
+            form.resetFields()                  
+        }).catch(err => {   
+            message.error("Амжилтгүй боллоо."); 
+            console.log(err);            
+        })         
     }
 
     return (
@@ -191,6 +204,11 @@ function ArtistUpdateMovie (props) {
                             <Popconfirm title="Хадгалах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
                                 <Button type="primary" style={{ marginRight: '8px' }}>
                                     Хадгалах   
+                                </Button>
+                            </Popconfirm>  
+                            <Popconfirm title="Устгах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={onDelete}>
+                                <Button danger type="primary" style={{ marginRight: '8px' }}>
+                                    Устгах   
                                 </Button>
                             </Popconfirm>                            
                         </Form>

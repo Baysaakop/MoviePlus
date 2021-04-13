@@ -33,14 +33,22 @@ function MovieCast (props) {
     return (
         <div>
             <List                                                                                                        
-                itemLayout="horizontal"                                                    
+                grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 2,
+                    md: 2,
+                    lg: 2,
+                    xl: 2,
+                    xxl: 2,
+                }}                                              
                 dataSource={members ? members : undefined}
                 renderItem={item => (
                 <List.Item>                                                        
                     <List.Item.Meta
                         avatar={
                             <a href={`/artists/${item.artist.id}`}>
-                                <Avatar size="large" src={item.artist.avatar} />
+                                <Avatar size={48} src={item.artist.avatar} />
                             </a>
                         }
                         title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}
