@@ -5,7 +5,10 @@ from rest_framework.response import Response
 from .serializers import UserSerializer, ScoreSerializer, ProfileSerializer
 from rest_framework import viewsets
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from django.conf import settings
 
 class ScoreViewSet(viewsets.ModelViewSet):
     serializer_class = ScoreSerializer
@@ -41,3 +44,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter

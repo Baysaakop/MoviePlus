@@ -48,7 +48,7 @@ function MovieCast (props) {
                     <List.Item.Meta
                         avatar={
                             <a href={`/artists/${item.artist.id}`}>
-                                <Avatar size={48} src={item.artist.avatar} />
+                                <Avatar size={64} src={item.artist.avatar} />
                             </a>
                         }
                         title={<a href={`/artists/${item.artist.id}`}>{item.artist.name}</a>}

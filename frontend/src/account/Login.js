@@ -102,14 +102,15 @@ const Login = (props) => {
                                 </Form.Item>
                                 <Divider>эсвэл</Divider>                                
                                 <GoogleLogin                                                                                                            
-                                    clientId="<Google Client ID>"
+                                    clientId="296268545765-t0tu72rhuo4g2rpia6b8qirt08i6mea2.apps.googleusercontent.com"
                                     buttonText=" Sign in with Google"
                                     render={renderProps => (
                                         <Button size="large" danger type="primary" onClick={renderProps.onClick} icon={<GoogleOutlined style={{ fontSize: '18px' }} />} style={{ width: '100%', marginBottom: '16px' }}>
                                             Sign in with Google
                                         </Button>
                                     )}
-                                    onSuccess={authGoogle}                                    
+                                    onSuccess={authGoogle} 
+                                    onFailure={authGoogle}                                   
                                 />
                                 <FacebookLogin
                                     cssClass="login-facebook"

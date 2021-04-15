@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,7 +127,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-REST_USE_JWT = False
+REST_USE_JWT = True
 # JWT_AUTH_COOKIE = 'my-app-auth' # The cookie key name can be the one you want
 
 REST_FRAMEWORK = {
@@ -139,8 +140,11 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [        
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-        'rest_framework.authentication.TokenAuthentication',        
-        'rest_framework.authentication.SessionAuthentication',        
+        # 'rest_framework.authentication.TokenAuthentication',        
+        # 'rest_framework.authentication.SessionAuthentication',   
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "dj_rest_auth.utils.JWTCookieAuthentication",     
     ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -153,13 +157,41 @@ REST_AUTH_SERIALIZERS = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '296268545765-t0tu72rhuo4g2rpia6b8qirt08i6mea2.apps.googleusercontent.com'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'dAbsyOSxqx4JIhjVnn7dm8aW'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid'] 
+# SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
 
-LOGIN_URL = 'http://localhost:8000/login'
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True, # IMPORTANT
+    'BLACKLIST_AFTER_ROTATION': True, # IMPORTANT
+    'UPDATE_LAST_LOGIN': True,
+}
+
+# ACCOUNT_AUTHENTICATION_METHOD = "email"
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+
+# LOGIN_URL = 'http://localhost:8000/login'
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
