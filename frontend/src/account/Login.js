@@ -31,11 +31,13 @@ const Login = (props) => {
     }
 
     function authFacebook (response) {
+        console.log(response)
         props.onAuthFacebook(response.accessToken)
     }
 
     function authGoogle (response) {
         console.log(response)
+        props.onAuthGoogle(response.accessToken)
     }
 
     return (
@@ -116,8 +118,8 @@ const Login = (props) => {
                                     cssClass="login-facebook"
                                     icon={<FacebookFilled />}
                                     textButton=" Sign in with Facebook"
-                                    appId="265092655117778"
-                                    fields="name,email,picture"                                    
+                                    appId="461902185229960"
+                                    fields="name,email"                                    
                                     callback={authFacebook}                                    
                                 />                                
                             </Form>                    
@@ -146,7 +148,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
     return {
         onAuth: (email, password) => dispatch(actions.authLogin(email, password)),
-        onAuthFacebook: (access_token) => dispatch(actions.authFacebook(access_token))
+        onAuthFacebook: (access_token) => dispatch(actions.authFacebook(access_token)),
+        onAuthGoogle: (access_token) => dispatch(actions.authGoogle(access_token)),
     }
 }
 

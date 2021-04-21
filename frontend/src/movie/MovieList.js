@@ -1,11 +1,12 @@
 import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
-// import MovieCard from './MovieCard';
-import MovieCard2 from './MovieCard2';
 import axios from 'axios';  
 import api from '../api';
 import { Link } from 'react-router-dom';
 import { LoadingOutlined } from '@ant-design/icons';
+// import MovieCard from './MovieCard';
+// import MovieCard2 from './MovieCard2';
+import MovieCard3 from './MovieCard3';
 
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -191,7 +192,7 @@ function MovieList() {
                             dataSource={movies ? movies : undefined}
                             renderItem={item => (
                                 <List.Item>
-                                    <MovieCard2 movie={item} />
+                                    <MovieCard3 movie={item} />
                                 </List.Item>
                             )} 
                             

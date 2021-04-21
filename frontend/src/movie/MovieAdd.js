@@ -126,8 +126,7 @@ function MovieAdd (props) {
 
     return (
         <div>
-            <Form layout="vertical" form={form} onFinish={onFinish}
-            >
+            <Form layout="vertical" form={form} onFinish={onFinish}>
                 <Form.Item name="name" label="Нэр:" rules={[{ required: true, message: 'Та киноны нэрийг оруулна уу!' }]}>
                     <Input />
                 </Form.Item>

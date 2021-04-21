@@ -39,9 +39,9 @@ class Artist(models.Model):
     gender = models.CharField(max_length=10, blank=True, null=True)    
     occupation = models.ManyToManyField(Occupation)    
     avatar = models.ImageField(upload_to='artists/%Y/%m/%d', null=True, blank=True)
-    views = models.IntegerField(default=0)
-    likes = models.IntegerField(default=0)
-    followers = models.IntegerField(default=0)    
+    view_count = models.IntegerField(default=0)
+    like_count = models.IntegerField(default=0)
+    follow_count = models.IntegerField(default=0)    
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='artist_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)        
 
@@ -56,14 +56,14 @@ class Movie(models.Model):
     releasedate = models.DateField(auto_now=False, null=True, blank=True)
     rating = models.ForeignKey(Rating, on_delete=models.CASCADE, null=True, blank=True)
     genre = models.ManyToManyField(Genre, null=True, blank=True)    
-    production = models.ManyToManyField(Production, null=True, blank=True)
-    # member = models.ManyToManyField(Member, null=True, blank=True)    
-    views = models.IntegerField(default=0)
-    likes = models.IntegerField(default=0)    
-    watched = models.IntegerField(default=0)    
-    watchlist = models.IntegerField(default=0)    
-    score = models.IntegerField(default=0)
+    production = models.ManyToManyField(Production, null=True, blank=True)    
+    view_count = models.IntegerField(default=0)
+    comment_count = models.IntegerField(default=0)
+    like_count = models.IntegerField(default=0)    
+    check_count = models.IntegerField(default=0)    
+    watchlist_count = models.IntegerField(default=0)    
     score_count = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
     poster = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     landscape = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     trailer = models.CharField(max_length=200, null=True, blank=True)
@@ -97,4 +97,48 @@ class Review(models.Model):
 
     def __str__(self):
         return self.title        
-    
+
+class Comment(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commenter")
+    comment = models.TextField()    
+    likes = models.ManyToManyField(User, related_name="likers")
+    dislikes = models.ManyToManyField(User, related_name="dislikers")
+    created_at = models.DateTimeField(auto_now_add=True)        
+
+    def __str__(self):
+        return self.user.username + " -> " + self.movie.name
+
+class Score(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="user_score")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)        
+
+    def __str__(self):
+        return self.user.username + " -> " + self.movie.name
+
+class Like(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="user_like")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)    
+    created_at = models.DateTimeField(auto_now_add=True)        
+
+    def __str__(self):
+        return self.user.username + " -> " + self.movie.name
+
+class Check(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="user_check")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)    
+    created_at = models.DateTimeField(auto_now_add=True)        
+
+    def __str__(self):
+        return self.user.username + " -> " + self.movie.name
+
+class Watchlist(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="user_watchlist")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)    
+    created_at = models.DateTimeField(auto_now_add=True)        
+
+    def __str__(self):
+        return self.user.username + " -> " + self.movie.name
+

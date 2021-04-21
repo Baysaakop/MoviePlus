@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review, Comment, Score, Like, Check, Watchlist
 from users.models import User, Profile
+# from users.serializers import UserSerializer
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,7 +28,8 @@ class ArtistSerializer(serializers.ModelSerializer):
     occupation = OccupationSerializer(read_only=True, many=True)
     class Meta:
         model = Artist
-        fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 'views', 'likes', 'followers', 'created_by', 'created_at')  
+        fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 
+        'view_count', 'like_count', 'follow_count', 'created_by', 'created_at')  
 
 class MovieSerializer(serializers.ModelSerializer):
     rating = RatingSerializer(read_only=True)
@@ -35,7 +37,9 @@ class MovieSerializer(serializers.ModelSerializer):
     production = ProductionSerializer(read_only=True, many=True)
     class Meta:
         model = Movie
-        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'is_released', 'in_theater', 'genre', 'production', 'views', 'likes', 'watched', 'watchlist', 'score', 'score_count', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
+        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'is_released', 'in_theater', 'genre', 'production', 
+        'view_count', 'comment_count', 'like_count', 'check_count', 'watchlist_count', 'score_count',
+        'score', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
 
 class MemberSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
@@ -62,3 +66,38 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ('id', 'title', 'content', 'thumbnail', 'movie', 'views', 'likes', 'score', 'created_by', 'created_at')    
+
+class CommentSerializer(serializers.ModelSerializer):          
+    movie = MovieSerializer(read_only=True)
+    user = UserSerializer(read_only=True)  
+    class Meta:
+        model = Comment
+        fields = ('id', 'movie', 'user', 'comment', 'likes', 'dislikes', 'created_at')    
+
+class ScoreSerializer(serializers.ModelSerializer):          
+    movie = MovieSerializer(read_only=True)
+    user = UserSerializer(read_only=True)  
+    class Meta:
+        model = Score
+        fields = ('id', 'movie', 'user', 'score', 'created_at')    
+
+class LikeSerializer(serializers.ModelSerializer):          
+    movie = MovieSerializer(read_only=True)
+    user = UserSerializer(read_only=True)  
+    class Meta:
+        model = Like
+        fields = ('id', 'movie', 'user', 'created_at')    
+
+class CheckSerializer(serializers.ModelSerializer):          
+    movie = MovieSerializer(read_only=True)
+    user = UserSerializer(read_only=True)  
+    class Meta:
+        model = Check
+        fields = ('id', 'movie', 'user', 'created_at')    
+
+class WatchlistSerializer(serializers.ModelSerializer):          
+    movie = MovieSerializer(read_only=True)
+    user = UserSerializer(read_only=True)  
+    class Meta:
+        model = Watchlist
+        fields = ('id', 'movie', 'user', 'created_at')    

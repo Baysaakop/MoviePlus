@@ -15,7 +15,7 @@ SECRET_KEY = 'c^-*o(i9ky+-^+=3ll1%%xang(f#c(!%$ummqykw)8v#&iws!)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.113', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.0.113', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -127,7 +127,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-REST_USE_JWT = True
+REST_USE_JWT = False
 # JWT_AUTH_COOKIE = 'my-app-auth' # The cookie key name can be the one you want
 
 REST_FRAMEWORK = {
@@ -138,13 +138,10 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.IsAuthenticated',
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [        
+    'DEFAULT_AUTHENTICATION_CLASSES': [                          
+        'rest_framework.authentication.SessionAuthentication',           
+        'rest_framework.authentication.TokenAuthentication',      
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',        
-        # 'rest_framework.authentication.SessionAuthentication',   
-        "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-        "dj_rest_auth.utils.JWTCookieAuthentication",     
     ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -156,34 +153,6 @@ REST_AUTH_SERIALIZERS = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '296268545765-t0tu72rhuo4g2rpia6b8qirt08i6mea2.apps.googleusercontent.com'
-# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'dAbsyOSxqx4JIhjVnn7dm8aW'
-# SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid'] 
-# SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    }
-}
-
-SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
-SOCIALACCOUNT_EMAIL_REQUIRED = False
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True, # IMPORTANT
-    'BLACKLIST_AFTER_ROTATION': True, # IMPORTANT
-    'UPDATE_LAST_LOGIN': True,
-}
 
 # ACCOUNT_AUTHENTICATION_METHOD = "email"
 # ACCOUNT_EMAIL_REQUIRED = True

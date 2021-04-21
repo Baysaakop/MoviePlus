@@ -2,13 +2,13 @@ import json
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review
-from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ArtistSerializer, MemberSerializer, MovieSerializer, ReviewSerializer
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review, Comment, Score, Like, Check, Watchlist
+from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ArtistSerializer, MemberSerializer, MovieSerializer, ReviewSerializer, CommentSerializer, ScoreSerializer, LikeSerializer, CheckSerializer, WatchlistSerializer
 from rest_framework import viewsets, filters
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import FilterSet
-from users.models import Profile, Score
+# from users.models import Profile, Score
 from django.db.models import Q
 
 class MovieFilter(FilterSet):
@@ -42,7 +42,7 @@ class OccupationViewSet(viewsets.ModelViewSet):
 
 class ArtistViewSet(viewsets.ModelViewSet):
     serializer_class = ArtistSerializer
-    queryset = Artist.objects.all()
+    queryset = Artist.objects.all().order_by('-created_at')
 
     def get_queryset(self):
         queryset = Artist.objects.all().order_by('-created_at')        
@@ -60,10 +60,12 @@ class ArtistViewSet(viewsets.ModelViewSet):
                 queryset = queryset.order_by('-birthday')
             elif (order == 'name'):
                 queryset = queryset.order_by('name')
-            elif (order == 'views'):
-                queryset = queryset.order_by('-views')
-            elif (order == 'likes'):
-                queryset = queryset.order_by('-likes')
+            elif (order == 'view_count'):
+                queryset = queryset.order_by('-view_count')
+            elif (order == 'like_count'):
+                queryset = queryset.order_by('-like_count')
+            elif (order == 'follow_count'):
+                queryset = queryset.order_by('-follow_count')
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
@@ -124,51 +126,16 @@ class ArtistViewSet(viewsets.ModelViewSet):
         if 'birthday' in request.data:
             artist.birthday=request.data['birthday']        
         if 'avatar' in request.data:
-            artist.avatar=request.data['avatar'] 
-        if 'like' in request.data:
-            user = Token.objects.get(key=request.data['token']).user
-            profile = Profile.objects.get(user=user)
-            is_detail = request.data['like']            
-            if (is_detail == True):
-                artist.views = artist.views - 1
-            if artist in profile.artist_likes.all():
-                profile.artist_likes.remove(artist)
-                artist.likes = artist.likes - 1                
-            else:
-                profile.artist_likes.add(artist)
-                artist.likes = artist.likes + 1
-            profile.save()
-        if 'follow' in request.data:
-            user = Token.objects.get(key=request.data['token']).user
-            profile = Profile.objects.get(user=user)
-            is_detail = request.data['follow']            
-            if (is_detail == True):
-                artist.views = artist.views - 1
-            if artist in profile.artist_followed.all():
-                profile.artist_followed.remove(artist)
-                artist.followers = artist.followers - 1                
-            else:
-                profile.artist_followed.add(artist)
-                artist.followers = artist.followers + 1
+            artist.avatar=request.data['avatar']         
             profile.save()
         artist.save()
         serializer = ArtistSerializer(artist)
         headers = self.get_success_headers(serializer.data)        
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)       
 
-def calculateScore(id):
-    scores = Score.objects.filter(movie__id=id)
-    if scores is None:
-        return 0
-    else:
-        total = 0
-        for score in scores:
-            total = total + score.score        
-        return int(total / scores.count())
-
 class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
+    queryset = Movie.objects.all().order_by('-created_at')
 
     def get_queryset(self):
         queryset = Movie.objects.all().order_by('-created_at')
@@ -193,15 +160,15 @@ class MovieViewSet(viewsets.ModelViewSet):
                 queryset = queryset.order_by('name')
             elif (order == 'score'):
                 queryset = queryset.order_by('-score')
-            elif (order == 'views'):
-                queryset = queryset.order_by('-views')
-            elif (order == 'likes'):
-                queryset = queryset.order_by('-likes')
+            elif (order == 'view_count'):
+                queryset = queryset.order_by('-view_count')
+            elif (order == 'like_count'):
+                queryset = queryset.order_by('-like_count')
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.views = instance.views + 1        
+        instance.view_count = instance.view_count + 1        
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
@@ -268,80 +235,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         if 'genre' in request.data:           
             movie.genre.clear()   
             for item in request.data['genre']:
-                movie.genre.add(int(item))     
-        if 'like' in request.data:
-            user = Token.objects.get(key=request.data['token']).user
-            profile = Profile.objects.get(user=user)
-            is_detail = request.data['like']            
-            if (is_detail == True):
-                movie.views = movie.views - 1
-            if movie in profile.likes.all():
-                profile.likes.remove(movie)
-                movie.likes = movie.likes - 1                
-            else:
-                profile.likes.add(movie)
-                movie.likes = movie.likes + 1            
-            profile.save()
-        if 'watched' in request.data:
-            user = Token.objects.get(key=request.data['token']).user
-            profile = Profile.objects.get(user=user)
-            is_detail = request.data['watched']            
-            if (is_detail == True):
-                movie.views = movie.views - 1
-            if movie in profile.watched.all():
-                profile.watched.remove(movie)
-                movie.watched = movie.watched - 1
-            else:
-                profile.watched.add(movie)
-                movie.watched = movie.watched + 1
-            profile.save()
-        if 'watchlist' in request.data:
-            user = Token.objects.get(key=request.data['token']).user
-            profile = Profile.objects.get(user=user)
-            is_detail = request.data['watchlist']            
-            if (is_detail == True):
-                movie.views = movie.views - 1
-            if movie in profile.watchlist.all():
-                profile.watchlist.remove(movie)
-                movie.watchlist = movie.watchlist - 1
-            else:
-                profile.watchlist.add(movie)
-                movie.watchlist = movie.watchlist + 1
-            profile.save()
-        if 'score' in request.data:
-            score = int(request.data['score'])
-            user = Token.objects.get(key=request.data['token']).user            
-            profile = Profile.objects.get(user=user)
-            movie.views = movie.views - 1            
-            # Remove score
-            if (score == 0):
-                score_obj = profile.scores.get(movie=movie)              
-                # if (movie.score_count == 1):
-                #     movie.score = 0
-                #     movie.score_count = 0
-                # else:
-                #     movie.score = int(((movie.score * movie.score_count) - score_obj.score) / (movie.score_count - 1))
-                #     movie.score_count = movie.score_count - 1
-                profile.scores.remove(score_obj)
-                movie.score = calculateScore(movie.id)
-                movie.score_count = movie.score_count - 1
-            else:
-                score_obj, created = profile.scores.get_or_create(movie=movie)
-                score_obj.score = score
-                score_obj.save()
-                if created:
-                    movie.score = calculateScore(movie.id)
-                    movie.score_count = movie.score_count + 1
-                else:
-                    movie.score = calculateScore(movie.id)                    
-                # New score
-                # if created:                                
-                #     movie.score = int(((movie.score * movie.score_count) + score) / (movie.score_count + 1))
-                #     movie.score_count = movie.score_count + 1
-                # # Update score
-                # else:
-                #     movie.score = int(((movie.score * (movie.score_count - 1)) + score) / movie.score_count )
-            profile.save()
+                movie.genre.add(int(item))             
         movie.save()
         serializer = MovieSerializer(movie)
         headers = self.get_success_headers(serializer.data)        
@@ -349,10 +243,10 @@ class MovieViewSet(viewsets.ModelViewSet):
 
 class MemberViewSet(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
-    queryset = Member.objects.all()
+    queryset = Member.objects.all().order_by('artist__id')
 
     def get_queryset(self):
-        queryset = Member.objects.all()       
+        queryset = Member.objects.all().order_by('artist__id')
         artist = self.request.query_params.get('artist', None)
         movie = self.request.query_params.get('movie', None)        
         if artist is not None:
@@ -362,7 +256,6 @@ class MemberViewSet(viewsets.ModelViewSet):
         return queryset
 
     def create(self, request, *args, **kwargs):           
-        print(request.data)
         artist = Artist.objects.get(id=int(request.data['artist']))
         movie = Movie.objects.get(id=int(request.data['movie']))
         role = request.data['role']
@@ -394,7 +287,7 @@ class MemberViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    queryset = Review.objects.all()
+    queryset = Review.objects.all().order_by('-created_at')
 
     def get_queryset(self):
         queryset = Review.objects.all().order_by('-created_at')  
@@ -460,3 +353,226 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer = ReviewSerializer(review)
         headers = self.get_success_headers(serializer.data)        
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)  
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all().order_by('-created_at')
+    
+    def get_queryset(self):
+        queryset = Comment.objects.all().order_by('-created_at')
+        movie = self.request.query_params.get('movie', None)     
+        if movie is not None:
+            queryset = queryset.filter(movie__id=movie)      
+        return queryset
+
+    def create(self, request, *args, **kwargs):                                            
+        movie = Movie.objects.get(id=int(request.data['movie']))
+        user = Token.objects.get(key=request.data['token']).user
+        text = request.data['comment']
+        comment = Comment.objects.create(
+            movie=movie,
+            user=user,
+            comment=text
+        )                
+        movie.comment_count = Comment.objects.filter(movie=movie).count()
+        movie.save()
+        serializer = CommentSerializer(comment)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):                         
+        comment = self.get_object()     
+        movie = comment.movie
+        if 'comment' in request.data:
+            comment.comment=request.data['comment']          
+        if 'like' in request.data:
+            user = Token.objects.get(key=request.data['token']).user
+            if user in comment.likes:
+                comment.likes.remove(user)
+            else:
+                comment.likes.add(user)
+        if 'dislike' in request.data:
+            user = Token.objects.get(key=request.data['token']).user
+            if user in comment.dislike:
+                comment.dislike.remove(user)
+            else:
+                comment.dislike.add(user)
+        comment.save()                  
+        movie.comment_count = Comment.objects.filter(movie=movie).count()
+        movie.save()
+        serializer = CommentSerializer(comment)
+        headers = self.get_success_headers(serializer.data)        
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)  
+
+    def destroy(self, request, *args, **kwargs):
+        comment = self.get_object()     
+        movie = comment.movie
+        self.perform_destroy(comment)
+        movie.comment_count = Comment.objects.filter(movie=movie).count()
+        movie.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+
+def calculateScore(movie):
+    scores = Score.objects.filter(movie=movie)
+    if scores is None or scores.count() == 0:
+        return 0
+    else:
+        total = 0
+        for score in scores:
+            total = total + score.score        
+        return int((total * 10) / scores.count())
+
+class ScoreViewSet(viewsets.ModelViewSet):
+    serializer_class = ScoreSerializer
+    queryset = Score.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        queryset = Score.objects.all().order_by('-created_at')        
+        token = self.request.query_params.get('token', None)     
+        movie = self.request.query_params.get('movie', None)             
+        if token is not None:
+            user = Token.objects.get(key=token).user
+            queryset = queryset.filter(user=user)     
+        if movie is not None:            
+            queryset = queryset.filter(movie__id=movie)      
+        return queryset
+
+    def create(self, request, *args, **kwargs):                                            
+        movie = Movie.objects.get(id=int(request.data['movie']))
+        user = Token.objects.get(key=request.data['token']).user
+        score = int(request.data['score'])
+        instance = Score.objects.filter(movie=movie, user=user).first()
+        if instance is None:            
+            instance = Score.objects.create(
+                movie=movie,
+                user=user,
+                score=score            
+            )                    
+            movie.score = calculateScore(movie)        
+            movie.score_count = Score.objects.filter(movie=movie).count()        
+            movie.save()
+            serializer = ScoreSerializer(instance)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            if score > 0:
+                instance.score = score
+                instance.save()
+                movie.score = calculateScore(movie)        
+                movie.score_count = Score.objects.filter(movie=movie).count()        
+                movie.save()
+                serializer = ScoreSerializer(instance)
+                headers = self.get_success_headers(serializer.data)
+                return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+            else:
+                self.perform_destroy(instance)
+                movie.score = calculateScore(movie)        
+                movie.score_count = Score.objects.filter(movie=movie).count()        
+                movie.save()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+
+class LikeViewSet(viewsets.ModelViewSet):
+    serializer_class = LikeSerializer
+    queryset = Like.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        queryset = Like.objects.all().order_by('-created_at')        
+        token = self.request.query_params.get('token', None)     
+        movie = self.request.query_params.get('movie', None)             
+        if token is not None:  
+            user = Token.objects.get(key=token).user
+            queryset = queryset.filter(user=user)        
+        if movie is not None:            
+            queryset = queryset.filter(movie__id=movie)      
+        return queryset
+
+    def create(self, request, *args, **kwargs):                                            
+        movie = Movie.objects.get(id=int(request.data['movie']))
+        user = Token.objects.get(key=request.data['token']).user
+        instance = Like.objects.filter(movie=movie, user=user).first()
+        if instance is None:            
+            instance = Like.objects.create(
+                movie=movie,
+                user=user            
+            )                            
+            movie.like_count = Like.objects.filter(movie=movie).count()        
+            movie.save()
+            serializer = LikeSerializer(instance)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            self.perform_destroy(instance)
+            movie.like_count = Like.objects.filter(movie=movie).count()
+            movie.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CheckViewSet(viewsets.ModelViewSet):
+    serializer_class = CheckSerializer
+    queryset = Check.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        queryset = Check.objects.all().order_by('-created_at')        
+        token = self.request.query_params.get('token', None)     
+        movie = self.request.query_params.get('movie', None)           
+        if token is not None:  
+            user = Token.objects.get(key=token).user
+            queryset = queryset.filter(user=user)     
+        if movie is not None:            
+            queryset = queryset.filter(movie__id=movie)      
+        return queryset
+
+    def create(self, request, *args, **kwargs):                                            
+        movie = Movie.objects.get(id=int(request.data['movie']))
+        user = Token.objects.get(key=request.data['token']).user
+        instance = Check.objects.filter(movie=movie, user=user).first()
+        if instance is None:            
+            instance = Check.objects.create(
+                movie=movie,
+                user=user            
+            )                
+            movie.check_count = Check.objects.filter(movie=movie).count()        
+            movie.save()
+            serializer = CheckSerializer(instance)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            self.perform_destroy(instance)
+            movie.check_count = Check.objects.filter(movie=movie).count()        
+            movie.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+class WatchlistViewSet(viewsets.ModelViewSet):
+    serializer_class = WatchlistSerializer
+    queryset = Watchlist.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        queryset = Watchlist.objects.all().order_by('-created_at')        
+        token = self.request.query_params.get('token', None)     
+        movie = self.request.query_params.get('movie', None)             
+        if token is not None:  
+            user = Token.objects.get(key=token).user
+            queryset = queryset.filter(user=user)             
+        if movie is not None:            
+            queryset = queryset.filter(movie__id=movie)      
+        return queryset
+
+    def create(self, request, *args, **kwargs):                                            
+        movie = Movie.objects.get(id=int(request.data['movie']))
+        user = Token.objects.get(key=request.data['token']).user
+        instance = Watchlist.objects.filter(movie=movie, user=user).first()
+        if instance is None:            
+            instance = Watchlist.objects.create(
+                movie=movie,
+                user=user            
+            )                
+            movie.watchlist_count = Watchlist.objects.filter(movie=movie).count()        
+            movie.save()
+            serializer = WatchlistSerializer(instance)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            self.perform_destroy(instance)
+            movie.watchlist_count = Watchlist.objects.filter(movie=movie).count()        
+            movie.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)

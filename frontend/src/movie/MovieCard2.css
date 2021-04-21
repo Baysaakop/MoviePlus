@@ -74,7 +74,7 @@
     background: #c0392b;
 }
 
-.moviecard2 .container .content .actions .ant-btn-primary.watched {
+.moviecard2 .container .content .actions .ant-btn-primary.check {
     background: #2ecc71;
 }
 
@@ -83,14 +83,14 @@
 }
 
 .moviecard2 .container .content .actions .ant-btn-primary.rate {
-    background: #e9950e;
+    background: #fadb14;
 }
 
 .moviecard2 .container .content .actions .ant-btn-ghost.like:hover {
     background: #c0392b;
 }
 
-.moviecard2 .container .content .actions .ant-btn-ghost.watched:hover {
+.moviecard2 .container .content .actions .ant-btn-ghost.check:hover {
     background: #2ecc71;
 }
 
@@ -99,7 +99,7 @@
 }
 
 .moviecard2 .container .content .actions .ant-btn-ghost.rate:hover {
-    background: #e9950e;
+    background: #fadb14;
 }
 
 .moviecard2 .container .content:hover .play {

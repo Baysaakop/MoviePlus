@@ -6,10 +6,6 @@
     position: absolute;
     top: 8px;
     left: 8px;
-    /* padding: 4px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 5px;
-    font-size: 16px; */
 }
 
 .moviecard .cover-overlay-mid-center {
@@ -19,10 +15,6 @@
     transform: translate(-50%, -50%);
     opacity: 0;
     transition: all .6s ease;
-    /* padding: 4px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 5px;
-    font-size: 16px; */
 }
 
 .moviecard .cover-overlay-bot-right {

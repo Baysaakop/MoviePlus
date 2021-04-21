@@ -71,7 +71,7 @@ export const passwordResetConfirmFail = error => {
 
 export const logout = () => {
     localStorage.removeItem('token');    
-    message.info("Системээм гарлаа.")
+    message.info("Системээс гарлаа.")
     return {
         type: actionTypes.AUTH_LOGOUT
     };
@@ -150,18 +150,56 @@ export const authPasswordResetConfirm = (uid, token, new_password1, new_password
     }
 }
 
-export const authFacebook = (access_token) => {
+export const authGoogle = (access_token) => {
     return dispatch => {
-        console.log(access_token)
-        // dispatch(authStart());
-        axios.post(api.authFacebook, {
-            access_token: access_token,            
-        })
-        .then(res => {            
-            console.log(res)                
+        dispatch(authStart());
+        axios({
+            method: 'POST',
+            url: api.authGoogle,
+            data: {
+                access_token: access_token
+            }
+        })               
+        .then(res => {                        
+            const token = res.data.key;            
+            localStorage.setItem('token', token);            
+            dispatch(authSuccess(token));       
         })
         .catch(err => {
             console.log(err)                    
         })
+    }
+}
+
+export const authFacebook = (access_token) => {
+    return dispatch => {
+        dispatch(authStart());
+        axios({
+            method: 'POST',
+            url: api.authFacebook,
+            data: {
+                access_token: access_token
+            }
+        })     
+        .then(res => {                        
+            const token = res.data.key;            
+            localStorage.setItem('token', token);            
+            dispatch(authSuccess(token));       
+        })
+        .catch(err => {
+            console.log(err)                    
+        })                  
+        // let res = axios.post(api.authFacebook, {
+        //     access_token: access_token,            
+        // }) 
+        // .then(res => {            
+        //     console.log(res)           
+        //     const token = res.data.key;            
+        //     localStorage.setItem('token', token);            
+        //     dispatch(authSuccess(token));       
+        // })
+        // .catch(err => {
+        //     console.log(err)                    
+        // })
     }
 }
