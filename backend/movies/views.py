@@ -381,22 +381,23 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):                         
+        print(request.data)
         comment = self.get_object()     
         movie = comment.movie
         if 'comment' in request.data:
             comment.comment=request.data['comment']          
         if 'like' in request.data:
             user = Token.objects.get(key=request.data['token']).user
-            if user in comment.likes:
+            if user in comment.likes.all():
                 comment.likes.remove(user)
             else:
                 comment.likes.add(user)
         if 'dislike' in request.data:
             user = Token.objects.get(key=request.data['token']).user
-            if user in comment.dislike:
-                comment.dislike.remove(user)
+            if user in comment.dislikes.all():
+                comment.dislikes.remove(user)
             else:
-                comment.dislike.add(user)
+                comment.dislikes.add(user)
         comment.save()                  
         movie.comment_count = Comment.objects.filter(movie=movie).count()
         movie.save()

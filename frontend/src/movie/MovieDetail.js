@@ -2,13 +2,16 @@ import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Modal
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, EyeOutlined, HeartOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, CreditCardFilled, CreditCardOutlined, EyeOutlined, HeartOutlined, LoadingOutlined, PlayCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import GenreTag from '../components/GenreTag';
 import { connect } from "react-redux";
 import MovieMembers from './MovieMembers';
 import MovieCast from './MovieCast';
 import MovieComment from './MovieComment';
+import moment from 'moment';
+
+const scoreValues = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
 const { useBreakpoint } = Grid;
 const spinIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -329,13 +332,13 @@ function MovieDetail (props) {
                 <div>
                     <div style={{ height: `${getHeight()}px` }}>
                         {movie.landscape ? (
-                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.2', backgroundColor: '#000' }} />                        
+                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.3', backgroundColor: '#000', filter: 'blur(4px)' }} />                        
                         ) : (
                             <div style={{ width: '100%', height: '100%', opacity: '0.5', backgroundColor: '#000' }} />
                         )}                        
                     </div>
                     <div style={{ padding: getPadding() }} className="detail">
-                        <Row gutter={[16, 16]} style={{ marginTop: '-20%', paddingBottom: '40px' }}>
+                        <Row gutter={[16, 16]} style={{ marginTop: '-30%', paddingBottom: '40px' }}>
                             <Col xs={24} sm={8} md={8} lg={8} xl={6} style={{ padding: '0 32px' }}>
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />
                                 <Row gutter={[8, 8]} style={{ marginTop: '8px', width: '100%' }}>
@@ -360,22 +363,25 @@ function MovieDetail (props) {
                                         <Typography.Text>{formatCount(movie.watchlist_count)}</Typography.Text>    
                                     </Col>
                                 </Row>
+                                <Button block type="primary" icon={<PlayCircleOutlined />}>Үзэх</Button> 
+                                <Button danger block type="primary" icon={<CreditCardOutlined />} style={{ marginTop: '8px' }}>Тасалбар захиалах</Button> 
                             </Col>
                             <Col xs={24} sm={16} md={16} lg={16} xl={18}>
                                 <div style={{ borderRadius: '5px', height: '100%' }}>
-                                    <Typography.Title level={2} style={{ marginBottom: '0' }}>{movie.name}</Typography.Title>
-                                    <div className="info">
-                                        { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
-                                        <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин |</Typography.Text>
-                                        <Typography.Text type="secondary"> Нээлт: {movie.releasedate}</Typography.Text>
-                                    </div>
+                                    <Typography.Title level={2} style={{ marginBottom: '0' }}>{movie.name} /{moment(movie.releasedate).format("YYYY")}/</Typography.Title>                                    
                                     <div className="genre" style={{ marginTop: '8px' }}>
                                         {movie.genre.map(g => {
                                             return (                                                
-                                                <GenreTag genre={g.name} />
+                                                // <GenreTag genre={g.name} />
+                                                <span style={{ fontSize: '16px' }}>{g.name} | </span>
                                             )                                            
                                         })}
                                     </div>                                    
+                                    <div className="info">
+                                        { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
+                                        <p style={{ fontSize: '16px', margin: 0 }}> Үргэлжлэх хугацаа: {movie.duration} мин</p>
+                                        <p style={{ fontSize: '16px', margin: 0 }}> Нээлтийн огноо: {movie.releasedate}</p>
+                                    </div>
                                     <div className="actions" style={{ marginTop: '16px' }}>                                        
                                         <Tooltip title="Трэйлэр үзэх">
                                             <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={showModal} />
@@ -403,18 +409,26 @@ function MovieDetail (props) {
                                         </Tooltip>                                         
                                     </div>    
                                     <div style={{ margin: '16px 0' }}>
-                                        <Typography.Title level={5}>Таны үнэлгээ: {score ? score : ''}</Typography.Title>
-                                        <span>
-                                            <Rate value={score} count={10} onChange={onScore} />                                            
-                                        </span>
+                                        <Typography.Title level={5}>Таны үнэлгээ: {score ? score : ''}</Typography.Title>                                        
+                                        <Rate tooltips={scoreValues} value={score} count={10} onChange={onScore} />
                                     </div>
-                                    <div className="rating" style={{ margin: '16px 0' }}>                                       
-                                        <Typography.Title level={5} style={{ margin: 0 }}>Үнэлгээ:</Typography.Title>                                        
-                                        <span>                                                                                    
-                                            <span style={{ fontSize: '32px', fontWeight: 'bold' }}> {movie.score / 10}</span>                                        
-                                            <span style={{ fontSize: '20px', fontWeight: 'bold' }}> / 10</span>
-                                            <span style={{ fontSize: '14px' }}> (нийт {movie.score_count})</span>
-                                        </span>
+                                    <div className="rating" style={{ margin: '16px 0', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>                                       
+                                        <div style={{ marginRight: '24px' }}>
+                                            <Typography.Title level={5} style={{ margin: 0 }}>Үзэгчдийн үнэлгээ:</Typography.Title>                                        
+                                            <span>                                                                                    
+                                                <span style={{ fontSize: '32px', fontWeight: 'bold' }}> {movie.score / 10}</span>                                        
+                                                <span style={{ fontSize: '20px', fontWeight: 'bold' }}> / 10</span>
+                                                <span style={{ fontSize: '14px' }}> (нийт {movie.score_count})</span>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <Typography.Title level={5} style={{ margin: 0 }}>Шүүмжлэгчдийн үнэлгээ:</Typography.Title>                                        
+                                            <span>                                                                                    
+                                                <span style={{ fontSize: '32px', fontWeight: 'bold' }}> 7.3</span>                                        
+                                                <span style={{ fontSize: '20px', fontWeight: 'bold' }}> / 10</span>
+                                                <span style={{ fontSize: '14px' }}> (нийт 16)</span>
+                                            </span>
+                                        </div>
                                     </div>                                
                                     <div className="infotabs">
                                         <Tabs defaultActiveKey="1">
