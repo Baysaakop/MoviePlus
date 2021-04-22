@@ -1,10 +1,9 @@
-import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Modal, Rate } from 'antd';
+import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Modal, Rate, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, CreditCardFilled, CreditCardOutlined, EyeOutlined, HeartOutlined, LoadingOutlined, PlayCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, CommentOutlined, CreditCardOutlined, HeartOutlined, LoadingOutlined, PlayCircleOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
-import GenreTag from '../components/GenreTag';
 import { connect } from "react-redux";
 import MovieMembers from './MovieMembers';
 import MovieCast from './MovieCast';
@@ -190,10 +189,21 @@ function MovieDetail (props) {
                 }
             })
             .then(res => {             
-                if (res.status === 201 || res.status === 204) {                                  
-                    getMovie()
-                    getLikes()                    
+                if (res.status === 201) {                                  
+                    notification.open({
+                        message: 'Жагсаалтад нэмэгдлээ',
+                        description: `${movie.name} кино таны таалагдсан киноны жагсаалтад нэмэгдлээ.`,
+                        icon: <HeartOutlined style={{ color: '#c0392b' }} />,
+                    })                                     
+                } else if (res.status === 204) {
+                    notification.open({
+                        message: 'Жагсаалтаас хасагдлаа',
+                        description: `${movie.name} кино таны таалагдсан киноны жагсаалтаас хасагдлаа.`,
+                        icon: <HeartOutlined style={{ color: '#c0392b' }} />,
+                    })
                 }
+                getMovie()
+                getLikes()   
             })
             .catch(err => {
                 console.log(err)
@@ -218,11 +228,22 @@ function MovieDetail (props) {
                     'Authorization': `Token ${props.token}`
                 }
             })
-            .then(res => {              
-                if (res.status === 201 || res.status === 204) {
-                    getMovie()
-                    getChecks()
-                }
+            .then(res => {             
+                if (res.status === 201) {                                
+                    notification.open({
+                        message: 'Жагсаалтад нэмэгдлээ',
+                        description: `${movie.name} кино таны үзсэн киноны жагсаалтад нэмэгдлээ.`,
+                        icon: <CheckCircleOutlined style={{ color: '#2ecc71' }} />,
+                    })                                     
+                } else if (res.status === 204) {
+                    notification.open({
+                        message: 'Жагсаалтаас хасагдлаа',
+                        description: `${movie.name} кино таны үзсэн киноны жагсаалтаас хасагдлаа.`,
+                        icon: <CheckCircleOutlined style={{ color: '#2ecc71' }} />,
+                    })
+                }                  
+                getMovie()
+                getChecks() 
             })
             .catch(err => {
                 console.log(err)
@@ -247,11 +268,22 @@ function MovieDetail (props) {
                     'Authorization': `Token ${props.token}`
                 }
             })
-            .then(res => {              
-                if (res.status === 201 || res.status === 204) {
-                    getMovie()
-                    getWatchlists()
-                }
+            .then(res => {             
+                if (res.status === 201) {                                
+                    notification.open({
+                        message: 'Жагсаалтад нэмэгдлээ',
+                        description: `${movie.name} кино таны дараа үзэх киноны жагсаалтад нэмэгдлээ.`,
+                        icon: <PlusCircleOutlined style={{ color: '#3498db' }} />,
+                    })                                     
+                } else if (res.status === 204) {
+                    notification.open({
+                        message: 'Жагсаалтаас хасагдлаа',
+                        description: `${movie.name} кино таны дараа үзэх киноны жагсаалтаас хасагдлаа.`,
+                        icon: <PlusCircleOutlined style={{ color: '#3498db' }} />,
+                    })
+                }                  
+                getMovie()
+                getWatchlists() 
             })
             .catch(err => {
                 console.log(err)
@@ -332,7 +364,7 @@ function MovieDetail (props) {
                 <div>
                     <div style={{ height: `${getHeight()}px` }}>
                         {movie.landscape ? (
-                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.3', backgroundColor: '#000', filter: 'blur(4px)' }} />                        
+                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.3', backgroundColor: '#000', filter: 'blur(2px)' }} />                        
                         ) : (
                             <div style={{ width: '100%', height: '100%', opacity: '0.5', backgroundColor: '#000' }} />
                         )}                        
@@ -342,11 +374,11 @@ function MovieDetail (props) {
                             <Col xs={24} sm={8} md={8} lg={8} xl={6} style={{ padding: '0 32px' }}>
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />
                                 <Row gutter={[8, 8]} style={{ marginTop: '8px', width: '100%' }}>
-                                    <Col span={6} style={{ textAlign: 'center' }}>
+                                    {/* <Col span={6} style={{ textAlign: 'center' }}>
                                         <EyeOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
                                         <Typography.Text>{formatCount(movie.view_count)}</Typography.Text>
-                                    </Col>
+                                    </Col> */}
                                     <Col span={6} style={{ textAlign: 'center' }}>
                                         <HeartOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
@@ -361,6 +393,11 @@ function MovieDetail (props) {
                                         <PlusCircleOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
                                         <Typography.Text>{formatCount(movie.watchlist_count)}</Typography.Text>    
+                                    </Col>
+                                    <Col span={6} style={{ textAlign: 'center' }}>
+                                        <CommentOutlined style={{ fontSize: '20px' }} />
+                                        <br></br>
+                                        <Typography.Text>{formatCount(movie.comment_count)}</Typography.Text>
                                     </Col>
                                 </Row>
                                 <Button block type="primary" icon={<PlayCircleOutlined />}>Үзэх</Button> 
@@ -413,7 +450,7 @@ function MovieDetail (props) {
                                         <Rate tooltips={scoreValues} value={score} count={10} onChange={onScore} />
                                     </div>
                                     <div className="rating" style={{ margin: '16px 0', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>                                       
-                                        <div style={{ marginRight: '24px' }}>
+                                        <div style={{ background: '#e74c3c', marginRight: '24px', padding: '8px' }}>
                                             <Typography.Title level={5} style={{ margin: 0 }}>Үзэгчдийн үнэлгээ:</Typography.Title>                                        
                                             <span>                                                                                    
                                                 <span style={{ fontSize: '32px', fontWeight: 'bold' }}> {movie.score / 10}</span>                                        
@@ -421,7 +458,7 @@ function MovieDetail (props) {
                                                 <span style={{ fontSize: '14px' }}> (нийт {movie.score_count})</span>
                                             </span>
                                         </div>
-                                        <div>
+                                        <div style={{ background: '#8e44ad', padding: '8px' }}>
                                             <Typography.Title level={5} style={{ margin: 0 }}>Шүүмжлэгчдийн үнэлгээ:</Typography.Title>                                        
                                             <span>                                                                                    
                                                 <span style={{ fontSize: '32px', fontWeight: 'bold' }}> 7.3</span>                                        
@@ -449,6 +486,9 @@ function MovieDetail (props) {
                                             <Tabs.TabPane tab="Сэтгэгдэл" key="4">
                                                 <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>
                                                 <MovieComment id={movie.id} />
+                                            </Tabs.TabPane>
+                                            <Tabs.TabPane tab="Зураг" key="5">
+                                                <Typography.Title level={5}>Зураг</Typography.Title>                                                
                                             </Tabs.TabPane>
                                         </Tabs>
                                     </div>

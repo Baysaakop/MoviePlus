@@ -1,4 +1,4 @@
-from .views import GenreViewSet, RatingViewSet, ProductionViewSet, OccupationViewSet, ArtistViewSet, MemberViewSet, MovieViewSet, ReviewViewSet, CommentViewSet, ScoreViewSet, LikeViewSet, CheckViewSet, WatchlistViewSet
+from .views import GenreViewSet, RatingViewSet, ProductionViewSet, OccupationViewSet, ArtistViewSet, MemberViewSet, MovieViewSet, SeriesViewSet, ReviewViewSet, CommentViewSet, ScoreViewSet, LikeViewSet, CheckViewSet, WatchlistViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -14,5 +14,6 @@ router.register(r'scores', ScoreViewSet, basename='scores')
 router.register(r'likes', LikeViewSet, basename='likes')
 router.register(r'checks', CheckViewSet, basename='checks')
 router.register(r'watchlists', WatchlistViewSet, basename='watchlists')
+router.register(r'series', SeriesViewSet, basename='series')
 router.register(r'', MovieViewSet, basename='movies')
 urlpatterns = router.urls

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './Home.css';
 import axios from 'axios';  
 import api from '../api';
-import MovieCard2 from '../movie/MovieCard2';
+import MovieCard3 from '../movie/MovieCard3';
 import { CaretRightOutlined, CheckOutlined, DesktopOutlined, LikeOutlined, PlusOutlined, ReadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 // import MovieTrendTable from '../movie/MovieTrendTable';
 import Modal from 'antd/lib/modal/Modal';
@@ -24,7 +24,7 @@ function Home (props) {
         axios({
             method: 'GET',
             url: `${api.movies}/`
-        }).then(res => {                                    
+        }).then(res => {                                     
             setLatest(res.data.results)
         }).catch(err => {
             console.log(err.message)
@@ -224,7 +224,7 @@ function Home (props) {
                                         dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
                                         renderItem={item => (
                                             <List.Item>
-                                                <MovieCard2 movie={item} />
+                                                <MovieCard3 movie={item} />
                                             </List.Item>
                                         )}
                                     /> 
@@ -245,7 +245,7 @@ function Home (props) {
                                         dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
                                         renderItem={item => (
                                             <List.Item>
-                                                <MovieCard2 movie={item} />
+                                                <MovieCard3 movie={item} />
                                             </List.Item>
                                         )}
                                     /> 
@@ -266,7 +266,7 @@ function Home (props) {
                                         dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
                                         renderItem={item => (
                                             <List.Item>
-                                                <MovieCard2 movie={item} />
+                                                <MovieCard3 movie={item} />
                                             </List.Item>
                                         )}
                                     /> 
@@ -287,7 +287,7 @@ function Home (props) {
                                         dataSource={toprated ? toprated.slice(0, getListNumber() * 3) : undefined}
                                         renderItem={item => (
                                             <List.Item>
-                                                <MovieCard2 movie={item} />
+                                                <MovieCard3 movie={item} />
                                             </List.Item>
                                         )}
                                     /> 
@@ -322,7 +322,7 @@ function Home (props) {
                                         dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
                                         renderItem={item => (
                                             <List.Item>
-                                                <MovieCard2 movie={item} />
+                                                <MovieCard3 movie={item} />
                                             </List.Item>
                                         )}
                                     /> 
@@ -343,7 +343,7 @@ function Home (props) {
                                         dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
                                         renderItem={item => (
                                             <List.Item>
-                                                <MovieCard2 movie={item} />
+                                                <MovieCard3 movie={item} />
                                             </List.Item>
                                         )}
                                     /> 
@@ -364,7 +364,7 @@ function Home (props) {
                                         dataSource={latest ? latest.slice(0, getListNumber() * 3) : undefined}
                                         renderItem={item => (
                                             <List.Item>
-                                                <MovieCard2 movie={item} />
+                                                <MovieCard3 movie={item} />
                                             </List.Item>
                                         )}
                                     /> 
@@ -385,7 +385,7 @@ function Home (props) {
                                         dataSource={toprated ? toprated.slice(0, getListNumber() * 3) : undefined}
                                         renderItem={item => (
                                             <List.Item>
-                                                <MovieCard2 movie={item} />
+                                                <MovieCard3 movie={item} />
                                             </List.Item>
                                         )}
                                     /> 

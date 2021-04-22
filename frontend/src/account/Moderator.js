@@ -7,6 +7,7 @@ import ArtistUpdate from '../artist/ArtistUpdate';
 import ArtistUpdateMovie from '../artist/ArtistUpdateMovie';
 import MovieAdd from '../movie/MovieAdd';
 import MovieUpdate from '../movie/MovieUpdate';
+import SeriesAdd from '../series/SeriesAdd';
 
 function Moderator (props) {
     return (
@@ -21,8 +22,18 @@ function Moderator (props) {
                             <MovieUpdate />
                         </Tabs.TabPane>
                     </Tabs>
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="ТВ Цуврал" key="2">                    
+                    <Tabs defaultActiveKey="1">
+                        <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
+                            <SeriesAdd />
+                        </Tabs.TabPane>
+                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>
+                            {/* <MovieUpdate /> */}
+                        </Tabs.TabPane>
+                    </Tabs>
                 </Tabs.TabPane> 
-                <Tabs.TabPane tab="Уран бүтээлч" key="2">
+                <Tabs.TabPane tab="Уран бүтээлч" key="3">
                     <Tabs defaultActiveKey="1">
                         <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
                             <ArtistAdd />

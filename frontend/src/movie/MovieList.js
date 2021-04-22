@@ -1,4 +1,4 @@
-import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form, Spin } from 'antd';
+import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form, Spin, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';  
 import api from '../api';
@@ -15,15 +15,16 @@ const { Option } = Select;
 const { Search } = Input;
 
 function MovieList() {
-    const screens = useBreakpoint();
-    const [form] = Form.useForm();
-    const [movies, setMovies] = useState();    
-    const [page, setPage] = useState(1);
-    const [total, setTotal] = useState();
-    const [name, setName] = useState();
-    const [genres, setGenres] = useState();     
-    const [genre, setGenre] = useState();    
-    const [order, setOrder] = useState();    
+    const screens = useBreakpoint()
+    const [form] = Form.useForm()
+    const [loading, setLoading] = useState(false)
+    const [movies, setMovies] = useState() 
+    const [page, setPage] = useState(1)
+    const [total, setTotal] = useState()
+    const [name, setName] = useState()
+    const [genres, setGenres] = useState()    
+    const [genre, setGenre] = useState()    
+    const [order, setOrder] = useState();   
 
     useEffect(() => {
         if (!genres) {
@@ -42,6 +43,7 @@ function MovieList() {
     }, [name, genre, page, order])   // eslint-disable-line react-hooks/exhaustive-deps
 
     function getMovies(name, genre, page, order) {
+        setLoading(true)
         var url = api.movies + "?"
         var params = []
         if (name && name.length > 0) {
@@ -60,12 +62,14 @@ function MovieList() {
         axios({
             method: 'GET',
             url: url
-        }).then(res => {                    
-            console.log(res.data)                
+        }).then(res => {                                         
             setMovies(res.data.results)
             setTotal(res.data.count)
+            setLoading(false)
         }).catch(err => {
+            message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
             console.log(err.message)
+            setLoading(false)
         });        
     }
 
@@ -168,15 +172,19 @@ function MovieList() {
                                     <Option key="created_at">Шинээр нэмэгдсэн</Option>
                                     <Option key="releasedate">Нээлтийн огноогоор(2021 - 1900)</Option>
                                     <Option key="score">Үнэлгээгээр(100 - 0)</Option>
-                                    <Option key="views">Хандалтаар (100 - 0)</Option>
-                                    <Option key="likes">Like-n тоогоор (100 - 0)</Option>        
+                                    <Option key="view_count">Хандалтаар (100 - 0)</Option>
+                                    <Option key="like_count">Like-n тоогоор (100 - 0)</Option>        
                                     <Option key="name">Үсгийн дарааллаар (A - Z)</Option>                                    
                                 </Select>
                             </Form.Item>  
                         </Col>
                     </Row>
                 </Form>
-                { movies ? (
+                { loading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center' , alignItems: 'center', width: '100%', height: '70vh'}}>
+                        <Spin indicator={indicator} tip="Ачааллаж байна..." />
+                    </div>                    
+                ) : (
                     <>
                         <List                        
                             grid={{
@@ -207,10 +215,6 @@ function MovieList() {
                             onChange={onPageChange}
                         />
                     </>
-                ) : (
-                    <div style={{ display: 'flex', justifyContent: 'center' , alignItems: 'center', width: '100%', height: '70vh'}}>
-                        <Spin indicator={indicator} tip="Ачааллаж байна..." />
-                    </div>
                 )}
                 
             </div>

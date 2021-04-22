@@ -1,9 +1,9 @@
-import { Form, Input, Avatar, message, Comment, Button, Typography, Tooltip, Row, Col, InputNumber } from 'antd';
-import React, { createElement, useEffect, useState } from 'react';
+import { Form, Input, Avatar, message, Comment, Button, Typography, Tooltip, Row, Col, Popconfirm } from 'antd';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
 import { connect } from 'react-redux';
-import { DislikeOutlined, LikeOutlined, StarFilled, UserOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DislikeOutlined, EditOutlined, LikeOutlined, StarFilled, UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const { TextArea } = Input;
@@ -12,41 +12,46 @@ function MovieComment (props) {
     const [form] = Form.useForm()
     const [user, setUser] = useState()
     const [comments, setComments] = useState()
+    const [edit, setEdit] = useState()
+    const [editValue, setEditValue] = useState()
 
     useEffect(() => {
         getComments()
-        axios({
-            method: 'GET',
-            url: api.profile,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`
-            }
-        }).then(res => {                     
-            setUser(res.data)                
-        }).catch(err => {                
-            console.log(err) 
-            message.error("Алдаа гарлаа. Хуудсыг дахин ачааллана уу.")            
-        })                
-    }, [props.token, props.id])
+        getUser()                      
+    }, [props.token, props.id]) // eslint-disable-line react-hooks/exhaustive-deps    
 
-    function getComments() {
+    function getUser() {
         if (props.token) {
             axios({
                 method: 'GET',
-                url: `${api.comments}?movie=${props.id}`,
+                url: api.profile,
                 headers: {
-                    'Content-Type': 'application/json'                
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
                 }
-            })
-            .then(res => {                
-                console.log(res)
-                setComments(res.data.results)
-            })
-            .catch(err => {
-                message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-            })
-        }
+            }).then(res => {                     
+                setUser(res.data)                
+            }).catch(err => {                
+                console.log(err) 
+                message.error("Алдаа гарлаа. Хуудсыг дахин ачааллана уу.")            
+            })  
+        } 
+    }
+
+    function getComments() {
+        axios({
+            method: 'GET',
+            url: `${api.comments}?movie=${props.id}`,
+            headers: {
+                'Content-Type': 'application/json'                
+            }
+        })
+        .then(res => {                
+            setComments(res.data.results)
+        })
+        .catch(err => {
+            message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
+        })
     }
 
     function onFinish(values) {
@@ -65,8 +70,7 @@ function MovieComment (props) {
                 }
             })
             .then(res => {             
-                if (res.status === 201 || res.status === 204) {                                  
-                    console.log(res)           
+                if (res.status === 201 || res.status === 204) {                                           
                     getComments()       
                     form.resetFields()
                 }
@@ -96,7 +100,6 @@ function MovieComment (props) {
             })
             .then(res => {             
                 if (res.status === 200) {                                  
-                    console.log(res)           
                     getComments()       
                 }
             })
@@ -124,8 +127,73 @@ function MovieComment (props) {
                 }
             })
             .then(res => {             
-                if (res.status === 200) {                                  
-                    console.log(res)           
+                if (res.status === 200) {                                        
+                    getComments()       
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                message.error("Дахин оролдоно уу.")
+            })
+        } else {
+            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+        }
+    }
+
+    function onEdit(comment_id) {
+        if (comment_id === edit) {
+            setEdit(undefined)
+        } else {
+            setEdit(comment_id)
+        }
+    }
+
+    function onChange(e) {        
+        setEditValue(e.target.value)
+    }
+
+    function onEnd(e) {             
+        if (props.token && edit) {
+            axios({
+                method: 'PUT',
+                url: `${api.comments}/${edit}/`,
+                data: {                    
+                    token: props.token,
+                    comment: editValue
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            })
+            .then(res => {             
+                if (res.status === 200) {                  
+                    setEdit(undefined)  
+                    setEditValue(undefined)                    
+                    getComments()       
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                message.error("Дахин оролдоно уу.")
+            })
+        } else {
+            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+        }
+    }
+
+    function onDelete(comment_id) {
+        if (props.token) {
+            axios({
+                method: 'DELETE',
+                url: `${api.comments}/${comment_id}/`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            })
+            .then(res => {             
+                if (res.status === 204) {                                        
                     getComments()       
                 }
             })
@@ -150,7 +218,21 @@ function MovieComment (props) {
                                 </Tooltip>,
                                 <Tooltip key="comment-basic-dislike" title="Таалагдаагүй">
                                     <Button danger type={user && comment.dislikes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} size="small" icon={<DislikeOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onDislike(comment.id)}> {comment.dislikes.length}</Button>
-                                </Tooltip>
+                                </Tooltip>,
+                                user && user.id === comment.user.id ? (
+                                <>
+                                    <Tooltip key="comment-basic-dislike" title="Засах">  
+                                        <Button type="ghost" size="small" icon={<EditOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onEdit(comment.id)}> 
+                                        {edit && edit === comment.id ? 'Болих' : 'Засах'}
+                                        </Button>
+                                    </Tooltip>,                                    
+                                    <Popconfirm title="Устгах уу?" onConfirm={() => onDelete(comment.id)}>                                    
+                                        <Button danger type="ghost" size="small" icon={<DeleteOutlined />} style={{ border: 0, marginRight: '4px' }}> Устгах</Button>                                    
+                                    </Popconfirm>
+                                </>
+                                ) : (
+                                    <></>
+                                )
                             ]}
                             author={<Typography.Text>{comment.user.username}</Typography.Text>}
                             avatar={
@@ -162,18 +244,25 @@ function MovieComment (props) {
                             }
                             content={
                                 <Row gutter={[8, 8]}>
-                                    <Col span={20}>
-                                        <Typography.Paragraph style={{ margin: 0 }}>
-                                            {comment.comment}
-                                        </Typography.Paragraph>
+                                    <Col span={18}>
+                                        {edit && edit === comment.id ? (
+                                            <>
+                                                <TextArea defaultValue={comment.comment} value={editValue} onChange={onChange} rows={4} />                                                
+                                                <Button size="small" type="primary" style={{ marginTop: '8px' }} onClick={onEnd}>Нийтлэх</Button>
+                                            </>
+                                        ) : (
+                                            <Typography.Paragraph style={{ margin: 0 }}>
+                                                {comment.comment}
+                                            </Typography.Paragraph>
+                                        )}
                                     </Col>
-                                    <Col span={4} style={{ textAlign: 'end' }}>
+                                    <Col span={6} style={{ textAlign: 'end' }}>
                                         <span>
                                             <StarFilled style={{ color: 'yellow', fontSize: '20px' }} />
-                                            <Typography.Text style={{ fontSize: '24px', fontWeight: 'bold' }}> 7</Typography.Text>
+                                            <Typography.Text style={{ fontSize: '24px', fontWeight: 'bold' }}> {comment.score}</Typography.Text>
                                             <Typography.Text style={{ fontSize: '18px', fontWeight: 'bold' }}> / 10</Typography.Text>
                                         </span>                                        
-                                    </Col>                                
+                                    </Col>                             
                                 </Row>
                             }
                             datetime={
@@ -200,12 +289,6 @@ function MovieComment (props) {
                         }
                         content={
                             <Form layout="vertical" form={form} onFinish={onFinish}>
-                                {/* <Form.Item name="title" label="Гарчиг">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item name="score" label="Үнэлгээ">
-                                    <InputNumber />
-                                </Form.Item> */}
                                 <Form.Item name="comment">
                                     <TextArea rows={4} />
                                 </Form.Item>

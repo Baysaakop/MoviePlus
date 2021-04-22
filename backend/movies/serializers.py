@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review, Comment, Score, Like, Check, Watchlist
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Series, Review, Comment, Score, Like, Check, Watchlist
 from users.models import User, Profile
 # from users.serializers import UserSerializer
 
@@ -41,13 +41,24 @@ class MovieSerializer(serializers.ModelSerializer):
         'view_count', 'comment_count', 'like_count', 'check_count', 'watchlist_count', 'score_count',
         'score', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
 
+class SeriesSerializer(serializers.ModelSerializer):
+    rating = RatingSerializer(read_only=True)
+    genre = GenreSerializer(read_only=True, many=True)
+    production = ProductionSerializer(read_only=True, many=True)
+    class Meta:
+        model = Series
+        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'is_released', 'on_tv', 'is_finished', 'genre', 'production', 
+        'season_count', 'episode_count', 'view_count', 'comment_count', 'like_count', 'check_count', 'watchlist_count', 'score_count',
+        'score', 'poster', 'landscape', 'trailer', 'created_by', 'created_at')  
+
 class MemberSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
     movie = MovieSerializer(read_only=True)
+    series = SeriesSerializer(read_only=True)
     role = OccupationSerializer(read_only=True, many=True)
     class Meta:
         model = Member
-        fields = ('id', 'artist', 'movie', 'role', 'role_name')    
+        fields = ('id', 'artist', 'movie', 'series', 'role', 'role_name')    
 
 class ProfileSerializer(serializers.ModelSerializer):            
     class Meta:
@@ -72,7 +83,7 @@ class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)  
     class Meta:
         model = Comment
-        fields = ('id', 'movie', 'user', 'comment', 'likes', 'dislikes', 'created_at')    
+        fields = ('id', 'movie', 'user', 'comment', 'score', 'likes', 'dislikes', 'created_at')    
 
 class ScoreSerializer(serializers.ModelSerializer):          
     movie = MovieSerializer(read_only=True)

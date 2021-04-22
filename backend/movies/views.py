@@ -2,14 +2,13 @@ import json
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Review, Comment, Score, Like, Check, Watchlist
-from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ArtistSerializer, MemberSerializer, MovieSerializer, ReviewSerializer, CommentSerializer, ScoreSerializer, LikeSerializer, CheckSerializer, WatchlistSerializer
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Movie, Series, Review, Comment, Score, Like, Check, Watchlist
+from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ArtistSerializer, MemberSerializer, MovieSerializer, SeriesSerializer, ReviewSerializer, CommentSerializer, ScoreSerializer, LikeSerializer, CheckSerializer, WatchlistSerializer
 from rest_framework import viewsets, filters
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import FilterSet
-# from users.models import Profile, Score
-from django.db.models import Q
+from django.db.models import Q, Count
 
 class MovieFilter(FilterSet):
     class Meta:
@@ -70,7 +69,7 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.views = instance.views + 1        
+        instance.view_count = instance.view_count + 1        
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
@@ -142,13 +141,10 @@ class MovieViewSet(viewsets.ModelViewSet):
         name = self.request.query_params.get('name', None)
         genre = self.request.query_params.get('genre', None)
         order = self.request.query_params.get('order', None)
-        artist = self.request.query_params.get('artist', None)
         if name is not None:
             queryset = queryset.filter(name__icontains=name)
         if genre is not None:
             queryset = queryset.filter(genre__id=genre)
-        if artist is not None:
-            queryset = queryset.filter(member__artist__id=artist).distinct().order_by('releasedate')
         if order is not None:
             if (order == 'created_at'):
                 queryset = queryset.order_by('-created_at')
@@ -239,6 +235,123 @@ class MovieViewSet(viewsets.ModelViewSet):
         movie.save()
         serializer = MovieSerializer(movie)
         headers = self.get_success_headers(serializer.data)        
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+class SeriesViewSet(viewsets.ModelViewSet):
+    serializer_class = SeriesSerializer
+    queryset = Series.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        queryset = Series.objects.all().order_by('-created_at')
+        name = self.request.query_params.get('name', None)
+        genre = self.request.query_params.get('genre', None)
+        order = self.request.query_params.get('order', None)
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name)
+        if genre is not None:
+            queryset = queryset.filter(genre__id=genre)
+        if order is not None:
+            if (order == 'created_at'):
+                queryset = queryset.order_by('-created_at')
+            elif (order == 'releasedate'):
+                queryset = queryset.order_by('-releasedate')
+            elif (order == 'duration'):
+                queryset = queryset.order_by('-duration')
+            elif (order == 'name'):
+                queryset = queryset.order_by('name')
+            elif (order == 'score'):
+                queryset = queryset.order_by('-score')
+            elif (order == 'view_count'):
+                queryset = queryset.order_by('-view_count')
+            elif (order == 'like_count'):
+                queryset = queryset.order_by('-like_count')
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.view_count = instance.view_count + 1        
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):              
+        user = Token.objects.get(key=request.data['token']).user                                
+        series = Series.objects.create(
+            name=request.data['name'],
+            created_by=user
+        )
+        if 'description' in request.data:
+            series.description=request.data['description']
+        if 'plot' in request.data:
+            series.plot=request.data['plot']
+        if 'duration' in request.data:
+            series.duration=request.data['duration']
+        if 'releasedate' in request.data:
+            series.releasedate=request.data['releasedate']
+        if 'season_count' in request.data:
+            series.season_count=request.data['season_count']
+        if 'episode_count' in request.data:
+            series.episode_count=request.data['episode_count']
+        if 'poster' in request.data:
+            series.poster=request.data['poster']
+        if 'landscape' in request.data:
+            series.landscape=request.data['landscape']
+        if 'is_released' in request.data:
+            series.is_released=request.data['is_released']
+        if 'on_tv' in request.data:
+            series.on_tv=request.data['on_tv']
+        if 'is_finished' in request.data:
+            series.is_finished=request.data['is_finished']
+        if 'rating' in request.data:            
+            rating = Rating.objects.get(id=int(request.data['rating']))
+            series.rating=rating   
+        if 'trailer' in request.data:
+            series.trailer=request.data['trailer']
+        if 'genre' in request.data:            
+            for item in request.data['genre']:
+                series.genre.add(int(item))     
+
+        series.save()
+        serializer = SeriesSerializer(series)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):                         
+        series = self.get_object()                         
+        if 'description' in request.data:
+            series.description=request.data['description']
+        if 'plot' in request.data:
+            series.plot=request.data['plot']
+        if 'duration' in request.data:
+            series.duration=request.data['duration']
+        if 'releasedate' in request.data:
+            series.releasedate=request.data['releasedate']
+        if 'season_count' in request.data:
+            series.season_count=request.data['season_count']
+        if 'episode_count' in request.data:
+            series.episode_count=request.data['episode_count']
+        if 'trailer' in request.data:
+            series.trailer=request.data['trailer']
+        if 'poster' in request.data:
+            series.poster=request.data['poster']
+        if 'landscape' in request.data:
+            series.landscape=request.data['landscape']
+        if 'is_released' in request.data:
+            series.is_released=request.data['is_released']
+        if 'on_tv' in request.data:
+            series.on_tv=request.data['on_tv']
+        if 'is_finished' in request.data:
+            series.is_finished=request.data['is_finished']
+        if 'rating' in request.data:            
+            rating = Rating.objects.get(id=int(request.data['rating']))
+            series.rating=rating   
+        if 'genre' in request.data:           
+            series.genre.clear()   
+            for item in request.data['genre']:
+                series.genre.add(int(item))             
+        series.save()
+        serializer = SeriesSerializer(series)
+        headers = self.get_success_headers(serializer.data)        
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)  
 
 class MemberViewSet(viewsets.ModelViewSet):
@@ -248,23 +361,30 @@ class MemberViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Member.objects.all().order_by('artist__id')
         artist = self.request.query_params.get('artist', None)
-        movie = self.request.query_params.get('movie', None)        
+        movie = self.request.query_params.get('movie', None)
+        series = self.request.query_params.get('series', None)        
         if artist is not None:
             queryset = queryset.filter(artist__id=artist)
         if movie is not None:
-            queryset = queryset.filter(movie__id=movie)       
+            queryset = queryset.filter(movie__id=movie) 
+        if series is not None:
+            queryset = queryset.filter(series__id=series)       
         return queryset
 
     def create(self, request, *args, **kwargs):           
-        artist = Artist.objects.get(id=int(request.data['artist']))
-        movie = Movie.objects.get(id=int(request.data['movie']))
+        artist = Artist.objects.get(id=int(request.data['artist']))                
         role = request.data['role']
         role_name = request.data['role_name']
         member = Member.objects.create(
-            artist=artist,
-            movie=movie,
+            artist=artist,            
             role_name=role_name
         )
+        if 'movie' in request.data:
+            movie = Movie.objects.get(id=int(request.data['movie']))
+            member.movie = movie
+        if 'series' in request.data:
+            series = Series.objects.get(id=int(request.data['series']))
+            member.series = series
         for r in role:
             member.role.add(r)        
         member.save()
@@ -359,7 +479,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all().order_by('-created_at')
     
     def get_queryset(self):
-        queryset = Comment.objects.all().order_by('-created_at')
+        queryset = Comment.objects.all().annotate(likes_count=Count('likes')).order_by('-likes_count', '-created_at')
         movie = self.request.query_params.get('movie', None)     
         if movie is not None:
             queryset = queryset.filter(movie__id=movie)      
@@ -369,10 +489,15 @@ class CommentViewSet(viewsets.ModelViewSet):
         movie = Movie.objects.get(id=int(request.data['movie']))
         user = Token.objects.get(key=request.data['token']).user
         text = request.data['comment']
+        score = 0
+        score_obj = Score.objects.filter(user=user, movie=movie).first()
+        if score_obj is not None:
+            score = score_obj.score
         comment = Comment.objects.create(
             movie=movie,
             user=user,
-            comment=text
+            comment=text,
+            score=score
         )                
         movie.comment_count = Comment.objects.filter(movie=movie).count()
         movie.save()

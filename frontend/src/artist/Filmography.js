@@ -1,4 +1,4 @@
-import { CheckCircleOutlined, EyeOutlined, LikeOutlined, PlusCircleOutlined, StarOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, LikeOutlined, PlusCircleOutlined, StarOutlined } from '@ant-design/icons';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import api from '../api';
@@ -68,33 +68,33 @@ function Filmography (props) {
             align: 'center',            
             render: item => item.score / 10
         },
-        {
-            title: <EyeOutlined style={{ fontSize: '18px' }} />,
-            dataIndex: 'movie',
-            key: 'movie',
-            align: 'center',
-            render: item => formatCount(item.views),
-        },
+        // {
+        //     title: <EyeOutlined style={{ fontSize: '18px' }} />,
+        //     dataIndex: 'movie',
+        //     key: 'movie',
+        //     align: 'center',
+        //     render: item => formatCount(item.view_count),
+        // },
         {
             title: <LikeOutlined style={{ fontSize: '18px' }} />,
             dataIndex: 'movie',
             key: 'movie',
             align: 'center',
-            render: item => formatCount(item.likes),
+            render: item => formatCount(item.like_count),
         },
         {
             title: <CheckCircleOutlined style={{ fontSize: '18px' }} />,
             dataIndex: 'movie',
             key: 'movie',
             align: 'center',
-            render: item => formatCount(item.watched),
+            render: item => formatCount(item.check_count),
         },
         {
             title: <PlusCircleOutlined style={{ fontSize: '18px' }} />,
             dataIndex: 'movie',
             key: 'movie',
             align: 'center',
-            render: item => formatCount(item.watchlist),
+            render: item => formatCount(item.watchlist_count),
         },
     ];
     

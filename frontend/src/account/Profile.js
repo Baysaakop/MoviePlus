@@ -80,19 +80,19 @@ function Profile (props) {
                         <Tabs.TabPane tab={<span><HeartOutlined style={{ fontSize: '18px' }} />Таалагдсан кино</span>} key="2">
                             <div style={{ padding: '8px' }}>
                                 <Typography.Title level={5}>Таалагдсан кино</Typography.Title>
-                                <MoviesLiked movies={user.profile.likes} />                 
+                                <MoviesLiked token={props.token} type="likes" />                 
                             </div>
                         </Tabs.TabPane>
                         <Tabs.TabPane tab={<span><CheckCircleOutlined style={{ fontSize: '18px' }} />Үзсэн кино</span>} key="3">                            
                             <div style={{ padding: '8px' }}>
                                 <Typography.Title level={5}>Үзсэн кино</Typography.Title>
-                                <MoviesLiked movies={user.profile.watched} />                 
+                                <MoviesLiked token={props.token} type="checks" />                 
                             </div>       
                         </Tabs.TabPane>
                         <Tabs.TabPane tab={<span><PlusCircleOutlined style={{ fontSize: '18px' }} />Дараа үзэх кино</span>} key="4">                              
                             <div style={{ padding: '8px' }}>
                                 <Typography.Title level={5}>Дараа үзэх кино</Typography.Title>
-                                <MoviesLiked movies={user.profile.watchlist} />                 
+                                <MoviesLiked token={props.token} type="watchlists" />                 
                             </div>  
                         </Tabs.TabPane>                        
                         { user.profile.role === "1" || user.profile.role === "2" ? (

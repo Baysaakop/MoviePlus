@@ -5,6 +5,7 @@ const api = {
     items: baseUrl + 'api/items/items',
     posts: baseUrl + 'api/items/posts',    
     movies: baseUrl + 'api/movies',
+    series: baseUrl + 'api/movies/series',
     ratings: baseUrl + 'api/movies/ratings',
     genres: baseUrl + 'api/movies/genres',
     productions: baseUrl + 'api/movies/productions',
