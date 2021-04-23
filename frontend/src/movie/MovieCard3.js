@@ -13,119 +13,31 @@ import { Link } from 'react-router-dom';
 const { useBreakpoint } = Grid;
 
 function MovieCard3 (props) {
-    const screens = useBreakpoint();   
+    const screens = useBreakpoint();       
+    const [likes, setLikes] = useState()    
+    const [checks, setChecks] = useState()    
+    const [watchlists, setWatchlists] = useState()    
+    const [scores, setScores] = useState()    
     const [rating, setRating] = useState()
-    const [like, setLike] = useState(false)
-    const [check, setCheck] = useState(false)
-    const [watchlist, setWatchlist] = useState(false)
-    const [score, setScore] = useState(0)
     const [trailerModalVisible, setTrailerModalVisible] = useState(false);
     const [rateModalVisible, setRateModalVisible] = useState(false);
 
     useEffect(() => {              
+        setLikes(props.movie.likes)
+        setChecks(props.movie.checks)
+        setWatchlists(props.movie.watchlists)
+        setScores(props.movie.scores)
         setRating(props.movie.score)    
-        getLikes()
-        getChecks()
-        getWatchlists()
-        getScores()
-    }, [props.movie]); // eslint-disable-line react-hooks/exhaustive-deps    
+    }, [props.movie, props.user]); // eslint-disable-line react-hooks/exhaustive-deps    
 
-    function getLikes() {
-        if (props.token) {
-            axios({
-                method: 'GET',
-                url: `${api.likes}?token=${props.token}&movie=${props.movie.id}`,
-                headers: {
-                    'Content-Type': 'application/json'                
-                }
-            })
-            .then(res => {
-                if (res.data.count === 0) {
-                    setLike(false)
-                } else {
-                    setLike(true)
-                }
-            })
-            .catch(err => {
-                message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-            })
-        }
-    }
-
-    function getChecks() {
-        if (props.token) {
-            axios({
-                method: 'GET',
-                url: `${api.checks}?token=${props.token}&movie=${props.movie.id}`,
-                headers: {
-                    'Content-Type': 'application/json'                
-                }
-            })
-            .then(res => {
-                if (res.data.count === 0) {
-                    setCheck(false)
-                } else {
-                    setCheck(true)
-                }
-            })
-            .catch(err => {
-                message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-            })
-        }
-    }
-
-    function getWatchlists() {
-        if (props.token) {
-            axios({
-                method: 'GET',
-                url: `${api.watchlists}?token=${props.token}&movie=${props.movie.id}`,
-                headers: {
-                    'Content-Type': 'application/json'                
-                }
-            })
-            .then(res => {
-                if (res.data.count === 0) {
-                    setWatchlist(false)
-                } else {
-                    setWatchlist(true)
-                }
-            })
-            .catch(err => {
-                message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-            })
-        }
-    }
-
-    function getScores() {
-        if (props.token) {
-            axios({
-                method: 'GET',
-                url: `${api.scores}?token=${props.token}&movie=${props.movie.id}`,
-                headers: {
-                    'Content-Type': 'application/json'                
-                }
-            })
-            .then(res => {                
-                if (res.data.count > 0) {                    
-                    setScore(res.data.results[0].score)
-                } else {
-                    setScore(0)
-                }
-            })
-            .catch(err => {
-                message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-            })
-        }
-    }
-
-    function onLike () {        
+    function onLike () {                
         if (props.token && props.movie) {
             axios({
-                method: 'POST',
-                url: `${api.likes}/`,
-                data: {
-                    movie: props.movie.id,
-                    token: props.token
+                method: 'PUT',
+                url: `${api.movies}/${props.movie.id}/`,
+                data: {                    
+                    token: props.token,
+                    like: true
                 },
                 headers: {
                     'Content-Type': 'application/json',
@@ -133,8 +45,8 @@ function MovieCard3 (props) {
                 }
             })
             .then(res => {              
-                if (res.status === 201 || res.status === 204) {
-                    getLikes()
+                if (res.status === 200) {
+                    setLikes(res.data.likes)
                 }
             })
             .catch(err => {
@@ -149,20 +61,20 @@ function MovieCard3 (props) {
     function onCheck () {
         if (props.token && props.movie) {
             axios({
-                method: 'POST',
-                url: `${api.checks}/`,
-                data: {
-                    movie: props.movie.id,
-                    token: props.token
+                method: 'PUT',
+                url: `${api.movies}/${props.movie.id}/`,
+                data: {                    
+                    token: props.token,
+                    check: true
                 },
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${props.token}`
                 }
             })
-            .then(res => {             
-                if (res.status === 201 || res.status === 204) {
-                    getChecks()
+            .then(res => {              
+                if (res.status === 200) {
+                    setChecks(res.data.checks)
                 }
             })
             .catch(err => {
@@ -177,20 +89,20 @@ function MovieCard3 (props) {
     function onWatchlist () {
         if (props.token && props.movie) {
             axios({
-                method: 'POST',
-                url: `${api.watchlists}/`,
-                data: {
-                    movie: props.movie.id,
-                    token: props.token
+                method: 'PUT',
+                url: `${api.movies}/${props.movie.id}/`,
+                data: {                    
+                    token: props.token,
+                    watchlist: true
                 },
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${props.token}`
                 }
             })
-            .then(res => {            
-                if (res.status === 201 || res.status === 204) {
-                    getWatchlists()
+            .then(res => {              
+                if (res.status === 200) {
+                    setWatchlists(res.data.watchlists)
                 }
             })
             .catch(err => {
@@ -205,10 +117,9 @@ function MovieCard3 (props) {
     function onScore (value) {                  
         if (props.token && props.movie) {
             axios({
-                method: 'POST',
-                url: `${api.scores}/`,
-                data: {
-                    movie: props.movie.id,
+                method: 'PUT',
+                url: `${api.movies}/${props.movie.id}/`,
+                data: {                    
                     token: props.token,
                     score: value
                 },
@@ -218,11 +129,9 @@ function MovieCard3 (props) {
                 }
             })
             .then(res => {              
-                if (res.status === 200 || res.status === 201 || res.status === 204) {                    
-                    if (res.data !== "") {
-                        setRating(res.data.movie.score)
-                    }                  
-                    getScores()
+                if (res.status === 200) {                    
+                    setRating(res.data.score)                 
+                    setScores(res.data.scores)
                 }
             })
             .catch(err => {
@@ -282,17 +191,17 @@ function MovieCard3 (props) {
                         <div className="top">
                             <div className="actions">
                                 <Tooltip title="Таалагдсан">
-                                    <Button className="like" size="middle" type={like ? "primary" : "ghost"} shape="circle" icon={<HeartOutlined />} onClick={onLike}></Button>
+                                    <Button className="like" size="middle" type={props.user && likes && likes.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<HeartOutlined />} onClick={onLike}></Button>
                                 </Tooltip>
                                 <Tooltip title="Үзсэн">
-                                    <Button className="check" size="middle" type={check ? "primary" : "ghost"} shape="circle" icon={<CheckOutlined />} onClick={onCheck}></Button>
+                                    <Button className="check" size="middle" type={props.user && checks && checks.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<CheckOutlined />} onClick={onCheck}></Button>
                                 </Tooltip>
                                 <Tooltip title="Дараа үзэх">
-                                    <Button className="watchlist" size="middle" type={watchlist ? "primary" : "ghost"} shape="circle" icon={<PlusOutlined />} onClick={onWatchlist}></Button>
+                                    <Button className="watchlist" size="middle" type={props.user && watchlists && watchlists.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<PlusOutlined />} onClick={onWatchlist}></Button>
                                 </Tooltip>
                                 <Tooltip title="Үнэлгээ өгөх">
-                                    {score > 0 ? (
-                                        <Button className="rate" size="middle" type="primary" shape="circle" style={{ color: '#000' }} onClick={() => setRateModalVisible(true)}>{score}</Button>
+                                    {props.user && scores && scores.filter(x => x.user === props.user.id).length > 0 ? (
+                                        <Button className="rate" size="middle" type="primary" shape="circle" style={{ color: '#000' }} onClick={() => setRateModalVisible(true)}>{props.user && scores && scores.filter(x => x.user === props.user.id)[0].score}</Button>
                                     ) : (
                                         <Button className="rate" size="middle" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateModalVisible(true)}></Button>
                                     )}          
@@ -305,9 +214,9 @@ function MovieCard3 (props) {
                                         width={400}
                                     >                                                                                        
                                         <div style={{ textAlign: 'center' }}>
-                                            <Typography.Title level={5}>Таны үнэлгээ: {score ? score : ''}</Typography.Title>
+                                            <Typography.Title level={5}>Таны үнэлгээ: {props.user && scores && scores.filter(x => x.user === props.user.id).length > 0 ? scores.filter(x => x.user === props.user.id)[0].score : ''}</Typography.Title>
                                             <span>
-                                                <Rate value={score} count={10} onChange={onScore} />                                            
+                                                <Rate value={props.user && scores && scores.filter(x => x.user === props.user.id).length > 0 ? scores.filter(x => x.user === props.user.id)[0].score : 0} count={10} onChange={onScore} />                                            
                                             </span>
                                         </div> 
                                     </Modal>                          
@@ -363,7 +272,7 @@ function MovieCard3 (props) {
                         </Link>                    
                     </div>                                                        
                 </div>                
-            </Card>             
+            </Card>         
         </div>        
     )
 }

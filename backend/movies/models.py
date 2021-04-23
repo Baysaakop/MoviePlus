@@ -30,6 +30,33 @@ class Occupation(models.Model):
     def __str__(self):
         return self.name
 
+class Score(models.Model):    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)    
+
+class Comment(models.Model):    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField()        
+    score = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, null=True, blank=True, related_name="comment_likes")
+    dislikes = models.ManyToManyField(User, null=True, blank=True, related_name="comment_dislikes")
+    created_at = models.DateTimeField(auto_now_add=True)        
+
+class Review(models.Model):    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=100)
+    content = RichTextField()
+    thumbnail = models.ImageField(upload_to='review/%Y/%m/%d', null=True, blank=True)      
+    score = models.IntegerField(default=0)    
+    views = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name="review_likes")
+    dislikes = models.ManyToManyField(User, related_name="review_dislikes") 
+    comments = models.ManyToManyField(Comment, null=True, blank=True, related_name="review_comments")    
+    created_at = models.DateTimeField(auto_now_add=True)    
+
+    def __str__(self):
+        return self.title        
+
 class Artist(models.Model):
     name = models.CharField(max_length=100)
     firstname = models.CharField(max_length=50, blank=True, null=True)
@@ -39,14 +66,28 @@ class Artist(models.Model):
     gender = models.CharField(max_length=10, blank=True, null=True)    
     occupation = models.ManyToManyField(Occupation)    
     avatar = models.ImageField(upload_to='artists/%Y/%m/%d', null=True, blank=True)
-    view_count = models.IntegerField(default=0)
-    like_count = models.IntegerField(default=0)
-    follow_count = models.IntegerField(default=0)    
+    views = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, null=True, blank=True, related_name="artist_likes")
+    follows = models.ManyToManyField(User, null=True, blank=True, related_name="artist_follows")  
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='artist_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)        
 
     def __str__(self):
         return self.name
+
+class Member(models.Model):    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
+    role = models.ManyToManyField(Occupation, null=True, blank=True)        
+
+    def __str__(self):
+        return self.artist.name
+
+class Actor(models.Model):    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
+    role_name = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.artist.name
 
 class Movie(models.Model):
     name = models.CharField(max_length=100)
@@ -56,18 +97,20 @@ class Movie(models.Model):
     releasedate = models.DateField(auto_now=False, null=True, blank=True)
     rating = models.ForeignKey(Rating, on_delete=models.CASCADE, null=True, blank=True)
     genre = models.ManyToManyField(Genre, null=True, blank=True)    
-    production = models.ManyToManyField(Production, null=True, blank=True)    
-    view_count = models.IntegerField(default=0)
-    comment_count = models.IntegerField(default=0)
-    like_count = models.IntegerField(default=0)    
-    check_count = models.IntegerField(default=0)    
-    watchlist_count = models.IntegerField(default=0)    
-    score_count = models.IntegerField(default=0)
+    production = models.ManyToManyField(Production, null=True, blank=True)        
+    views = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, null=True, blank=True, related_name="movie_likes")
+    checks = models.ManyToManyField(User, null=True, blank=True, related_name="movie_checks")
+    watchlists = models.ManyToManyField(User, null=True, blank=True, related_name="movie_watchlists")
+    scores = models.ManyToManyField(Score, null=True, blank=True, related_name="movie_scores")
+    comments = models.ManyToManyField(Comment, null=True, blank=True, related_name="movie_comments")    
+    members = models.ManyToManyField(Member, null=True, blank=True, related_name="movie_members")
+    actors = models.ManyToManyField(Member, null=True, blank=True, related_name="movie_actors")
     score = models.IntegerField(default=0)
     poster = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     landscape = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     trailer = models.CharField(max_length=200, null=True, blank=True)
-    is_released = models.BooleanField(default=False)
+    is_released = models.BooleanField(default=True)
     in_theater = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='movie_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)            
@@ -86,91 +129,23 @@ class Series(models.Model):
     production = models.ManyToManyField(Production, null=True, blank=True)    
     season_count = models.IntegerField(default=1)
     episode_count = models.IntegerField(default=1)
-    view_count = models.IntegerField(default=0)
-    comment_count = models.IntegerField(default=0)
-    like_count = models.IntegerField(default=0)    
-    check_count = models.IntegerField(default=0)    
-    watchlist_count = models.IntegerField(default=0)    
-    score_count = models.IntegerField(default=0)
+    views = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, null=True, blank=True, related_name="series_likes")
+    checks = models.ManyToManyField(User, null=True, blank=True, related_name="series_checks")
+    watchlists = models.ManyToManyField(User, null=True, blank=True, related_name="series_watchlists")
+    scores = models.ManyToManyField(Score, null=True, blank=True, related_name="series_scores")
+    comments = models.ManyToManyField(Comment, null=True, blank=True, related_name="series_comments")    
+    members = models.ManyToManyField(Member, null=True, blank=True, related_name="series_members")
+    actors = models.ManyToManyField(Member, null=True, blank=True, related_name="series_actors")
     score = models.IntegerField(default=0)
-    poster = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
-    landscape = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
+    poster = models.ImageField(upload_to='series/%Y/%m/%d', null=True, blank=True)
+    landscape = models.ImageField(upload_to='series/%Y/%m/%d', null=True, blank=True)
     trailer = models.CharField(max_length=200, null=True, blank=True)
-    is_released = models.BooleanField(default=False)
+    is_released = models.BooleanField(default=True)
     on_tv = models.BooleanField(default=False)
-    is_finished = models.BooleanField(default=False)
+    is_finished = models.BooleanField(default=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='series_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)            
 
     def __str__(self):
         return self.name
-
-class Member(models.Model):    
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, blank=True, null=True)
-    series = models.ForeignKey(Series, on_delete=models.CASCADE, blank=True, null=True)
-    role = models.ManyToManyField(Occupation, null=True, blank=True)        
-    role_name = models.CharField(max_length=100, null=True, blank=True)
-
-    def __str__(self):
-        return self.artist.name
-
-class Review(models.Model):    
-    title = models.CharField(max_length=100)
-    content = RichTextField()
-    thumbnail = models.ImageField(upload_to='review/%Y/%m/%d', null=True, blank=True)    
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True, blank=True)
-    views = models.IntegerField(default=0)
-    likes = models.IntegerField(default=0)        
-    score = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="review_created_by")
-
-    def __str__(self):
-        return self.title        
-
-class Comment(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commenter")
-    comment = models.TextField()    
-    score = models.IntegerField(default=0)
-    likes = models.ManyToManyField(User, related_name="likers")
-    dislikes = models.ManyToManyField(User, related_name="dislikers")
-    created_at = models.DateTimeField(auto_now_add=True)        
-
-    def __str__(self):
-        return self.user.username + " -> " + self.movie.name
-
-class Score(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="user_score")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    score = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)        
-
-    def __str__(self):
-        return self.user.username + " -> " + self.movie.name
-
-class Like(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="user_like")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)    
-    created_at = models.DateTimeField(auto_now_add=True)        
-
-    def __str__(self):
-        return self.user.username + " -> " + self.movie.name
-
-class Check(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="user_check")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)    
-    created_at = models.DateTimeField(auto_now_add=True)        
-
-    def __str__(self):
-        return self.user.username + " -> " + self.movie.name
-
-class Watchlist(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="user_watchlist")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)    
-    created_at = models.DateTimeField(auto_now_add=True)        
-
-    def __str__(self):
-        return self.user.username + " -> " + self.movie.name
-

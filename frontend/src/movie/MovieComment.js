@@ -2,7 +2,6 @@ import { Form, Input, Avatar, message, Comment, Button, Typography, Tooltip, Row
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { connect } from 'react-redux';
 import { DeleteOutlined, DislikeOutlined, EditOutlined, LikeOutlined, StarFilled, UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -10,43 +9,24 @@ const { TextArea } = Input;
 
 function MovieComment (props) {
     const [form] = Form.useForm()
-    const [user, setUser] = useState()
     const [comments, setComments] = useState()
     const [edit, setEdit] = useState()
     const [editValue, setEditValue] = useState()
 
     useEffect(() => {
-        getComments()
-        getUser()                      
-    }, [props.token, props.id]) // eslint-disable-line react-hooks/exhaustive-deps    
-
-    function getUser() {
-        if (props.token) {
-            axios({
-                method: 'GET',
-                url: api.profile,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${props.token}`
-                }
-            }).then(res => {                     
-                setUser(res.data)                
-            }).catch(err => {                
-                console.log(err) 
-                message.error("Алдаа гарлаа. Хуудсыг дахин ачааллана уу.")            
-            })  
-        } 
-    }
+        getComments()               
+    }, [props.user, props.movieID]) // eslint-disable-line react-hooks/exhaustive-deps    
 
     function getComments() {
         axios({
             method: 'GET',
-            url: `${api.comments}?movie=${props.id}`,
+            url: `${api.comments}?movie=${props.movieID}`,
             headers: {
                 'Content-Type': 'application/json'                
             }
         })
         .then(res => {                
+            console.log(res.data.results)
             setComments(res.data.results)
         })
         .catch(err => {
@@ -55,13 +35,13 @@ function MovieComment (props) {
     }
 
     function onFinish(values) {
-        if (props.token && props.id && values.comment) {
+        if (props.token && values.comment) {
             axios({
                 method: 'POST',
                 url: `${api.comments}/`,
                 data: {
-                    movie: props.id,
                     token: props.token,
+                    movie: props.movieID,                    
                     comment: values.comment
                 },
                 headers: {
@@ -208,18 +188,17 @@ function MovieComment (props) {
 
     return (
         <div>
-            { comments ? (
-                comments.map(comment => {
+            { comments ? comments.map(comment => {
                     return (
                         <Comment
                             actions={[
                                 <Tooltip key="comment-basic-like" title="Таалагдсан">
-                                    <Button type={user && comment.likes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} size="small" icon={<LikeOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onLike(comment.id)}> {comment.likes.length}</Button>
+                                    <Button type={props.user && comment.likes.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} size="small" icon={<LikeOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onLike(comment.id)}> {comment.likes.length}</Button>
                                 </Tooltip>,
                                 <Tooltip key="comment-basic-dislike" title="Таалагдаагүй">
-                                    <Button danger type={user && comment.dislikes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} size="small" icon={<DislikeOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onDislike(comment.id)}> {comment.dislikes.length}</Button>
+                                    <Button danger type={props.user && comment.dislikes.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} size="small" icon={<DislikeOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onDislike(comment.id)}> {comment.dislikes.length}</Button>
                                 </Tooltip>,
-                                user && user.id === comment.user.id ? (
+                                props.user && props.user.id === comment.user.id ? (
                                 <>
                                     <Tooltip key="comment-basic-dislike" title="Засах">  
                                         <Button type="ghost" size="small" icon={<EditOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onEdit(comment.id)}> 
@@ -272,19 +251,16 @@ function MovieComment (props) {
                             }                                                        
                         />
                     )
-                })
-            ) : (
-                <>
-                </>
-            )}
-            { user ? (    
+                }) : <></>
+            }
+            { props.user ? (    
                 <>        
                     <Comment
                         avatar={
-                            user.profile.avatar ? (
-                                <Avatar src={user.profile.avatar} alt={user.username} />
+                            props.user.profile.avatar ? (
+                                <Avatar src={props.user.profile.avatar} alt={props.user.username} />
                             ) : (
-                                <Avatar icon={<UserOutlined />} alt={user.username} />
+                                <Avatar icon={<UserOutlined />} alt={props.user.username} />
                             )
                         }
                         content={
@@ -308,10 +284,4 @@ function MovieComment (props) {
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        token: state.token
-    }
-}
-
-export default connect(mapStateToProps)(MovieComment);
+export default MovieComment;

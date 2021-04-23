@@ -1,98 +1,98 @@
-import { Grid, Breadcrumb, Col, List, Pagination, Row, Input, Select, Form, Spin, message } from 'antd';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';  
-import api from '../api';
+import { Grid, Breadcrumb, Result, Button } from 'antd';
+import React from 'react';
+// import axios from 'axios';  
+// import api from '../api';
 import { Link } from 'react-router-dom';
-import { LoadingOutlined } from '@ant-design/icons';
-import MovieCard3 from '../movie/MovieCard3';
+import { SmileFilled } from '@ant-design/icons';
+// import MovieCard3 from '../movie/MovieCard3';
 
-const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+// const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 const { useBreakpoint } = Grid;
-const { Option } = Select;
-const { Search } = Input;
+// const { Option } = Select;
+// const { Search } = Input;
 
 function SeriesList() {
     const screens = useBreakpoint()
-    const [form] = Form.useForm()
-    const [loading, setLoading] = useState(false)
-    const [series, setSeries] = useState() 
-    const [page, setPage] = useState(1)
-    const [total, setTotal] = useState()
-    const [name, setName] = useState()
-    const [genres, setGenres] = useState()    
-    const [genre, setGenre] = useState()    
-    const [order, setOrder] = useState();   
+    // const [form] = Form.useForm()
+    // const [loading, setLoading] = useState(false)
+    // const [series, setSeries] = useState() 
+    // const [page, setPage] = useState(1)
+    // const [total, setTotal] = useState()
+    // const [name, setName] = useState()
+    // const [genres, setGenres] = useState()    
+    // const [genre, setGenre] = useState()    
+    // const [order, setOrder] = useState();   
 
-    useEffect(() => {
-        if (!genres) {
-            axios({
-                method: 'GET',
-                url: api.genres
-            })
-            .then(res => {                        
-                setGenres(res.data.results);            
-            })        
-            .catch(err => {
-                console.log(err.message);
-            }) 
-        }; 
-       getSeries(name, genre, page, order)
-    }, [name, genre, page, order])   // eslint-disable-line react-hooks/exhaustive-deps
+    // useEffect(() => {
+    //     if (!genres) {
+    //         axios({
+    //             method: 'GET',
+    //             url: api.genres
+    //         })
+    //         .then(res => {                        
+    //             setGenres(res.data.results);            
+    //         })        
+    //         .catch(err => {
+    //             console.log(err.message);
+    //         }) 
+    //     }; 
+    //    getSeries(name, genre, page, order)
+    // }, [name, genre, page, order])   // eslint-disable-line react-hooks/exhaustive-deps
 
-    function getSeries(name, genre, page, order) {
-        setLoading(true)
-        var url = api.series + "?"
-        var params = []
-        if (name && name.length > 0) {
-            params.push("name=" + name)
-        }
-        if (genre && genre > 0) {
-            params.push("genre=" + genre)
-        }
-        if (order) {
-            params.push("order=" + order)
-        }
-        params.forEach(param => {
-            url += param + "&"
-        })        
-        url += "page=" + page                
-        axios({
-            method: 'GET',
-            url: url
-        }).then(res => {                                         
-            setSeries(res.data.results)
-            setTotal(res.data.count)
-            setLoading(false)
-        }).catch(err => {
-            message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-            console.log(err.message)
-            setLoading(false)
-        });        
-    }
+    // function getSeries(name, genre, page, order) {
+    //     setLoading(true)
+    //     var url = api.series + "?"
+    //     var params = []
+    //     if (name && name.length > 0) {
+    //         params.push("name=" + name)
+    //     }
+    //     if (genre && genre > 0) {
+    //         params.push("genre=" + genre)
+    //     }
+    //     if (order) {
+    //         params.push("order=" + order)
+    //     }
+    //     params.forEach(param => {
+    //         url += param + "&"
+    //     })        
+    //     url += "page=" + page                
+    //     axios({
+    //         method: 'GET',
+    //         url: url
+    //     }).then(res => {                                         
+    //         setSeries(res.data.results)
+    //         setTotal(res.data.count)
+    //         setLoading(false)
+    //     }).catch(err => {
+    //         message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
+    //         console.log(err.message)
+    //         setLoading(false)
+    //     });        
+    // }
 
-    function onNameSearch(value) {        
-        setPage(1)
-        setName(value)
-    }
+    // function onNameSearch(value) {        
+    //     setPage(1)
+    //     setName(value)
+    // }
 
-    function selectGenre (value) {        
-        setPage(1)
-        setGenre(value)
-    }
+    // function selectGenre (value) {        
+    //     setPage(1)
+    //     setGenre(value)
+    // }
 
-    function selectOrder (value) {
-        setPage(1)
-        setOrder(value)
-    }
+    // function selectOrder (value) {
+    //     setPage(1)
+    //     setOrder(value)
+    // }
 
-    function onPageChange (pageNum, pageSize) {        
-        setPage(pageNum)
-    }
+    // function onPageChange (pageNum, pageSize) {        
+    //     setPage(pageNum)
+    // }
 
-    function showTotal(total) {
-        return `Нийт ${total} кино:`;
-    }
+    // function showTotal(total) {
+    //     return `Нийт ${total} кино:`;
+    // }
 
     function getPadding() {
         if (screens.xxl) {
@@ -123,7 +123,16 @@ function SeriesList() {
                 </Breadcrumb>
             </div>
             <div style={{ padding: getPadding() }}>
-                <Form form={form} layout="vertical" initialValues={{
+                <Result
+                    icon={<SmileFilled style={{ color: 'yellowgreen' }} />}
+                    title="Уучлаарай, энэ хэсэг одоогоор хийгдээгүй байна."
+                    extra={
+                        <Link to="/">
+                            <Button type="primary">Нүүр хуудас руу буцах</Button>
+                        </Link>
+                    }
+                />
+                {/* <Form form={form} layout="vertical" initialValues={{
                     genre: "all",
                     order: "created_at"
                 }}>
@@ -213,7 +222,7 @@ function SeriesList() {
                         />
                     </>
                 )}
-                
+                 */}
             </div>
         </div>
     );

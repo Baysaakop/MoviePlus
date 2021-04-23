@@ -22,15 +22,4 @@ class Command(BaseCommand):
             review.likes = 0
             review.score = 0
             review.save()
-        Score.objects.all().delete()
-        for profile in Profile.objects.all():
-            profile.likes.clear()
-            profile.watched.clear()
-            profile.watchlist.clear()
-            profile.artist_likes.clear()
-            profile.artist_followed.clear()
-            profile.review_likes.clear()
-            profile.critic_likes.clear()
-            profile.critic_followed.clear()
-            profile.scores.clear()
         self.stdout.write(self.style.SUCCESS('Reset all data'))

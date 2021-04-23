@@ -44,34 +44,20 @@ function MovieAdd (props) {
         console.log(values)            
         const data = {
             name: values.name,
+            description: values.description ? values.description : "",
+            plot: values.plot ? values.plot : "",
+            duration: values.duration ? values.duration : 90,
+            releasedate: values.releasedate ? moment(values.releasedate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD"),
+            is_released: values.is_released ? values.is_released : true,
+            in_theater: values.in_theater ? values.in_theater : false,
+            trailer: values.trailer ? values.trailer : "",            
             token: props.token
-        }
-        if (values.description && values.description !== null) {
-            data['description'] = values.description;
-        }
-        if (values.plot && values.plot !== null) {
-            data['plot'] = values.plot;
-        }
-        if (values.releasedate && values.releasedate !== null) {            
-            data['releasedate'] = moment(values.releasedate).format("YYYY-MM-DD");
-        }
-        if (values.duration && values.duration !== null) {            
-            data['duration'] = values.duration;
-        }
-        if (values.is_released && values.is_released !== null) {            
-            data['is_released'] = values.is_released;
-        }
-        if (values.in_theater && values.in_theater !== null) {            
-            data['in_theater'] = values.in_theater;
         }
         if (values.rating && values.rating !== null) {            
             data['rating'] = values.rating;
         }
         if (values.genre && values.genre !== null && values.genre.length > 0 && values.genre[0] !== "") {
             data['genre'] = values.genre;
-        }
-        if (values.trailer && values.trailer !== null) {            
-            data['trailer'] = values.trailer;
         }
         var formData = new FormData();
         if (poster && poster !== null) {
@@ -145,12 +131,12 @@ function MovieAdd (props) {
                 <Row gutter={[16, 16]}>
                     <Col xs={12} sm={8} md={6}>
                         <Form.Item name="duration" label="Хугацаа:">
-                            <InputNumber defaultValue={0} min={0} style={{ width: '100%' }} />
+                            <InputNumber defaultValue={90} min={0} style={{ width: '100%' }} />
                         </Form.Item>
                     </Col>
                     <Col xs={12} sm={8} md={6}>
                         <Form.Item name="releasedate" label="Нээлт:">
-                            <DatePicker style={{ width: '100%' }} />
+                            <DatePicker  style={{ width: '100%' }} />
                         </Form.Item>
                     </Col>
                     <Col xs={12} sm={8} md={6}>

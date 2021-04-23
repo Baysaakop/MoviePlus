@@ -7,6 +7,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 // import MovieCard from './MovieCard';
 // import MovieCard2 from './MovieCard2';
 import MovieCard3 from './MovieCard3';
+import { connect } from 'react-redux';
 
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -14,9 +15,10 @@ const { useBreakpoint } = Grid;
 const { Option } = Select;
 const { Search } = Input;
 
-function MovieList() {
+function MovieList(props) {
     const screens = useBreakpoint()
     const [form] = Form.useForm()
+    const [user, setUser] = useState()
     const [loading, setLoading] = useState(false)
     const [movies, setMovies] = useState() 
     const [page, setPage] = useState(1)
@@ -28,19 +30,44 @@ function MovieList() {
 
     useEffect(() => {
         if (!genres) {
-            axios({
-                method: 'GET',
-                url: api.genres
-            })
-            .then(res => {                        
-                setGenres(res.data.results);            
-            })        
-            .catch(err => {
-                console.log(err.message);
-            }) 
-        }; 
+            getGenres()
+        }
+        if (!user) {
+            getUser()
+        }
        getMovies(name, genre, page, order)
     }, [name, genre, page, order])   // eslint-disable-line react-hooks/exhaustive-deps
+
+    function getGenres() {
+        axios({
+            method: 'GET',
+            url: api.genres
+        })
+        .then(res => {                        
+            setGenres(res.data.results);            
+        })        
+        .catch(err => {
+            console.log(err.message);
+        }) 
+    }
+
+    function getUser() {
+        if (props.token && props.token !== null) {
+            axios({
+                method: 'GET',
+                url: api.profile,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            }).then(res => {                          
+                setUser(res.data)                
+            }).catch(err => {                
+                console.log(err) 
+                message.error("Алдаа гарлаа. Хуудсыг дахин ачааллана уу.")           
+            })                    
+        }
+    }
 
     function getMovies(name, genre, page, order) {
         setLoading(true)
@@ -200,7 +227,7 @@ function MovieList() {
                             dataSource={movies ? movies : undefined}
                             renderItem={item => (
                                 <List.Item>
-                                    <MovieCard3 movie={item} />
+                                    <MovieCard3 movie={item} user={user} />
                                 </List.Item>
                             )} 
                             
@@ -222,4 +249,10 @@ function MovieList() {
     );
 };
 
-export default MovieList;
+const mapStateToProps = state => {
+    return {
+        token: state.token
+    }
+}
+
+export default connect(mapStateToProps)(MovieList);

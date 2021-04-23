@@ -154,7 +154,7 @@ function ReviewDetail (props) {
                                             <Button type="ghost" size="large" icon={<EyeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(post.views)}</Button>
                                         </Tooltip>                        
                                         <Tooltip title="Таалагдсан">
-                                            <Button type={user && user.profile.review_likes.find(x => x.id === post.id) !== undefined ? "primary" : "ghost"} onClick={like} size="large" icon={<LikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(post.likes)}</Button>
+                                            <Button type="ghost" onClick={like} size="large" icon={<LikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(post.likes)}</Button>
                                         </Tooltip>
                                         <Tooltip title="Сэтгэгдэл">
                                             <Button type="ghost" size="large" icon={<CommentOutlined />} style={{ marginLeft: '8px' }}>15</Button>
