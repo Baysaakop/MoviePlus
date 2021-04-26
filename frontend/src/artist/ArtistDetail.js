@@ -172,17 +172,17 @@ function ArtistDetail (props) {
                                     <Col span={8} style={{ textAlign: 'center' }}>
                                         <EyeOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
-                                        <Typography.Text>{formatCount(artist.view_count)}</Typography.Text>
+                                        <Typography.Text>{formatCount(artist.views)}</Typography.Text>
                                     </Col>
                                     <Col span={8} style={{ textAlign: 'center' }}>
                                         <LikeOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
-                                        <Typography.Text>{formatCount(artist.like_count)}</Typography.Text>
+                                        <Typography.Text>{formatCount(artist.likes)}</Typography.Text>
                                     </Col>
                                     <Col span={8} style={{ textAlign: 'center' }}>
                                         <UserAddOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
-                                        <Typography.Text>{formatCount(artist.follow_count)}</Typography.Text>
+                                        <Typography.Text>{formatCount(artist.follows)}</Typography.Text>
                                     </Col>
                                 </Row>
                             </Col>
@@ -207,24 +207,6 @@ function ArtistDetail (props) {
                                         <Tooltip title="Дагах">
                                             <Button size="large" type="ghost" shape="circle" icon={<UserAddOutlined style={{ marginLeft: '2px' }} />} onClick={follow} />
                                         </Tooltip>                                                                
-                                    {/* { user && user.profile.artist_likes.find(x => x.id === artist.id) !== null && user.profile.artist_likes.find(x => x.id === artist.id) !== undefined ? (
-                                        <Tooltip title="Таалагдсан">
-                                            <Button size="large" type="primary" shape="circle" icon={<LikeOutlined />} onClick={like} />
-                                        </Tooltip>
-                                    ) : (
-                                        <Tooltip title="Таалагдсан">
-                                            <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} onClick={like} />
-                                        </Tooltip>
-                                    )} 
-                                    { user && user.profile.artist_followed.find(x => x.id === artist.id) !== null && user.profile.artist_followed.find(x => x.id === artist.id) !== undefined ? (
-                                        <Tooltip title="Дагах">
-                                            <Button size="large" type="primary" shape="circle" icon={<UserAddOutlined style={{ marginLeft: '2px' }} />} onClick={follow} />
-                                        </Tooltip>
-                                    ) : (
-                                        <Tooltip title="Дагах">
-                                            <Button size="large" type="ghost" shape="circle" icon={<UserAddOutlined style={{ marginLeft: '2px' }} />} onClick={follow} />
-                                        </Tooltip>
-                                    )}                     */}
                                     </div>                                                          
                                     <div className="infotabs">
                                         <Tabs defaultActiveKey="1">
@@ -232,16 +214,9 @@ function ArtistDetail (props) {
                                                 <Typography.Title level={5}>Танилцуулга</Typography.Title>
                                                 <Typography.Paragraph>{artist.biography}</Typography.Paragraph>
                                             </Tabs.TabPane>
-                                            <Tabs.TabPane tab="Уран бүтээлүүд" key="2">
-                                                <Typography.Title level={5}>Уран бүтээлүүд</Typography.Title>
-                                                <Filmography id={artist.id} />       
+                                            <Tabs.TabPane tab="Уран бүтээлүүд" key="2">                                                
+                                                <Filmography id={artist.id} occupation={artist.occupation[0].id} />       
                                             </Tabs.TabPane>                                            
-                                            {/* <Tabs.TabPane tab="Зураг" key="3">
-                                                <Typography.Title level={5}>Зураг</Typography.Title>
-                                            </Tabs.TabPane>
-                                            <Tabs.TabPane tab="Сэтгэгдэл" key="4">
-                                                <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>
-                                            </Tabs.TabPane> */}
                                         </Tabs>
                                     </div>
                                 </div>

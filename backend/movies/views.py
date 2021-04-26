@@ -129,7 +129,7 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.view_count = instance.view_count + 1        
+        instance.views = instance.views + 1        
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
@@ -186,7 +186,7 @@ class ArtistViewSet(viewsets.ModelViewSet):
             artist.birthday=request.data['birthday']        
         if 'avatar' in request.data:
             artist.avatar=request.data['avatar']         
-            profile.save()
+            profile.save()        
         artist.save()
         serializer = ArtistSerializer(artist)
         headers = self.get_success_headers(serializer.data)        
@@ -194,69 +194,11 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 class MemberViewSet(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
-    queryset = Member.objects.all().order_by('artist__id')
-
-    def get_queryset(self):
-        queryset = Member.objects.all().order_by('artist__id')
-        artist = self.request.query_params.get('artist', None)
-        if artist is not None:
-            queryset = queryset.filter(artist__id=artist)    
-        return queryset
-
-    def create(self, request, *args, **kwargs):           
-        artist = Artist.objects.get(id=int(request.data['artist']))                
-        role = request.data['role']
-        member = Member.objects.create(
-            artist=artist
-        )
-        for r in role:
-            member.role.add(r)        
-        member.save()
-        serializer = MemberSerializer(member)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    def update(self, request, *args, **kwargs):                         
-        member = self.get_object()      
-        role = request.data['role']
-        member.role.clear()
-        for r in role:
-            member.role.add(r)               
-        member.save()
-        serializer = MemberSerializer(member)
-        headers = self.get_success_headers(serializer.data)        
-        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)     
+    queryset = Member.objects.all().order_by('artist__id')  
 
 class ActorViewSet(viewsets.ModelViewSet):
     serializer_class = ActorSerializer
-    queryset = Actor.objects.all().order_by('artist__id')
-
-    def get_queryset(self):
-        queryset = Member.objects.all().order_by('artist__id')
-        artist = self.request.query_params.get('artist', None)
-        if artist is not None:
-            queryset = queryset.filter(artist__id=artist)    
-        return queryset
-
-    def create(self, request, *args, **kwargs):           
-        artist = Artist.objects.get(id=int(request.data['artist']))                
-        role_name = request.data['role_name']
-        member = Member.objects.create(
-            artist=artist,
-            role_name=role_name
-        )
-        serializer = MemberSerializer(member)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    def update(self, request, *args, **kwargs):                         
-        member = self.get_object()      
-        role_name = request.data['role_name']
-        member.role_name = role_name             
-        member.save()
-        serializer = MemberSerializer(member)
-        headers = self.get_success_headers(serializer.data)        
-        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)      
+    queryset = Actor.objects.all().order_by('artist__id') 
 
 def calculateMovieScore(movie):
     total = 0
@@ -277,10 +219,18 @@ class MovieViewSet(viewsets.ModelViewSet):
         name = self.request.query_params.get('name', None)
         genre = self.request.query_params.get('genre', None)
         order = self.request.query_params.get('order', None)
+        member = self.request.query_params.get('member', None)
+        actor = self.request.query_params.get('actor', None)
         if name is not None:
-            queryset = queryset.filter(name__icontains=name)
+            queryset = queryset.filter(name__icontains=name).distinct()
         if genre is not None:
-            queryset = queryset.filter(genre__id=genre)
+            queryset = queryset.filter(genre__id=genre).distinct()
+        if member is not None:
+            member_obj = Member.objects.filter()
+            queryset = queryset.filter(members__artist__id=member).distinct()
+        if actor is not None:
+            actor_obj = Actor.objects.filter()
+            queryset = queryset.filter(actors__artist__id=actor).distinct()
         if order is not None:
             if (order == 'created_at'):
                 queryset = queryset.order_by('-created_at')
@@ -414,6 +364,26 @@ class MovieViewSet(viewsets.ModelViewSet):
                     user_score.score = score
                     user_score.save()
             movie.score = calculateMovieScore(movie)
+        if 'artist' in request.data:
+            artist = Artist.objects.get(id=int(request.data['artist']))
+            if 'role' in request.data:                
+                role = int(request.data['role'])
+                member = Member.objects.filter(artist=artist, role__id=role).first()                 
+                if member is None:
+                    member = Member.objects.create(
+                        artist=artist,
+                        role=Occupation.objects.get(id=role)
+                    )
+                if member not in movie.members.all():                                        
+                    movie.members.add(member)                
+            if 'role_name' in request.data:
+                actor = movie.actors.filter(artist=artist).first()
+                if actor is None:
+                    actor, created = Actor.objects.get_or_create(artist=artist, role_name=request.data['role_name'])
+                    movie.actors.add(actor)
+                else:
+                    actor.role_name=request.data['role_name']       
+                    actor.save()             
         movie.save()
         serializer = MovieSerializer(movie)
         headers = self.get_success_headers(serializer.data)        

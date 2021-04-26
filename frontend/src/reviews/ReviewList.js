@@ -3,7 +3,7 @@ import axios from 'axios';
 import api from '../api';
 import { Link } from 'react-router-dom';
 import { Grid, List, Avatar, Breadcrumb, Typography, Button, Pagination } from 'antd';
-import { MessageOutlined, LikeOutlined, EyeOutlined, StarFilled } from '@ant-design/icons';
+import { MessageOutlined, LikeOutlined, EyeOutlined, StarFilled, DislikeOutlined, CommentOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const { useBreakpoint } = Grid;
@@ -89,7 +89,7 @@ function ReviewList (props) {
                     <List.Item
                         key={item.title}
                         extra={
-                            <Link to={`/posts/${item.id}`}>
+                            <Link to={`/reviews/${item.id}/`}>
                                 <img
                                     width={300}
                                     alt="logo"
@@ -99,13 +99,13 @@ function ReviewList (props) {
                         }
                     >
                         <List.Item.Meta
-                            avatar={<Avatar size={60} src={item.created_by.profile.avatar} />}
-                            title={<Link to={`/posts/${item.id}`}>{item.title}</Link>}
+                            avatar={<Avatar size={60} src={item.user.profile.avatar} />}
+                            title={<Link to={`/reviews/${item.id}/`}>{item.title}</Link>}
                             description={
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div>
                                         <Typography.Text>
-                                            Нийтлэсэн: {item.created_by.username}                     
+                                            Нийтлэсэн: {item.user.username}                     
                                         </Typography.Text>
                                     </div>
                                     <div>
@@ -128,14 +128,17 @@ function ReviewList (props) {
                                         <Typography.Text style={{ fontSize: '16px' }}><EyeOutlined /> {formatCount(item.views)} </Typography.Text>
                                     </div>
                                     <div style={{ marginRight: '16px' }}>
-                                        <Typography.Text style={{ fontSize: '16px' }}><LikeOutlined /> {formatCount(item.likes)} </Typography.Text>
+                                        <Typography.Text style={{ fontSize: '16px' }}><LikeOutlined /> {formatCount(item.likes.length)} </Typography.Text>
                                     </div>
                                     <div style={{ marginRight: '16px' }}>
-                                        <Typography.Text style={{ fontSize: '16px' }}><MessageOutlined /> {formatCount(15)} </Typography.Text>
+                                        <Typography.Text style={{ fontSize: '16px' }}><DislikeOutlined /> {formatCount(item.dislikes.length)} </Typography.Text>
+                                    </div>
+                                    <div style={{ marginRight: '16px' }}>
+                                        <Typography.Text style={{ fontSize: '16px' }}><CommentOutlined /> {formatCount(item.comments.length)} </Typography.Text>
                                     </div>                           
                                 </div>
                                 <div>
-                                    <Link to={`/posts/${item.id}`}>
+                                    <Link to={`/reviews/${item.id}/`}>
                                         <Button type="ghost" style={{ alignSelf: 'flex-end' }}>Унших</Button>
                                     </Link>
                                 </div>

@@ -3,7 +3,7 @@ import axios from 'axios';
 import api from '../api';
 import { connect } from "react-redux";
 import { Grid, Breadcrumb, message, Spin, Typography, Row, Col, Tooltip, Button, Avatar, Statistic, Divider } from 'antd';
-import { CommentOutlined, EyeOutlined, FormOutlined, LikeOutlined, LoadingOutlined, ShareAltOutlined, StarFilled, UserAddOutlined } from '@ant-design/icons';
+import { CommentOutlined, DislikeOutlined, EyeOutlined, FormOutlined, LikeOutlined, LoadingOutlined, ShareAltOutlined, StarFilled, UserAddOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
@@ -13,17 +13,17 @@ const { useBreakpoint } = Grid;
 function ReviewDetail (props) {
     const screens = useBreakpoint();    
     const [user, setUser] = useState();
-    const [post, setPost] = useState();  
+    const [review, setReview] = useState();  
     const [lastPosts, setLastPosts] = useState();  
     const [loading, setLoading] = useState(false);  
 
     useEffect(() => {               
-        getPost()     
+        getReview()     
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    function getPost() {
+    function getReview() {
         setLoading(true)
-        const id = props.match.params.postID;
+        const id = props.match.params.reviewID;
         const url = api.reviews + "/" + id + "/";  
         axios({
             method: 'GET',
@@ -32,9 +32,10 @@ function ReviewDetail (props) {
                 'Content-Type': 'application/json'                
             }
         })
-        .then(res => {            
-            setPost(res.data)
-            getLastPosts(res.data.created_by.id)
+        .then(res => {          
+            console.log(res.data)  
+            setReview(res.data)
+            // getLastPosts(res.data.created_by.id)
             setLoading(false)
         })
         .catch(err => {
@@ -106,7 +107,7 @@ function ReviewDetail (props) {
             }            
             axios({
                 method: 'PUT',
-                url: `${api.reviews}/${post.id}/`,
+                url: `${api.reviews}/${review.id}/`,
                 data: data,
                 headers: {
                     'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ function ReviewDetail (props) {
                 }
             }).then(res => {                        
                 if (res.status === 201 || res.status === 200) {                                               
-                    getPost()     
+                    getReview()     
                 }             
             }).catch(err => {   
                 message.error("Амжилтгүй боллоо."); 
@@ -127,34 +128,37 @@ function ReviewDetail (props) {
 
     return (
         <div style={{ marginTop: '80px', minHeight: '80vh' }}>
-            { post ? (
+            { review ? (
                 <div style={{ padding: getPadding() }}>
                     <Breadcrumb>
                         <Breadcrumb.Item>
                             <Link to="/">Нүүр</Link>
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>
-                            <Link to="/posts">Нийтлэл</Link>
+                            <Link to="/reviews">Нийтлэл</Link>
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>
-                            {post.title}
+                            {review.title}
                         </Breadcrumb.Item>
                     </Breadcrumb>
                     <div style={{ marginTop: '16px' }}>
-                        <Typography.Title level={1}>{post.title}</Typography.Title>
+                        <Typography.Title level={1}>{review.title}</Typography.Title>
                         <Row gutter={[16, 16]}>
                             <Col xs={24} sm={24} md={24} lg={18}>
-                                <img src={post.thumbnail} alt="thumbnail" style={{ maxHeight: '300px', width: '100%', height: 'auto', objectFit: 'scale-down'  }} />
+                                <img src={review.thumbnail} alt="thumbnail" style={{ maxHeight: '300px', width: '100%', height: 'auto', objectFit: 'scale-down'  }} />
                                 <Typography.Paragraph style={{ marginTop: '16px', padding: '8px' }}>
-                                    <div dangerouslySetInnerHTML={{__html: post.content }} />                                            
+                                    <div dangerouslySetInnerHTML={{__html: review.content }} />                                            
                                 </Typography.Paragraph>                                                               
                                 <Row gutter={[16, 16]}>
                                     <Col xs={24} sm={24} md={18}>
                                         <Tooltip title="Үзсэн">
-                                            <Button type="ghost" size="large" icon={<EyeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(post.views)}</Button>
+                                            <Button type="ghost" size="large" icon={<EyeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.views)}</Button>
                                         </Tooltip>                        
                                         <Tooltip title="Таалагдсан">
-                                            <Button type="ghost" onClick={like} size="large" icon={<LikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(post.likes)}</Button>
+                                            <Button type="ghost" onClick={like} size="large" icon={<LikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.likes.length)}</Button>
+                                        </Tooltip>
+                                        <Tooltip title="Таалагдаагүй">
+                                            <Button type="ghost" onClick={like} size="large" icon={<DislikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.dislikes.length)}</Button>
                                         </Tooltip>
                                         <Tooltip title="Сэтгэгдэл">
                                             <Button type="ghost" size="large" icon={<CommentOutlined />} style={{ marginLeft: '8px' }}>15</Button>
@@ -164,15 +168,15 @@ function ReviewDetail (props) {
                                         </Tooltip>
                                     </Col>
                                     <Col xs={24} sm={24} md={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                        <Typography.Text type="secondary">Нийтлэсэн: {moment(post.created_at).format("YYYY-MM-DD")}</Typography.Text>
+                                        <Typography.Text type="secondary">Нийтлэсэн: {moment(review.created_at).format("YYYY-MM-DD")}</Typography.Text>
                                     </Col>
                                 </Row>
                             </Col>
                             <Col xs={24} sm={24} md={24} lg={6}>
                                 <Typography.Title level={4}>Нийтлэлч:</Typography.Title>
                                 <div style={{ textAlign: 'center' }}>
-                                    <Avatar size={128} src={post.created_by.profile.avatar} />
-                                    <Typography.Title level={5}>{post.created_by.username}</Typography.Title>
+                                    <Avatar size={128} src={review.user.profile.avatar} />
+                                    <Typography.Title level={5}>{review.user.username}</Typography.Title>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                                     <div>
@@ -193,9 +197,9 @@ function ReviewDetail (props) {
                                 </div>
                                 <Divider />
                                 <Typography.Title level={5} style={{ marginTop: '16px' }}>Өгсөн оноо:</Typography.Title>
-                                <Statistic prefix={<StarFilled style={{ color: 'orange' }} />} value={post.score} suffix=" /10" />
+                                <Statistic prefix={<StarFilled style={{ color: 'orange' }} />} value={review.score} suffix=" /10" />
                                 <Typography.Title level={5} style={{ marginTop: '16px' }}>Киноны мэдээлэл:</Typography.Title>
-                                {post.movie ? (
+                                {/* {post.movie ? (
                                     <Link to={`/movies/${post.movie.id}`}>
                                         <Row gutter={[8, 8]}>
                                             <Col span={12}>
@@ -224,8 +228,8 @@ function ReviewDetail (props) {
                                     </Link>
                                 ) : ( 
                                     <Typography.Text>-- Байхгүй --</Typography.Text>
-                                )}
-                                <Typography.Title level={5} style={{ marginTop: '16px' }}>Өмнөх нийтлэлүүд:</Typography.Title>     
+                                )} */}
+                                {/* <Typography.Title level={5} style={{ marginTop: '16px' }}>Өмнөх нийтлэлүүд:</Typography.Title>     
                                 {lastPosts ? lastPosts.slice(0, 3).map(item => {                                    
                                     return (
                                         item.id !== post.id ?
@@ -237,7 +241,7 @@ function ReviewDetail (props) {
                                             </Typography.Paragraph>
                                         </Link> : <></>      
                                     )                        
-                                }) : <></>}                           
+                                }) : <></>}                            */}
                             </Col>
                         </Row>
                     </div>

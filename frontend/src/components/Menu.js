@@ -155,8 +155,8 @@ function CustomMenu (props) {
                                 У/Бүтээлч
                             </Button> */}
                         </Link>
-                        <Link to="/posts">
-                            <Button type={current && current.startsWith('/posts') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
+                        <Link to="/reviews">
+                            <Button type={current && current.startsWith('/reviews') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
                                 НИЙТЛЭЛ
                             </Button>
                             {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
@@ -224,7 +224,7 @@ function CustomMenu (props) {
                                     Уран бүтээлч
                                 </Button>
                             </Link>
-                            <Link to="/posts">
+                            <Link to="/reviews">
                                 <Button block type="text" size="large" style={styleMenuItemMobile}>
                                     Нийтлэл
                                 </Button>

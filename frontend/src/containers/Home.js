@@ -428,7 +428,7 @@ function Home (props) {
                     </Col>
                 </Row>     
             </div>
-            <div style={{ padding: getPadding(), margin: '48px 0' }}>
+            {/* <div style={{ padding: getPadding(), margin: '48px 0' }}>
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={24} md={24} lg={18}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -484,7 +484,7 @@ function Home (props) {
                     </Col>
                 </Row>
                 
-            </div>
+            </div> */}
             <div style={{ padding: getPadding(), margin: '48px 0' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>

@@ -52,7 +52,7 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 class MemberSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
-    role = OccupationSerializer(read_only=True, many=True)
+    role = OccupationSerializer(read_only=True)
     class Meta:
         model = Member
         fields = ('id', 'artist', 'role')   

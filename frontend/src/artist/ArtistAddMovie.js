@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Form, Input, Row, Col, Select, Spin, Button, Popconfirm, message } from 'antd';
+import { Typography, Form, Input, Row, Col, Select, Spin, Button, message, Tabs } from 'antd';
 import { connect } from "react-redux";
 import axios from 'axios';
 import api from '../api';
@@ -8,7 +8,6 @@ const { Search } = Input;
 const { Option } = Select;
 
 function ArtistAddMovie (props) {
-    const [form] = Form.useForm();
     const [occupations, setOccupations] = useState();    
     const [aLoading, setALoading] = useState(false);
     const [mLoading, setMLoading] = useState(false);
@@ -16,7 +15,6 @@ function ArtistAddMovie (props) {
     const [movies, setMovies] = useState();
     const [artist, setArtist] = useState();
     const [movie, setMovie] = useState();
-    const [isActor, setIsActor] = useState(false);
 
     useEffect(() => {
         axios({
@@ -71,27 +69,15 @@ function ArtistAddMovie (props) {
         setMovie(target)
     }
 
-    function selectRole (values) {                
-        let check = false
-        values.forEach(x => {
-            if (x === "1") {
-                check = true
-            }
-        })        
-        setIsActor(check)
-    }
-
-    function onFinish (values) {
-        console.log(values)
+    function onFinishActor (values) {
         const data = {            
             artist: artist.id,
-            movie: movie.id,
-            role: values.role ? values.role : undefined,
-            role_name: values.role_name ? values.role_name : ""
+            role_name: values.role_name ? values.role_name : "",
+            token: props.token
         }
         axios({
-            method: 'POST',
-            url: `${api.members}/`,
+            method: 'PUT',
+            url: `${api.movies}/${movie.id}/`,
             data: data,
             headers: {
                 'Content-Type': 'application/json',
@@ -100,6 +86,30 @@ function ArtistAddMovie (props) {
         }).then(res => {                        
             if (res.status === 201 || res.status === 200) {      
                 console.log(res)                   
+                message.success("Амжилттай.")                     
+            }             
+        }).catch(err => {   
+            message.error("Амжилтгүй боллоо."); 
+            console.log(err);            
+        }) 
+    }
+
+    function onFinishMember (values) {
+        const data = {            
+            artist: artist.id,
+            role : values.role ? values.role : undefined,
+            token: props.token
+        }        
+        axios({
+            method: 'PUT',
+            url: `${api.movies}/${movie.id}/`,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.token}`            
+            }
+        }).then(res => {                        
+            if (res.status === 201 || res.status === 200) {                  
                 message.success("Амжилттай.")                     
             }             
         }).catch(err => {   
@@ -181,47 +191,47 @@ function ArtistAddMovie (props) {
                         </Col>
                     </Row>
                     { movie ? (
-                        <Form layout="vertical" form={form} onFinish={onFinish}>
-                            <Row gutter={16}>
-                                <Col sm={24} md={12}>                                    
-                                    <Form.Item name="role" label="Үүрэг">
-                                        <Select
-                                            showSearch               
-                                            mode="multiple" 
-                                            style={{ width: '100%' }}
-                                            onChange={selectRole}
-                                            placeholder="Үүрэг сонгоно уу"                                                        
-                                            optionFilterProp="children"                            
-                                        >
-                                            { occupations ? (
-                                                <>
-                                                    {occupations.map(item => {
-                                                        return (
-                                                            <Option key={item.id}>{item.name}</Option>
-                                                        )
-                                                    })}
-                                                </>
-                                            ) : (
-                                                <></>
-                                            )}
-                                        </Select>                    
-                                    </Form.Item>
-                                </Col>
-                                <Col sm={24} md={12}>
-                                    <Form.Item name="role_name" label="Дүр">
-                                        <Input disabled={!isActor} />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                            <Popconfirm title="Хадгалах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
-                                <Button type="primary" style={{ marginRight: '8px' }}>
+                    <Tabs defaultActiveKey="1">
+                        <Tabs.TabPane key="1" tab="Жүжигчин">
+                            <Form layout="vertical" onFinish={onFinishActor}>                           
+                                <Form.Item name="role_name" label="Дүр">
+                                    <Input />
+                                </Form.Item>
+                                <Button htmlType="submit" type="primary" style={{ marginRight: '8px' }}>
                                     Хадгалах   
-                                </Button>
-                            </Popconfirm>                            
-                        </Form>
-                    ) : (
-                        <></>
-                    )}
+                                </Button>                           
+                            </Form>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane key="2" tab="Бүрэлдэхүүн">
+                            <Form layout="vertical" onFinish={onFinishMember}>                           
+                                <Form.Item name="role" label="Үүрэг" rules={[{ required: true, message: 'Үүрэг сонгоно уу.' }]}>
+                                    <Select
+                                        showSearch               
+                                        // mode="multiple" 
+                                        style={{ width: '100%' }}                                        
+                                        placeholder="Үүрэг сонгоно уу"                                                        
+                                        optionFilterProp="children"                            
+                                    >
+                                        { occupations ? (
+                                            <>
+                                                {occupations.filter(x => x.id !== 1).map(item => {
+                                                    return (
+                                                        <Option key={item.id}>{item.name}</Option>
+                                                    )
+                                                })}
+                                            </>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </Select>                    
+                                </Form.Item>
+                                <Button htmlType="submit" type="primary" style={{ marginRight: '8px' }}>
+                                    Хадгалах   
+                                </Button>                         
+                            </Form>
+                        </Tabs.TabPane>
+                    </Tabs>
+                    ) : (<></>)}                    
                 </>
             ) : 
                 <></>

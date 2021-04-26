@@ -6,23 +6,42 @@ import { Table, Typography } from 'antd';
 
 function Filmography (props) {    
     const [members, setMembers] = useState();
+    const [actors, setActors] = useState();
 
     useEffect(() => {
         getMembers(props.id)
+        getActors(props.id)
     }, [props.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
     function getMembers(id) {
-        var url = api.members + "?artist=" + id             
+        var url = api.movies + "?member=" + id             
         axios({
             method: 'GET',
             url: url
-        }).then(res => {                                
+        }).then(res => {                                        
             let data = res.data.results                 
-            setMembers(data.sort((a, b) => parseInt(a.movie.releasedate.slice(0, 4)) - parseInt(b.movie.releasedate.slice(0, 4)))           )
+            setMembers(data.sort((a, b) => parseInt(a.releasedate.slice(0, 4)) - parseInt(b.releasedate.slice(0, 4))))
         }).catch(err => {
             console.log(err.message)
         });        
-    }       
+    } 
+    
+    function getActors(id) {
+        var url = api.movies + "?actor=" + id             
+        axios({
+            method: 'GET',
+            url: url
+        }).then(res => {                                        
+            let data = res.data.results                 
+            setActors(data.sort((a, b) => parseInt(a.releasedate.slice(0, 4)) - parseInt(b.releasedate.slice(0, 4))))
+        }).catch(err => {
+            console.log(err.message)
+        });        
+    } 
+
+    function getName(id, movies) {
+        return movies ? movies.find(x => x.id === id).name : ""
+    }
 
     function formatCount(count) {
         if (count >= 1000000) {
@@ -36,71 +55,140 @@ function Filmography (props) {
 
     function getRole(data) {      
         const roles = []
-        data.forEach(role => {
-            roles.push(role.name)
+        data.forEach(member => {
+            if (member.artist.id === props.id) {
+                roles.push(member.role.name)
+            }            
         })
         return roles.toString()
     }    
 
-    const columns = [
+    function getRoleName(data) {
+        const roles = []
+        data.forEach(actor => {
+            if (actor.artist.id === props.id) {
+                roles.push(actor.role_name)
+            }            
+        })
+        return roles.toString()
+    }
+
+    const memberColumns = [
         {
             title: 'Он',
-            dataIndex: 'movie',
-            key: 'movie',            
-            render: item => item ? item.releasedate.toString().slice(0, 4) : '----',            
+            dataIndex: 'releasedate',
+            key: 'releasedate',            
+            render: item => item ? item.toString().slice(0, 4) : '----',            
         },
         {
             title: 'Кино',
-            dataIndex: 'movie',
-            key: 'movie',
-            render: item => <a href={`/movies/${item.id}`}>{item.name}</a>
+            dataIndex: 'id',
+            key: 'id',       
+            render: item => <a href={`/movies/${item}/`}>{getName(item, members ? members : undefined)}</a>     
         },
         {
             title: 'Үүрэг',
-            dataIndex: 'role',
-            key: 'role',
+            dataIndex: 'members',
+            key: 'members',
             render: item => <Typography.Text>{getRole(item)}</Typography.Text>,
         },
         {
             title: <StarOutlined style={{ fontSize: '18px' }} />,
-            dataIndex: 'movie',
-            key: 'movie',
+            dataIndex: 'score',
+            key: 'score',
             align: 'center',            
-            render: item => item.score / 10
+            render: item => item / 10
         },
-        // {
-        //     title: <EyeOutlined style={{ fontSize: '18px' }} />,
-        //     dataIndex: 'movie',
-        //     key: 'movie',
-        //     align: 'center',
-        //     render: item => formatCount(item.view_count),
-        // },
         {
             title: <LikeOutlined style={{ fontSize: '18px' }} />,
-            dataIndex: 'movie',
-            key: 'movie',
+            dataIndex: 'likes',
+            key: 'likes',
             align: 'center',
-            render: item => formatCount(item.like_count),
+            render: item => formatCount(item.length),
         },
         {
             title: <CheckCircleOutlined style={{ fontSize: '18px' }} />,
-            dataIndex: 'movie',
-            key: 'movie',
+            dataIndex: 'checks',
+            key: 'checks',
             align: 'center',
-            render: item => formatCount(item.check_count),
+            render: item => formatCount(item.length),
         },
         {
             title: <PlusCircleOutlined style={{ fontSize: '18px' }} />,
-            dataIndex: 'movie',
-            key: 'movie',
+            dataIndex: 'watchlists',
+            key: 'watchlists',
             align: 'center',
-            render: item => formatCount(item.watchlist_count),
+            render: item => formatCount(item.length),
+        },
+    ];
+
+    const actorColumns = [
+        {
+            title: 'Он',
+            dataIndex: 'releasedate',
+            key: 'releasedate',            
+            render: item => item ? item.toString().slice(0, 4) : '----',            
+        },
+        {
+            title: 'Кино',
+            dataIndex: 'id',
+            key: 'id',       
+            render: item => <a href={`/movies/${item}/`}>{getName(item, actors ? actors : undefined)}</a>     
+        },
+        {
+            title: 'Дүр',
+            dataIndex: 'actors',
+            key: 'actors',
+            render: item => <Typography.Text>{getRoleName(item)}</Typography.Text>,
+        },
+        {
+            title: <StarOutlined style={{ fontSize: '18px' }} />,
+            dataIndex: 'score',
+            key: 'score',
+            align: 'center',            
+            render: item => item / 10
+        },
+        {
+            title: <LikeOutlined style={{ fontSize: '18px' }} />,
+            dataIndex: 'likes',
+            key: 'likes',
+            align: 'center',
+            render: item => formatCount(item.length),
+        },
+        {
+            title: <CheckCircleOutlined style={{ fontSize: '18px' }} />,
+            dataIndex: 'checks',
+            key: 'checks',
+            align: 'center',
+            render: item => formatCount(item.length),
+        },
+        {
+            title: <PlusCircleOutlined style={{ fontSize: '18px' }} />,
+            dataIndex: 'watchlists',
+            key: 'watchlists',
+            align: 'center',
+            render: item => formatCount(item.length),
         },
     ];
     
     return (
-        <div>
-            <Table bordered columns={columns} dataSource={members ? members.sort((a, b) => b.movie.releasedate - a.movie.releasedate) : undefined} pagination={{ pageSize: 20 }} size="middle" />
+        <div>        
+            { members && members.length > 0 ? (
+                <>
+                    <Typography.Title level={5}>Уран бүтээлүүд</Typography.Title>
+                    <Table bordered columns={memberColumns} dataSource={members ? members : undefined} size="middle" />
+                </>
+            ) : (
+                <></>
+            )}      
+            { actors && actors.length > 0 ? (
+                <>
+                    <Typography.Title level={5}>Уран бүтээлүүд (Жүжигчин)</Typography.Title>
+                    <Table bordered columns={actorColumns} dataSource={actors ? actors : undefined} size="middle" />
+                </>
+            ) : (
+                <></>
+            )}              
         </div>
     )
 }

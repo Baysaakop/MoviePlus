@@ -49,8 +49,8 @@ class Review(models.Model):
     thumbnail = models.ImageField(upload_to='review/%Y/%m/%d', null=True, blank=True)      
     score = models.IntegerField(default=0)    
     views = models.IntegerField(default=0)
-    likes = models.ManyToManyField(User, related_name="review_likes")
-    dislikes = models.ManyToManyField(User, related_name="review_dislikes") 
+    likes = models.ManyToManyField(User, related_name="review_likes", null=True, blank=True)
+    dislikes = models.ManyToManyField(User, related_name="review_dislikes", null=True, blank=True) 
     comments = models.ManyToManyField(Comment, null=True, blank=True, related_name="review_comments")    
     created_at = models.DateTimeField(auto_now_add=True)    
 
@@ -77,17 +77,17 @@ class Artist(models.Model):
 
 class Member(models.Model):    
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
-    role = models.ManyToManyField(Occupation, null=True, blank=True)        
+    role = models.ForeignKey(Occupation, on_delete=models.CASCADE, null=True)        
 
     def __str__(self):
-        return self.artist.name
+        return self.artist.name + " - " + self.role.name
 
 class Actor(models.Model):    
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
     role_name = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return self.artist.name
+        return self.artist.name + " - " + self.role_name
 
 class Movie(models.Model):
     name = models.CharField(max_length=100)
@@ -105,7 +105,7 @@ class Movie(models.Model):
     scores = models.ManyToManyField(Score, null=True, blank=True, related_name="movie_scores")
     comments = models.ManyToManyField(Comment, null=True, blank=True, related_name="movie_comments")    
     members = models.ManyToManyField(Member, null=True, blank=True, related_name="movie_members")
-    actors = models.ManyToManyField(Member, null=True, blank=True, related_name="movie_actors")
+    actors = models.ManyToManyField(Actor, null=True, blank=True, related_name="movie_actors")
     score = models.IntegerField(default=0)
     poster = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     landscape = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)

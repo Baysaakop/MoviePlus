@@ -11,11 +11,10 @@ import MovieList from './movie/MovieList';
 import MovieDetail from './movie/MovieDetail';
 import ArtistList from './artist/ArtistList';
 import ArtistDetail from './artist/ArtistDetail';
-import PostCreate from './reviews/ReviewCreate';
-import PostList from './reviews/ReviewList';
-import PostDetail from './reviews/ReviewDetail';
 import About from './containers/About';
 import SeriesList from './series/SeriesList';
+import ReviewList from './reviews/ReviewList';
+import ReviewDetail from './reviews/ReviewDetail';
 
 function BaseRouter () {
     return (
@@ -27,10 +26,9 @@ function BaseRouter () {
             <Route exact path="/artists" component={ArtistList} />
             <Route exact path="/artists/:artistID" component={ArtistDetail} />
             <Route exact path="/series" component={SeriesList} />
-            {/* Posts urls */}
-            <Route exact path="/posts" component={PostList} />
-            <Route exact path="/posts/:postID" component={PostDetail} />
-            <Route exact path="/newpost" component={PostCreate} />
+            {/* Reviews urls */}
+            <Route exact path="/reviews" component={ReviewList} />
+            <Route exact path="/reviews/:reviewID" component={ReviewDetail} />    
             {/* User urls */}
             <Route exact path="/login" component={Login} />
             <Route exact path="/logout" component={Logout} />

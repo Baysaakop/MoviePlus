@@ -43,7 +43,7 @@ function MovieMembers (props) {
         <div>
             <List                                                                                                        
                 itemLayout="horizontal"                                                    
-                dataSource={members ? members : undefined}
+                dataSource={props.members}
                 renderItem={item => (
                 <List.Item>                                                        
                     <List.Item.Meta
@@ -60,7 +60,7 @@ function MovieMembers (props) {
                         })}
                     />
                     <Typography.Text>
-                        {getRoles(item.role)}
+                        {item.role.name}
                     </Typography.Text>                                                        
                 </List.Item>
                 )}

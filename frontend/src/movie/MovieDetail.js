@@ -409,7 +409,7 @@ function MovieDetail (props) {
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Бүрэлдэхүүн" key="2">
                                                 <Typography.Title level={5}>Баг бүрэлдэхүүн</Typography.Title>
-                                                <MovieMembers id={movie.id} />
+                                                <MovieMembers members={movie.members} />
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Жүжигчид" key="3">
                                                 <Typography.Title level={5}>Жүжигчид</Typography.Title>
