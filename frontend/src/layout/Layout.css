@@ -86,7 +86,6 @@ body {
 .layout-dark .ant-form-item-label label,
 .layout-dark .ant-select-arrow,
 .layout-dark .ant-select-item,
-.layout-dark .ant-divider,
 .layout-dark .ant-tabs-tab-btn,
 .layout-dark .ant-result-title,
 .layout-dark .ant-result-subtitle,
@@ -159,6 +158,10 @@ body {
 
 .ant-btn-ghost:hover {
     background: rgba(24, 144, 255, 0.7);
+}
+
+.ant-divider {
+    border-top: 1px solid rgb(127, 127, 127, 0.4);
 }
 
 /* .ant-select-dropdown {

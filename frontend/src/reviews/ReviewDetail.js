@@ -2,27 +2,44 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import api from '../api';
 import { connect } from "react-redux";
-import { Grid, Breadcrumb, message, Spin, Typography, Row, Col, Tooltip, Button, Avatar, Statistic, Divider } from 'antd';
-import { CommentOutlined, DislikeOutlined, EyeOutlined, FormOutlined, LikeOutlined, LoadingOutlined, ShareAltOutlined, StarFilled, UserAddOutlined } from '@ant-design/icons';
+import { Grid, Breadcrumb, message, Typography, Row, Col, Tooltip, Button, Avatar, Statistic, Divider } from 'antd';
+import { CommentOutlined, DislikeOutlined, FormOutlined, LikeOutlined, ShareAltOutlined, StarFilled, UserAddOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import ReviewComment from './ReviewComment';
 
-const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const { useBreakpoint } = Grid;
 
 function ReviewDetail (props) {
     const screens = useBreakpoint();    
     const [user, setUser] = useState();
     const [review, setReview] = useState();  
-    const [lastPosts, setLastPosts] = useState();  
-    const [loading, setLoading] = useState(false);  
+    // const [lastPosts, setLastPosts] = useState();  
 
     useEffect(() => {               
+        getUser()
         getReview()     
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+    function getUser() {
+        if (props.token && props.token !== null) {
+            axios({
+                method: 'GET',
+                url: api.profile,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            }).then(res => {                          
+                setUser(res.data)                
+            }).catch(err => {                
+                console.log(err) 
+                message.error("Алдаа гарлаа. Хуудсыг дахин ачааллана уу.")           
+            })                    
+        }
+    }
+
     function getReview() {
-        setLoading(true)
         const id = props.match.params.reviewID;
         const url = api.reviews + "/" + id + "/";  
         axios({
@@ -32,46 +49,32 @@ function ReviewDetail (props) {
                 'Content-Type': 'application/json'                
             }
         })
-        .then(res => {          
-            console.log(res.data)  
+        .then(res => {
+            console.log(res.data)
             setReview(res.data)
-            // getLastPosts(res.data.created_by.id)
-            setLoading(false)
         })
         .catch(err => {
             message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-        })        
-        axios({
-            method: 'GET',
-            url: api.profile,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`
-            }
-        }).then(res => {                        
-            setUser(res.data)
-        }).catch(err => {
-            console.log(err)
-        })
+        })      
     }
 
-    function getLastPosts(id) {               
-        const url = api.reviews + "?user=" + id  
-        console.log(url)
-        axios({
-            method: 'GET',
-            url: url,
-            headers: {
-                'Content-Type': 'application/json'                
-            }
-        })
-        .then(res => {    
-            setLastPosts(res.data.results)
-        })
-        .catch(err => {
-            message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-        })    
-    }
+    // function getLastPosts(id) {               
+    //     const url = api.reviews + "?user=" + id  
+    //     console.log(url)
+    //     axios({
+    //         method: 'GET',
+    //         url: url,
+    //         headers: {
+    //             'Content-Type': 'application/json'                
+    //         }
+    //     })
+    //     .then(res => {    
+    //         setLastPosts(res.data.results)
+    //     })
+    //     .catch(err => {
+    //         message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
+    //     })    
+    // }
 
     function formatCount(count) {
         if (count >= 1000000) {
@@ -126,6 +129,33 @@ function ReviewDetail (props) {
         }     
     }
 
+    function dislike () {        
+        if (user !== null && user !== undefined) {
+            const data = {            
+                token: props.token,
+                dislike: true
+            }            
+            axios({
+                method: 'PUT',
+                url: `${api.reviews}/${review.id}/`,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`            
+                }
+            }).then(res => {                        
+                if (res.status === 201 || res.status === 200) {                                               
+                    getReview()     
+                }             
+            }).catch(err => {   
+                message.error("Амжилтгүй боллоо."); 
+                console.log(err);            
+            })       
+        } else {
+            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+        }     
+    }
+
     return (
         <div style={{ marginTop: '80px', minHeight: '80vh' }}>
             { review ? (
@@ -150,15 +180,12 @@ function ReviewDetail (props) {
                                     <div dangerouslySetInnerHTML={{__html: review.content }} />                                            
                                 </Typography.Paragraph>                                                               
                                 <Row gutter={[16, 16]}>
-                                    <Col xs={24} sm={24} md={18}>
-                                        <Tooltip title="Үзсэн">
-                                            <Button type="ghost" size="large" icon={<EyeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.views)}</Button>
-                                        </Tooltip>                        
+                                    <Col xs={24} sm={24} md={12}>                    
                                         <Tooltip title="Таалагдсан">
-                                            <Button type="ghost" onClick={like} size="large" icon={<LikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.likes.length)}</Button>
+                                            <Button type={user && review.likes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} onClick={like} size="large" icon={<LikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.likes.length)}</Button>
                                         </Tooltip>
                                         <Tooltip title="Таалагдаагүй">
-                                            <Button type="ghost" onClick={like} size="large" icon={<DislikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.dislikes.length)}</Button>
+                                            <Button danger type={user && review.dislikes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} onClick={dislike} size="large" icon={<DislikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.dislikes.length)}</Button>
                                         </Tooltip>
                                         <Tooltip title="Сэтгэгдэл">
                                             <Button type="ghost" size="large" icon={<CommentOutlined />} style={{ marginLeft: '8px' }}>15</Button>
@@ -167,10 +194,15 @@ function ReviewDetail (props) {
                                             <Button type="ghost" size="large" icon={<ShareAltOutlined />} style={{ marginLeft: '8px' }}>241</Button>
                                         </Tooltip>
                                     </Col>
-                                    <Col xs={24} sm={24} md={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                        <Typography.Text type="secondary">Нийтлэсэн: {moment(review.created_at).format("YYYY-MM-DD")}</Typography.Text>
-                                    </Col>
+                                    <Col xs={24} sm={24} md={12} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                        <Typography.Text type="secondary" style={{ marginRight: '16px' }}>Уншсан: {formatCount(review.views)}</Typography.Text>
+                                        <Typography.Text type="secondary">Нийтлэгдсэн: {moment(review.created_at).format("YYYY-MM-DD")}</Typography.Text>
+                                    </Col>                                    
                                 </Row>
+                                <div style={{ marginTop: '24px' }}>
+                                    <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>
+                                    <ReviewComment token={props.token} user={user} reviewID={review.id} />
+                                </div>
                             </Col>
                             <Col xs={24} sm={24} md={24} lg={6}>
                                 <Typography.Title level={4}>Нийтлэлч:</Typography.Title>
@@ -198,57 +230,10 @@ function ReviewDetail (props) {
                                 <Divider />
                                 <Typography.Title level={5} style={{ marginTop: '16px' }}>Өгсөн оноо:</Typography.Title>
                                 <Statistic prefix={<StarFilled style={{ color: 'orange' }} />} value={review.score} suffix=" /10" />
-                                <Typography.Title level={5} style={{ marginTop: '16px' }}>Киноны мэдээлэл:</Typography.Title>
-                                {/* {post.movie ? (
-                                    <Link to={`/movies/${post.movie.id}`}>
-                                        <Row gutter={[8, 8]}>
-                                            <Col span={12}>
-                                                <img alt="poster" src={post.movie.poster} style={{ width: '100%', height: 'auto' }} />
-                                            </Col>
-                                            <Col span={12}>
-                                                <Typography.Text style={{ fontSize: '16px' }}>{post.movie.name}</Typography.Text>   
-                                                <br />                                             
-                                                <Typography.Text>Ангилал: {post.movie.rating ? post.movie.rating.name : '----'}</Typography.Text>
-                                                <br />
-                                                <Typography.Text>Хугацаа: {post.movie.duration}</Typography.Text>
-                                                <br />
-                                                <Typography.Text>Нээлт: {moment(post.movie.releasedate).format("YYYY")}</Typography.Text>
-                                                <br />
-                                                <Typography.Text>Жанр: 
-                                                    {post.movie.genre.map(g => {
-                                                        return (                                                
-                                                            <span> {g.name} |</span>
-                                                        )                                            
-                                                    })}
-                                                </Typography.Text>                                                
-                                                <br />
-                                                <Typography.Text>Үнэлгээ: <StarFilled style={{ color: 'orange' }} /> {post.movie.score / 10}</Typography.Text>
-                                            </Col>
-                                        </Row>                                        
-                                    </Link>
-                                ) : ( 
-                                    <Typography.Text>-- Байхгүй --</Typography.Text>
-                                )} */}
-                                {/* <Typography.Title level={5} style={{ marginTop: '16px' }}>Өмнөх нийтлэлүүд:</Typography.Title>     
-                                {lastPosts ? lastPosts.slice(0, 3).map(item => {                                    
-                                    return (
-                                        item.id !== post.id ?
-                                        <Link to={`/posts/${item.id}`} style={{ marginTop: '8px' }}>                                            
-                                            <img src={item.thumbnail} alt="thumbnail" style={{ width: '100%', height: 'auto' }} />                                
-                                            <Typography.Title level={5}>{item.title}</Typography.Title>
-                                            <Typography.Paragraph ellipsis={{ rows: 3 }} style={{ marginTop: '8px' }}>
-                                                <div dangerouslySetInnerHTML={{__html: item.content }} />                                            
-                                            </Typography.Paragraph>
-                                        </Link> : <></>      
-                                    )                        
-                                }) : <></>}                            */}
+                                <Typography.Title level={5} style={{ marginTop: '16px' }}>Киноны мэдээлэл:</Typography.Title>                                
                             </Col>
                         </Row>
                     </div>
-                </div>
-            ) : loading ? (
-                <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Spin indicator={indicator} />
                 </div>
             ) : (   
                 <></>

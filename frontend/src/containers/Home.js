@@ -1,4 +1,4 @@
-import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col, Avatar, Tabs, Card, Rate } from 'antd';
+import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col, Tabs, Rate } from 'antd';
 import React, { useState, useEffect } from 'react';
 import './Home.css';
 import axios from 'axios';  
@@ -7,9 +7,7 @@ import MovieCard3 from '../movie/MovieCard3';
 import { CaretRightOutlined, CheckOutlined, DesktopOutlined, LikeOutlined, PlusOutlined, ReadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 // import MovieTrendTable from '../movie/MovieTrendTable';
 import Modal from 'antd/lib/modal/Modal';
-import { Link } from 'react-router-dom';
 import CountUp from 'react-countup';
-import moment from 'moment';
 
 const { useBreakpoint } = Grid;
 
@@ -17,7 +15,7 @@ function Home (props) {
     const screens = useBreakpoint();
     const [latest, setLatest] = useState();
     const [toprated, setToprated] = useState();
-    const [posts, setPosts] = useState();
+    // const [posts, setPosts] = useState();
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
@@ -37,14 +35,14 @@ function Home (props) {
         }).catch(err => {
             console.log(err.message)
         });
-        axios({
-            method: 'GET',
-            url: `${api.reviews}`
-        }).then(res => {                                          
-            setPosts(res.data.results)
-        }).catch(err => {
-            console.log(err.message)
-        });
+        // axios({
+        //     method: 'GET',
+        //     url: `${api.reviews}`
+        // }).then(res => {                                          
+        //     setPosts(res.data.results)
+        // }).catch(err => {
+        //     console.log(err.message)
+        // });
     }, [])       
 
     function getListNumber() {        

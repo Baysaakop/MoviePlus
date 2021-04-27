@@ -42,6 +42,9 @@ class CommentViewSet(viewsets.ModelViewSet):
         if movie is not None:
             movie_obj = Movie.objects.get(id=movie)
             queryset = movie_obj.comments.all().annotate(likes_count=Count('likes')).order_by('-likes_count', '-created_at')
+        if review is not None:
+            review_obj = Review.objects.get(id=review)
+            queryset = review_obj.comments.all().annotate(likes_count=Count('likes')).order_by('-likes_count', '-created_at')
         return queryset
 
 
@@ -98,6 +101,84 @@ class CommentViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        queryset = Review.objects.all().order_by('-created_at') 
+        title = self.request.query_params.get('title', None)       
+        order = self.request.query_params.get('order', None)
+        if title is not None:
+            queryset = queryset.filter(title__icontains=title)
+        if order is not None:
+            if (order == 'created_at'):
+                queryset = queryset.order_by('-created_at')
+            elif (order == 'title'):
+                queryset = queryset.order_by('title')
+            elif (order == 'views'):
+                queryset = queryset.order_by('-views')
+            elif (order == 'likes'):
+                queryset = queryset.annotate(likes_count=Count('likes')).order_by('-likes_count')
+            elif (order == 'dislikes'):
+                queryset = queryset.annotate(dislikes_count=Count('dislikes')).order_by('-dislikes_count')
+            elif (order == 'comments'):
+                queryset = queryset.annotate(comments_count=Count('comments')).order_by('-comments_count')
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.views = instance.views + 1        
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        user = Token.objects.get(key=request.data['token']).user   
+        title = request.data['title']
+        content = request.data['content']
+        thumbnail = request.data['thumbnail']
+        review = Review.objects.create(
+            user=user,
+            title=title,
+            thumbnail=thumbnail,
+            content=content
+        )
+        if 'movie' in request.data:
+            movie = Movie.objects.get(id=int(request.data['movie']))
+            review.movie = movie
+        if 'score' in request.data:
+            review.score = int(request.data['score'])
+        review.save()
+        serializer = ReviewSerializer(review)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):                         
+        review = self.get_object()                 
+        user = Token.objects.get(key=request.data['token']).user
+        if 'title' in request.data:
+            review.title = request.data['title']
+        if 'thumbnail' in request.data:
+            review.thumbnail = request.data['thumbnail']
+        if 'content' in request.data:
+            review.content = request.data['content']
+        if 'score' in request.data:
+            review.score = request.data['score']
+        if 'movie' in request.data:
+            movie = Movie.objects.get(id=int(request.data['movie']))
+            review.movie = movie
+        if 'like' in request.data:
+            if user in review.likes.all():
+                review.likes.remove(user)
+            else:            
+                review.likes.add(user)
+        if 'dislike' in request.data:
+            if user in review.dislikes.all():
+                review.dislikes.remove(user)
+            else:            
+                review.dislikes.add(user)
+        review.save()
+        serializer = ReviewSerializer(review)
+        headers = self.get_success_headers(serializer.data)        
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)       
 
 class ArtistViewSet(viewsets.ModelViewSet):
     serializer_class = ArtistSerializer
@@ -221,16 +302,24 @@ class MovieViewSet(viewsets.ModelViewSet):
         order = self.request.query_params.get('order', None)
         member = self.request.query_params.get('member', None)
         actor = self.request.query_params.get('actor', None)
+        user = self.request.query_params.get('user', None)
         if name is not None:
             queryset = queryset.filter(name__icontains=name).distinct()
         if genre is not None:
             queryset = queryset.filter(genre__id=genre).distinct()
         if member is not None:
-            member_obj = Member.objects.filter()
             queryset = queryset.filter(members__artist__id=member).distinct()
         if actor is not None:
-            actor_obj = Actor.objects.filter()
             queryset = queryset.filter(actors__artist__id=actor).distinct()
+        if user is not None:            
+            state = self.request.query_params.get('state', None)
+            if state is not None:
+                if state == 'like':                    
+                    queryset = queryset.filter(likes__id=user).distinct() 
+                elif state == 'check':                    
+                    queryset = queryset.filter(checks__id=user).distinct() 
+                elif state == 'watchlist':                    
+                    queryset = queryset.filter(watchlists__id=user).distinct()    
         if order is not None:
             if (order == 'created_at'):
                 queryset = queryset.order_by('-created_at')

@@ -16,21 +16,14 @@ function MoviesLiked (props) {
 
     useEffect(() => {        
         getMovies()        
-    }, [props.token, props.type, page]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [props.token, props.user, props.state, page]) // eslint-disable-line react-hooks/exhaustive-deps
 
     function getMovies() {
         setLoading(true)        
-        let url = ""
-        if (props.type === 'likes') {
-            url = api.likes
-        } else if (props.type === 'checks') {
-            url = api.checks
-        } else if (props.type === 'watchlists') {
-            url = api.watchlists
-        }
+        let url = api.movies + "?user=" + props.user.id + "&state=" + props.state
         axios({
             method: 'GET',
-            url: `${url}?token=${props.token}&page=${page}`,            
+            url: `${url}&page=${page}`,            
         })
         .then(res => {
             console.log(res.data)
@@ -74,7 +67,7 @@ function MoviesLiked (props) {
                         dataSource={movies ? movies : undefined}
                         renderItem={item => (
                             <List.Item>
-                                <MovieCard3 movie={item.movie} />
+                                <MovieCard3 movie={item} user={props.user} />                                
                             </List.Item>
                         )}
                     />

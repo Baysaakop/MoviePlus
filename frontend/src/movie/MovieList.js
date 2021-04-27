@@ -26,7 +26,7 @@ function MovieList(props) {
     const [name, setName] = useState()
     const [genres, setGenres] = useState()    
     const [genre, setGenre] = useState()    
-    const [order, setOrder] = useState();   
+    const [order, setOrder] = useState()  
 
     useEffect(() => {
         if (!genres) {
@@ -242,8 +242,7 @@ function MovieList(props) {
                             onChange={onPageChange}
                         />
                     </>
-                )}
-                
+                )}                
             </div>
         </div>
     );

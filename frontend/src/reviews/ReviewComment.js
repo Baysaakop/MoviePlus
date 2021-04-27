@@ -1,4 +1,4 @@
-import { Form, Input, Avatar, message, Comment, Button, Typography, Tooltip, Popconfirm, Rate, Divider } from 'antd';
+import { Form, Input, Avatar, message, Comment, Button, Typography, Tooltip, Popconfirm, Divider } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
@@ -7,7 +7,7 @@ import moment from 'moment';
 
 const { TextArea } = Input;
 
-function MovieComment (props) {
+function ReviewComment (props) {
     const [form] = Form.useForm()
     const [comments, setComments] = useState()
     const [edit, setEdit] = useState()
@@ -15,12 +15,12 @@ function MovieComment (props) {
 
     useEffect(() => {
         getComments()               
-    }, [props.user, props.movieID]) // eslint-disable-line react-hooks/exhaustive-deps    
+    }, [props.user, props.reviewID]) // eslint-disable-line react-hooks/exhaustive-deps    
 
     function getComments() {
         axios({
             method: 'GET',
-            url: `${api.comments}?movie=${props.movieID}`,
+            url: `${api.comments}?review=${props.reviewID}`,
             headers: {
                 'Content-Type': 'application/json'                
             }
@@ -40,7 +40,7 @@ function MovieComment (props) {
                 url: `${api.comments}/`,
                 data: {
                     token: props.token,
-                    movie: props.movieID,                    
+                    review: props.reviewID,                    
                     comment: values.comment
                 },
                 headers: {
@@ -230,30 +230,12 @@ function MovieComment (props) {
                                     <Typography.Paragraph style={{ margin: 0 }}>
                                         {comment.comment}
                                     </Typography.Paragraph>
-                                    // <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    //     <div>
-                                    //         <Typography.Paragraph style={{ margin: 0 }}>
-                                    //             {comment.comment}
-                                    //         </Typography.Paragraph>
-                                    //     </div>
-                                    //     <div>
-                                    //         <Avatar size={48} style={{ background: '#fadb14', color: 'black', fontWeight: 'bold', fontSize: '24px' }}>                                            
-                                    //             {comment.score}
-                                    //         </Avatar>
-                                    //     </div>
-                                    // </div>
                                 )
                             }
                             datetime={
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>                                                                                                                 
-                                    <Tooltip title={moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")}>
-                                        <span>- {moment(comment.created_at).fromNow()}</span>
-                                    </Tooltip>
-                                    <div style={{ marginLeft: '16px' }}>
-                                        <Rate disabled allowHalf value={comment.score / 2} style={{ fontSize: '14px' }} />
-                                        <Typography.Text style={{ fontSize: '12px' }}> - {comment.score} / 10</Typography.Text>
-                                    </div>
-                                </div>
+                                <Tooltip title={moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")}>
+                                    <span>- {moment(comment.created_at).fromNow()}</span>
+                                </Tooltip>
                             }                                                        
                         />
                     )
@@ -262,8 +244,8 @@ function MovieComment (props) {
             { props.user ? (    
                 <>        
                     <Divider />
-                    <Typography.Title level={5}>Сэтгэгдэл үлдээх</Typography.Title>                    
-                    <Comment
+                    <Typography.Title level={5}>Сэтгэгдэл үлдээх</Typography.Title>
+                    <Comment                        
                         avatar={
                             props.user.profile.avatar ? (
                                 <Avatar src={props.user.profile.avatar} alt={props.user.username} />
@@ -292,4 +274,4 @@ function MovieComment (props) {
     )
 }
 
-export default MovieComment;
+export default ReviewComment;

@@ -177,12 +177,12 @@ function ArtistDetail (props) {
                                     <Col span={8} style={{ textAlign: 'center' }}>
                                         <LikeOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
-                                        <Typography.Text>{formatCount(artist.likes)}</Typography.Text>
+                                        <Typography.Text>{formatCount(artist.likes.length)}</Typography.Text>
                                     </Col>
                                     <Col span={8} style={{ textAlign: 'center' }}>
                                         <UserAddOutlined style={{ fontSize: '20px' }} />
                                         <br></br>
-                                        <Typography.Text>{formatCount(artist.follows)}</Typography.Text>
+                                        <Typography.Text>{formatCount(artist.follows.length)}</Typography.Text>
                                     </Col>
                                 </Row>
                             </Col>
