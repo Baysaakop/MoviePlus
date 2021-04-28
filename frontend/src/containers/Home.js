@@ -1,55 +1,43 @@
-import { Grid, Carousel, List, Tooltip, Button, Typography, Row, Col, Tabs, Rate } from 'antd';
-import React, { useState, useEffect } from 'react';
-import './Home.css';
-import axios from 'axios';  
-import api from '../api';
-import MovieCard3 from '../movie/MovieCard3';
-import { CaretRightOutlined, CheckOutlined, DesktopOutlined, LikeOutlined, PlusOutlined, ReadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { Grid, Typography, Row, Col } from 'antd';
+import React, { useState } from 'react';
+import { DesktopOutlined, ReadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 // import MovieTrendTable from '../movie/MovieTrendTable';
-import Modal from 'antd/lib/modal/Modal';
 import CountUp from 'react-countup';
+import MoviesRow from './MoviesRow';
 
 const { useBreakpoint } = Grid;
 
 function Home (props) {    
     const screens = useBreakpoint();
-    const [latest, setLatest] = useState();
-    const [toprated, setToprated] = useState();
+    // const [latest, setLatest] = useState();
+    // const [toprated, setToprated] = useState();
     // const [posts, setPosts] = useState();
     const [modalVisible, setModalVisible] = useState(false);
 
-    useEffect(() => {
-        axios({
-            method: 'GET',
-            url: `${api.movies}/`
-        }).then(res => {                                     
-            setLatest(res.data.results)
-        }).catch(err => {
-            console.log(err.message)
-        });        
-        axios({
-            method: 'GET',
-            url: `${api.movies}?order=score`
-        }).then(res => {                                          
-            setToprated(res.data.results)
-        }).catch(err => {
-            console.log(err.message)
-        });
-        // axios({
-        //     method: 'GET',
-        //     url: `${api.reviews}`
-        // }).then(res => {                                          
-        //     setPosts(res.data.results)
-        // }).catch(err => {
-        //     console.log(err.message)
-        // });
-    }, [])       
+    // useEffect(() => {
+    //     axios({
+    //         method: 'GET',
+    //         url: `${api.movies}/`
+    //     }).then(res => {                                     
+    //         setLatest(res.data.results)
+    //     }).catch(err => {
+    //         console.log(err.message)
+    //     });        
+    //     axios({
+    //         method: 'GET',
+    //         url: `${api.movies}?order=score`
+    //     }).then(res => {                                          
+    //         setToprated(res.data.results)
+    //     }).catch(err => {
+    //         console.log(err.message)
+    //     });
+    // }, [])       
 
     function getListNumber() {        
         if (screens.xxl) {
-            return 4
+            return 5
         } else if (screens.xl) {
-            return 3
+            return 4
         } else if (screens.lg) {
             return 4
         } else if (screens.md) {
@@ -120,7 +108,7 @@ function Home (props) {
     return (
         <div className="home">            
             <div>
-                <Carousel className="carousel" autoplay effect="fade" style={{ zIndex: '1' }}>
+                {/* <Carousel className="carousel" autoplay effect="fade" style={{ zIndex: '1' }}>
                     {latest ? latest.slice(0, 4).map(movie => {
                             return (
                                 <div>
@@ -132,35 +120,17 @@ function Home (props) {
                                                 <div style={{ width: '100%', height: '100%', opacity: '0.5', backgroundColor: '#000' }} />
                                             )}     
                                         </a>
-                                        {/* <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, 0%)', padding: '16px' }}>
-                                            <Typography.Title level={2} style={{ color: '#fff' }}>СОНИРХСОН КИНОГОО ХАЙНА УУ</Typography.Title>                                                
-                                            <Search placeholder="Кино эсвэл цувралын нэрийг бичнэ үү" onSearch={onSearch} size="large" enterButton />
-                                        </div> */}
                                         <div style={{ position: 'absolute', left: screens.xxl ? '15%' : screens.xl ? '10%' : screens.lg ? '8%' : '5%', bottom: '10%', padding: '16px' }}>
-                                            <Typography.Title level={1} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>                                            
-                                            {/* <div className="info">
-                                                { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name}</Typography.Text> : <></> }
-                                                <br />
-                                                <Typography.Text type="secondary"> Хугацаа: {movie.duration} мин</Typography.Text>
-                                                <br />
-                                                <Typography.Text type="secondary"> Нээлт: {movie.releasedate}</Typography.Text>
-                                            </div>                                             */}
-                                            {/* <div className="genre" style={{ marginTop: '8px' }}>
-                                                {movie.genre.map(g => {
-                                                    return (                                                
-                                                        <GenreTag genre={g.name} />
-                                                    )                                            
-                                                })}
-                                            </div> */}
+                                            <Typography.Title level={1} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>                                                                                                                                  
                                             <Typography.Text>Үнэлгээ:</Typography.Text>
                                             <span>
-                                            <Typography.Title level={1} style={{ margin: 0 }}>{parseFloat(movie.score / 10)} <span style={{ fontSize: '24px' }}>/ 10</span></Typography.Title>                                        
+                                            <Typography.Title level={2} style={{ margin: 0 }}>{parseFloat(movie.score / 10)} <span style={{ fontSize: '20px' }}>/ 10</span></Typography.Title>                                        
                                             </span>
                                             <Rate disabled allowHalf defaultValue={movie.score / 20} />
                                             <br />                                            
                                             <div className="actions" style={{ marginTop: '16px' }}>                                        
                                                 <Tooltip title="Трэйлэр үзэх">
-                                                    <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={showModal} />
+                                                    <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={showModal} style={{ marginRight: '8px' }} />
                                                 </Tooltip>
                                                 <Modal 
                                                     title={movie.name}      
@@ -174,13 +144,13 @@ function Home (props) {
                                                     </div>
                                                 </Modal>
                                                 <Tooltip title="Таалагдсан">                                                     
-                                                    <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />} />
+                                                    <Button size="large" type="ghost" shape="circle" icon={<LikeOutlined />}  style={{ marginRight: '8px' }} />
                                                 </Tooltip>
                                                 <Tooltip title="Үзсэн">
-                                                    <Button size="large" type="ghost" shape="circle" icon={<CheckOutlined style={{ marginLeft: '2px' }}  />} />
+                                                    <Button size="large" type="ghost" shape="circle" icon={<CheckOutlined />}  style={{ marginRight: '8px' }} />
                                                 </Tooltip>
                                                 <Tooltip title="Дараа үзэх">
-                                                    <Button size="large" type="ghost" shape="circle" icon={<PlusOutlined />} />
+                                                    <Button size="large" type="ghost" shape="circle" icon={<PlusOutlined />}  style={{ marginRight: '8px' }} />
                                                 </Tooltip>
                                             </div>      
                                         </div>
@@ -189,15 +159,23 @@ function Home (props) {
                             );
                         }) : <></>
                     }                
-                </Carousel>                                                                             
+                </Carousel>                                                                              */}
             </div>     
-            <div style={{ padding: getPadding() }}>
+            <div style={{ padding: getPadding(), marginTop: '64px' }}>   
+                <div style={{ margin: '16px 0' }}>
+                    <MoviesRow title="ШИНЭЭР НЭМЭГДСЭН" type="created_at" />
+                </div>
+                <div style={{ margin: '16px 0' }}>
+                    <MoviesRow title="ӨНДӨР ҮНЭЛГЭЭТЭЙ" type="score" />
+                </div>
+            </div>
+            {/* <div style={{ padding: getPadding() }}>
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={24} md={24} lg={24} xl={18}>
                         <div className="movies" style={{ marginTop: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <Typography.Title level={4} style={{ margin: 0 }}>КИНО</Typography.Title>
+                                <div style={{ borderLeft: '12px solid #8e44ad' }}>                                    
+                                    <Typography.Title level={4} style={{ margin: '0 0 0 8px' }}>КИНО</Typography.Title>
                                 </div>
                                 <div>
                                     <Button type="ghost" href="/movies">
@@ -294,8 +272,8 @@ function Home (props) {
                         </div>     
                         <div className="series" style={{ marginTop: '32px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <Typography.Title level={4} style={{ margin: 0 }}>ТВ ЦУВРАЛ</Typography.Title>
+                                <div style={{ borderLeft: '12px solid #8e44ad' }}>
+                                    <Typography.Title level={4} style={{ margin: '0 0 0 8px' }}>ТВ ЦУВРАЛ</Typography.Title>
                                 </div>
                                 <div>
                                     <Button type="ghost" href="/movies">
@@ -397,7 +375,7 @@ function Home (props) {
                         </div>                                                
                     </Col>
                 </Row>                      
-            </div>          
+            </div>           */}
             <div style={{ background: '#161b22', padding: getPadding(), margin: '48px 0' }}>
                 <Row gutter={[16, 16]} style={{ padding: '32px 0' }}>
                     <Col xs={12} sm={12} md={6} style={{ textAlign: 'center' }}>
@@ -425,64 +403,7 @@ function Home (props) {
                         </Typography.Title>
                     </Col>
                 </Row>     
-            </div>
-            {/* <div style={{ padding: getPadding(), margin: '48px 0' }}>
-                <Row gutter={[16, 16]}>
-                    <Col xs={24} sm={24} md={24} lg={18}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <Typography.Title level={4} style={{ margin: 0 }}>НИЙТЛЭЛ</Typography.Title>
-                            </div>
-                            <div>
-                                <Button type="ghost" href="/movies">
-                                    Бүгд
-                                </Button>
-                            </div>
-                        </div>
-                        <List                        
-                            grid={{
-                                gutter: 16,
-                                xs: 2,
-                                sm: 2,
-                                md: 3,
-                                lg: 4,
-                                xl: 3,
-                                xxl: 3,
-                            }}                                        
-                            style={{ marginTop: '16px' }}                    
-                            dataSource={posts ? posts.slice(0, 3) : undefined}
-                            renderItem={item => (
-                                <List.Item>
-                                    <Link to={`/posts/${item.id}`}>
-                                        <Card
-                                            hoverable
-                                            style={{ width: '100%', border: 0 }}
-                                            cover={<img src={item.thumbnail} alt="thumbnail" />}
-                                        >
-                                            <Card.Meta 
-                                                avatar={<Avatar src={item.created_by.profile.avatar} />}
-                                                title={item.title}
-                                                description={
-                                                    <div>
-                                                        <Typography.Paragraph ellipsis={{ rows: 3 }}>
-                                                            <div dangerouslySetInnerHTML={{__html: item.content }} />                                            
-                                                        </Typography.Paragraph>
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                            <div><Typography.Text>{moment(item.created_at).format("YYYY-MM-DD")}</Typography.Text></div>
-                                                            <div><Typography.Text>- {item.created_by.username}</Typography.Text></div>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            />
-                                        </Card>
-                                    </Link>
-                                </List.Item>
-                            )}
-                        /> 
-                    </Col>
-                </Row>
-                
-            </div> */}
+            </div>            
             <div style={{ padding: getPadding(), margin: '48px 0' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>

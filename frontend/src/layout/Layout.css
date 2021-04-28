@@ -156,12 +156,21 @@ body {
     color: #fff;
 }
 
+.ant-btn-primary {
+    background: #8e44ad;
+}
+
+.ant-btn-primary:hover,
 .ant-btn-ghost:hover {
-    background: rgba(24, 144, 255, 0.7);
+    background: #8e44ad;
 }
 
 .ant-divider {
     border-top: 1px solid rgb(127, 127, 127, 0.4);
+}
+
+.ant-skeleton-element {
+    width: 100%;   
 }
 
 /* .ant-select-dropdown {

@@ -3,7 +3,6 @@ import React from 'react';
 // import axios from 'axios';  
 // import api from '../api';
 import { Link } from 'react-router-dom';
-import { SmileFilled } from '@ant-design/icons';
 // import MovieCard3 from '../movie/MovieCard3';
 
 // const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -122,10 +121,11 @@ function SeriesList() {
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>
-            <div style={{ padding: getPadding() }}>
+            <div style={{ padding: getPadding(), display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'  }}>
                 <Result
-                    icon={<SmileFilled style={{ color: 'yellowgreen' }} />}
-                    title="Уучлаарай, энэ хэсэг одоогоор хийгдээгүй байна."
+                    status="500"
+                    title="Бэлэн биш"
+                    subTitle="Уучлаарай, энэ хэсэг одоогоор хөгжүүлэлтийн шатанд явж байна."
                     extra={
                         <Link to="/">
                             <Button type="primary">Нүүр хуудас руу буцах</Button>

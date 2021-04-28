@@ -15,6 +15,7 @@ import About from './containers/About';
 import SeriesList from './series/SeriesList';
 import ReviewList from './reviews/ReviewList';
 import ReviewDetail from './reviews/ReviewDetail';
+import Page404 from './components/Page404';
 
 function BaseRouter () {
     return (
@@ -36,6 +37,7 @@ function BaseRouter () {
             <Route exact path="/password/reset" component={PasswordReset} />         
             <Route exact path="/rest-auth/password/reset/confirm/:uid/:token" component={PasswordResetConfirm} />            
             <Route exact path="/profile" component={Profile} />                        
+            <Route component={Page404} />
         </Switch>
     )    
 }

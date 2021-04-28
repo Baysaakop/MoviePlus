@@ -188,10 +188,10 @@ function ReviewDetail (props) {
                                             <Button danger type={user && review.dislikes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} onClick={dislike} size="large" icon={<DislikeOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.dislikes.length)}</Button>
                                         </Tooltip>
                                         <Tooltip title="Сэтгэгдэл">
-                                            <Button type="ghost" size="large" icon={<CommentOutlined />} style={{ marginLeft: '8px' }}>15</Button>
+                                            <Button type="ghost" size="large" icon={<CommentOutlined />} style={{ marginLeft: '8px' }}>{formatCount(review.comments.length)}</Button>
                                         </Tooltip>
                                         <Tooltip title="Хуваалцах">
-                                            <Button type="ghost" size="large" icon={<ShareAltOutlined />} style={{ marginLeft: '8px' }}>241</Button>
+                                            <Button type="ghost" size="large" icon={<ShareAltOutlined />} style={{ marginLeft: '8px' }}>34</Button>
                                         </Tooltip>
                                     </Col>
                                     <Col xs={24} sm={24} md={12} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>

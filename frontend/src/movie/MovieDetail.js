@@ -382,7 +382,7 @@ function MovieDetail (props) {
                                         <Rate tooltips={scoreValues} value={user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : 0} count={10} onChange={onScore} />
                                     </div>
                                     <div className="rating" style={{ margin: '16px 0', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>                                       
-                                        <div style={{ background: '#e74c3c', marginRight: '24px', padding: '8px' }}>
+                                        <div style={{ background: '#8e44ad', marginRight: '24px', padding: '8px' }}>
                                             <Typography.Title level={5} style={{ margin: 0 }}>Үзэгчдийн үнэлгээ:</Typography.Title>                                        
                                             <span>                                                                                    
                                                 <span style={{ fontSize: '32px', fontWeight: 'bold' }}> {movie.score / 10}</span>                                        
@@ -390,14 +390,14 @@ function MovieDetail (props) {
                                                 <span style={{ fontSize: '14px' }}> (нийт {movie.score_count})</span>
                                             </span>
                                         </div>
-                                        <div style={{ background: '#8e44ad', padding: '8px' }}>
+                                        {/* <div style={{ background: '#8e44ad', padding: '8px' }}>
                                             <Typography.Title level={5} style={{ margin: 0 }}>Шүүмжлэгчдийн үнэлгээ:</Typography.Title>                                        
                                             <span>                                                                                    
                                                 <span style={{ fontSize: '32px', fontWeight: 'bold' }}> 7.3</span>                                        
                                                 <span style={{ fontSize: '20px', fontWeight: 'bold' }}> / 10</span>
                                                 <span style={{ fontSize: '14px' }}> (нийт 16)</span>
                                             </span>
-                                        </div>
+                                        </div> */}
                                     </div>                                
                                     <div className="infotabs">
                                         <Tabs defaultActiveKey="1">
@@ -413,7 +413,7 @@ function MovieDetail (props) {
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Жүжигчид" key="3">
                                                 <Typography.Title level={5}>Жүжигчид</Typography.Title>
-                                                <MovieCast id={movie.id} />                                                
+                                                <MovieCast actors={movie.actors} />                                                
                                             </Tabs.TabPane>
                                             <Tabs.TabPane tab="Сэтгэгдэл" key="4">
                                                 <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>

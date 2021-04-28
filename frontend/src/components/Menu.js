@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './Menu.css';
 import { Button, Grid, Avatar } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import { MenuOutlined, UserOutlined } from '@ant-design/icons';
