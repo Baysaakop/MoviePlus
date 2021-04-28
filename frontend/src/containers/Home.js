@@ -168,6 +168,9 @@ function Home (props) {
                 <div style={{ margin: '16px 0' }}>
                     <MoviesRow title="ӨНДӨР ҮНЭЛГЭЭТЭЙ" type="score" />
                 </div>
+                <div style={{ margin: '16px 0' }}>
+                    <MoviesRow title="ОДОО ГАРЧ БУЙ" type="releasedate" />
+                </div>
             </div>
             {/* <div style={{ padding: getPadding() }}>
                 <Row gutter={[16, 16]}>

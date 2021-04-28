@@ -173,6 +173,15 @@ body {
     width: 100%;   
 }
 
+.ant-progress-circle .ant-progress-inner {
+    background-color: #0d1117;
+    border: 2px solid #0d1117;
+}
+
+.ant-progress-circle .ant-progress-text {
+    color: #fff;
+}
+
 /* .ant-select-dropdown {
     background-color: #161b22;    
 }

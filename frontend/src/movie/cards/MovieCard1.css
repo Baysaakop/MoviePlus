@@ -1,0 +1,36 @@
+.container {
+    position: relative;
+}
+
+.poster {
+    width: 100%;
+    height: auto;
+}
+
+.overlay-more {
+    position: absolute;
+    top: 8px;
+    right: 8px;        
+}
+
+.overlay-score {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+
+.actions {    
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px;
+    /* opacity: 1;
+    transition: 0.5s ease-in; */
+}
+
+/* .overlay-more:hover .actions {
+    opacity: 1;
+} */
+
+.actions button {
+    display: block;
+    margin-top: 4px;
+}
