@@ -1,36 +1,72 @@
-.container {
+.moviecard1 .container {
     position: relative;
 }
 
-.poster {
+.moviecard1 .poster {
     width: 100%;
     height: auto;
 }
 
-.overlay-more {
+.moviecard1 .overlay-more {
     position: absolute;
     top: 8px;
     right: 8px;        
 }
 
-.overlay-score {
+.moviecard1 .overlay-rate {
     position: absolute;
-    top: 8px;
+    top: 70%;        
+    width: 100%;              
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.moviecard1 .overlay-score {
+    position: absolute;
+    bottom: 8px;
     left: 8px;
 }
 
-.actions {    
-    background: rgba(0, 0, 0, 0.3);
-    padding: 4px;
-    /* opacity: 1;
-    transition: 0.5s ease-in; */
+.moviecard1 .overlay-more .ant-btn-ghost {
+    background-color: #161b22;  
+    opacity: 0.5;
 }
 
-/* .overlay-more:hover .actions {
+.moviecard1 .overlay-more .ant-btn-ghost:hover {    
     opacity: 1;
-} */
+}
 
-.actions button {
+.moviecard1 .actions button {
     display: block;
     margin-top: 4px;
+}
+
+.moviecard1 .actions .ant-btn-primary {
+    border: 0;
+}
+
+.moviecard1 .actions .ant-btn-primary:hover {
+    opacity: 0.5;
+}
+
+.moviecard1 .actions .ant-btn-primary.like {
+    background-color: #c23616;
+}
+
+.moviecard1 .actions .ant-btn-primary.check {
+    background-color: #44bd32;
+    border: 1px solid #fff;
+}
+
+.moviecard1 .actions .ant-btn-primary.watchlist {
+    background-color: #00a8ff;
+}
+
+.moviecard1 .actions .ant-btn-primary.score {
+    background-color: #fadb14;
+    color: #000;
+    border: 1px solid #000;
+    font-weight: bold;
 }

@@ -2,17 +2,16 @@ import { Grid, Button, Card, Tooltip, message, Typography, Rate } from 'antd';
 import React, { useEffect, useState } from 'react';
 import './MovieCard2.css';
 import { CheckOutlined, PlusOutlined, HeartOutlined, StarOutlined, PlayCircleOutlined, StarFilled } from '@ant-design/icons';
-import blank from './blank.jpg';
+import blank from './blank.jpg'
 import axios from 'axios';
-import api from '../api';
+import api from '../../api';
 import { connect } from "react-redux";
-import GenreTag from '../components/GenreTag';
 import Modal from 'antd/lib/modal/Modal';
 import { Link } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
 
-function MovieCard3 (props) {
+function MovieCard2 (props) {
     const screens = useBreakpoint();       
     const [likes, setLikes] = useState()    
     const [checks, setChecks] = useState()    
@@ -258,9 +257,9 @@ function MovieCard3 (props) {
                                 <Typography.Title level={screens.xs ? 5 : 3} style={{ textAlign: 'center', fontWeight: 'normal', color: '#FFF' }}>{props.movie.name}</Typography.Title>                         
                                 { !screens.xs ? (
                                     <div style={{ position: 'absolute', bottom: '8px' }}>
-                                    {props.movie.genre.map(g => {
+                                    {props.movie.genre.slice(0, 2).map(g => {
                                         return (                    
-                                            <GenreTag genre={g.name} />
+                                            <Button size="small" type="ghost" style={{ marginRight: '8px', marginBottom: '8px' }}>{g.name}</Button>
                                         )                                            
                                     })}                        
                                 </div>  
@@ -283,4 +282,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(MovieCard3);
+export default connect(mapStateToProps)(MovieCard2);

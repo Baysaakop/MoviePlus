@@ -1,5 +1,6 @@
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'PT Sans', sans-serif;
+    /* font-family: 'Montserrat', sans-serif; */
     margin: 0;
     padding: 0;
     width: 100%;
@@ -100,7 +101,12 @@ body {
 .layout-dark .ant-input:hover,
 .layout-dark .ant-select-selection-item-remove,
 .layout-dark .ant-space-item,
-.layout-dark .ant-radio-wrapper {
+.layout-dark .ant-radio-wrapper,
+.layout-dark .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis, .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis,
+.layout-dark .ant-tabs-nav-more,
+.layout-dark .ant-descriptions-title,
+.layout-dark .ant-descriptions-item-label,
+.layout-dark .ant-descriptions-item-content {
     color: rgba(255, 255, 255, 0.85);
 }
 
@@ -180,6 +186,22 @@ body {
 
 .ant-progress-circle .ant-progress-text {
     color: #fff;
+}
+
+.ant-timeline-item-head {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.ant-modal-body {
+    padding: 40px 0 0 0;
+}
+
+.ant-modal-content {
+    background: rgba(0, 0, 0, 0);
+}
+
+.ant-modal-close {
+    color: #d1d1d1;
 }
 
 /* .ant-select-dropdown {

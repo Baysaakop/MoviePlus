@@ -4,9 +4,8 @@ import axios from 'axios';
 import api from '../api';
 import { Link } from 'react-router-dom';
 import { LoadingOutlined } from '@ant-design/icons';
-// import MovieCard from './MovieCard';
-// import MovieCard2 from './MovieCard2';
-import MovieCard3 from './MovieCard3';
+import MovieCard1 from './cards/MovieCard1';
+// import MovieCard2 from './cards/MovieCard2';
 import { connect } from 'react-redux';
 
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -156,7 +155,7 @@ function MovieList(props) {
                     genre: "all",
                     order: "created_at"
                 }}>
-                    <Row gutter={[16, 16]}>
+                    <Row gutter={[8, 0]}>
                         <Col xs={24} sm={24} md={24} lg={8}>
                             <Form.Item name="name" label="Кино хайх:">                            
                                 <Search placeholder="Киноны нэрээр хайх" onSearch={onNameSearch} enterButton />
@@ -215,19 +214,19 @@ function MovieList(props) {
                     <>
                         <List                        
                             grid={{
-                                gutter: 32,
+                                gutter: 16,
                                 xs: 2,
                                 sm: 2,
-                                md: 3,
-                                lg: 3,
-                                xl: 4,
-                                xxl: 5,
+                                md: 4,
+                                lg: 4,
+                                xl: 5,
+                                xxl: 6,
                             }}                                                            
                             style={{ marginTop: '16px' }}                
                             dataSource={movies ? movies : undefined}
                             renderItem={item => (
-                                <List.Item>
-                                    <MovieCard3 movie={item} user={user} />
+                                <List.Item>                                    
+                                    <MovieCard1 movie={item} user={user} />
                                 </List.Item>
                             )} 
                             
@@ -235,10 +234,11 @@ function MovieList(props) {
                         <Pagination
                             current={page}
                             total={total}
-                            pageSize={24}
+                            pageSize={20}
                             hideOnSinglePage={true}
                             showSizeChanger={false}
                             showTotal={showTotal}
+                            size="small"
                             onChange={onPageChange}
                         />
                     </>

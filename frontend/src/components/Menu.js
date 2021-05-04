@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, Avatar } from 'antd';
+import { Button, Grid, Avatar, Typography } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import { MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
-// import logo from './onplus-logo.png';
 import axios from 'axios';
 import api from '../api';
-import MovieIcon from '../icons/MovieIcon';
+// import MovieIcon from '../icons/MovieIcon';
 
 const { useBreakpoint } = Grid;
 
@@ -72,7 +71,7 @@ function CustomMenu (props) {
     }
 
     const styleHeaderWeb = {        
-        background: scrollTop ? 'rgba(0, 0, 0, 0)' : props.darkMode ? '#161b22' : '#fff',            
+        background: scrollTop ? 'rgba(0, 0, 0, 0)' : props.darkMode ? '#161b22' : '#fff',                    
         display: 'flex',
         justifyContent: 'space-around', 
         alignItems: 'center',
@@ -82,35 +81,31 @@ function CustomMenu (props) {
     }
     
     const styleHeaderMobile = {
-        background: scrollTop ? 'rgba(0, 0, 0, 0.5)' : props.darkMode ? '#161b22' : '#fff',    
-        color: scrollTop ? 'rgb(255, 255, 255)' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',       
+        background: props.darkMode ? '#161b22' : '#fff',            
         display: 'flex',
         justifyContent: 'space-between', 
         alignItems: 'center',
         height: '80px',
-        // boxShadow: '0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)',
         padding: getPadding()
     }
     
     const styleLogo = {
         display: 'flex',
         justifyContent: 'flex-start', 
-        alignItems: 'center',    
-        height: '80px'
+        alignItems: 'center',                    
     }    
 
     const styleMenuItemMobile = {    
-        // width: '100%',
-        // height: '20%',
-        height: '48px',
+        width: '100%',
+        height: '20%',                
         margin: '0',
         padding: '0',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         background: props.darkMode ? '#161b22' : '#fff',    
-        color: props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',       
-        borderColor: props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',       
+        color: props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)',  
+        borderTop: '1px solid #888'             
     }    
 
     return (
@@ -120,12 +115,12 @@ function CustomMenu (props) {
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center' }}>
                         <Link to="/">
                             <div style={styleLogo}>         
-                                <div style={{ display: 'flex', alignItems: 'center' }}>                                    
+                                {/* <div style={{ display: 'flex', alignItems: 'center', paddingTop: '4px' }}>                                    
                                     <MovieIcon style={{ fontSize: '32px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
-                                </div>
-                                <div style={{ fontSize: '24px', marginLeft: '8px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }}>                        
-                                    MOVIE+                    
-                                </div>                        
+                                </div> */}
+                                <Typography.Title level={2} style={ scrollTop ? { color: '#FFF', margin: 0 } : { margin: 0 }}>
+                                    Movie+  
+                                </Typography.Title>
                             </div>       
                         </Link>
                     </div>
@@ -134,40 +129,28 @@ function CustomMenu (props) {
                             <Button type={current && current.startsWith('/movies') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
                                 КИНО
                             </Button>
-                            {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/movies') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
-                                Кино
-                            </Button> */}
                         </Link>
                         <Link to="/series">
                             <Button type={current && current.startsWith('/series') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
                                 ЦУВРАЛ
                             </Button>
-                            {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/series') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
-                                Цуврал
-                            </Button> */}
                         </Link>
                         <Link to="/artists">
                             <Button type={current && current.startsWith('/artists') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
-                                У/БҮТЭЭЛЧ
+                                УРАН БҮТЭЭЛЧ
                             </Button>
-                            {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/artists') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
-                                У/Бүтээлч
-                            </Button> */}
                         </Link>
                         <Link to="/reviews">
                             <Button type={current && current.startsWith('/reviews') ? 'primary' : 'ghost' } size="large" style={{ marginLeft: '8px', border: 0 }}>
                                 НИЙТЛЭЛ
                             </Button>
-                            {/* <Button ghost={scrollTop || props.darkMode} type={current && current.startsWith('/posts') ? 'primary' : 'default' } size="large" style={{ marginLeft: '8px' }}>
-                                Нийтлэл
-                            </Button> */}
                         </Link>
                     </div>
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                         { user ? (
                             <Link to="/profile">
                                 {user.profile.avatar ? <Avatar src={user.profile.avatar} size="large" /> : <Avatar icon={<UserOutlined />} size="large" />}
-                                <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
+                                <Typography.Text style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</Typography.Text>
                             </Link>
                         ) : (
                             <Link to="/login">
@@ -184,12 +167,9 @@ function CustomMenu (props) {
                         <div>
                             <Link to="/">
                                 <div style={styleLogo}>         
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>                                        
-                                        <MovieIcon style={{ fontSize: '32px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
-                                    </div>
-                                    <div style={{ fontSize: '24px', marginLeft: '8px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }}>                        
-                                        Movie+                        
-                                    </div>                        
+                                    <Typography.Title level={2} style={{ margin: 0 }}>
+                                        Movie+  
+                                    </Typography.Title>                        
                                 </div>       
                             </Link>
                         </div>
@@ -200,42 +180,42 @@ function CustomMenu (props) {
                                 type="ghost" 
                                 icon={<MenuOutlined />} 
                                 onClick={handleMenuCollapsed} 
-                                style={{ background: 'transparent', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)', borderColor: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} 
+                                style={{ background: 'transparent', color: props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)', borderColor: props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} 
                             />
                         </div>        
                     </div>   
                     { collapsed ? (
                         <></>
                     ) : (
-                        <div style={{ background: props.darkMode ? "#161b22" : "#fff" }}>                            
+                        <div style={{ background: props.darkMode ? "#161b22" : "#fff", height: '96vh' }}>                            
                             <Link to="/movies">
-                                <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                <Button block type="text" size="large" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
                                     Кино
-                                </Button> 
+                                </Button>                                 
                             </Link>
                             <Link to="/series">
-                                <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                <Button block type="text" size="large" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
                                     Цуврал
                                 </Button>       
                             </Link>                     
                             <Link to="/artists">
-                                <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                <Button block type="text" size="large" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
                                     Уран бүтээлч
                                 </Button>
                             </Link>
                             <Link to="/reviews">
-                                <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                <Button block type="text" size="large" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
                                     Нийтлэл
                                 </Button>
                             </Link>
                             { user ? (
-                                <Link to="/profile" style={styleMenuItemMobile}>
+                                <Link to="/profile" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
                                     {user.profile.avatar ? <Avatar src={user.profile.avatar} size="default" /> : <Avatar icon={<UserOutlined />} size="default" />}
                                     <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
                                 </Link>
                             ) : (
                                 <Link to="/login">
-                                    <Button block type="text" size="large" style={styleMenuItemMobile}>
+                                    <Button block type="text" size="large" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
                                         Нэвтрэх
                                     </Button> 
                                 </Link>

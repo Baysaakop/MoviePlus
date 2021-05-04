@@ -85,7 +85,7 @@ function ArtistList () {
     }
 
     function showTotal(total) {
-        return `Нийт ${total} кино:`;
+        return `Нийт ${total} уран бүтээлч:`;
     }
 
     function getPadding() {
@@ -118,13 +118,13 @@ function ArtistList () {
             </div>
             <div style={{ padding: getPadding() }}>
                 <Form form={form} layout="vertical">
-                    <Row gutter={[16, 16]}>
-                        <Col sm={24} md={8}>
+                    <Row gutter={[16, 0]}>
+                        <Col xs={24} sm={24} md={8}>
                             <Form.Item name="name" label="Уран бүтээлч хайх:">                            
                                 <Search placeholder="Уран бүтээлчийн нэрээр хайх" onSearch={onNameSearch} enterButton />
                             </Form.Item>
                         </Col>
-                        <Col sm={24} md={8}>
+                        <Col xs={24}  sm={24} md={8}>
                             <Form.Item name="occupation" label="Мэргэжил сонгох">                                
                                 <Select                                                                                      
                                     showSearch                            
@@ -148,7 +148,7 @@ function ArtistList () {
                                 </Select>
                             </Form.Item>                                                    
                         </Col>                                                           
-                        <Col sm={24} md={8}>
+                        <Col xs={24} sm={24} md={8}>
                             <Form.Item name="order" label="Эрэмбэлэх:">                                
                                 <Select                                
                                     showSearch                            
@@ -170,11 +170,11 @@ function ArtistList () {
                 <List                        
                     grid={{
                         gutter: 16,
-                        xs: 3,
-                        sm: 3,
+                        xs: 2,
+                        sm: 4,
                         md: 4,
                         lg: 5,
-                        xl: 6,
+                        xl: 7,
                         xxl: 8,
                     }}                                        
                     style={{ marginTop: '16px' }}                
@@ -188,11 +188,12 @@ function ArtistList () {
                 <Pagination
                     current={page}
                     total={total}
-                    pageSize={24}
+                    pageSize={20}
                     hideOnSinglePage={true}
                     showSizeChanger={false}
                     showTotal={showTotal}
                     onChange={onPageChange}
+                    size="small"
                 />
             </div>
         </div>

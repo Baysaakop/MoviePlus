@@ -1,13 +1,31 @@
-import { Button, Card, Progress, Tooltip } from 'antd'
-import React, { useState } from 'react'
+import { Button, Card, Progress, Tooltip, Typography, message, Rate } from 'antd'
+import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import './MovieCard1.css'
 import { CheckOutlined, HeartOutlined, MoreOutlined, PlusOutlined, StarOutlined } from '@ant-design/icons'
+import axios from 'axios';  
+import api from '../../api';
+import { connect } from 'react-redux'
+import blank from './blank.jpg'
 
 function MovieCard1 (props) {
 
     const [visible, setVisible] = useState(false)
+    const [likes, setLikes] = useState()    
+    const [checks, setChecks] = useState()    
+    const [watchlists, setWatchlists] = useState()    
+    const [rating, setRating] = useState()
+    const [value, setValue] = useState()
+    const [rateVisible, setRateVisible] = useState(false)
+
+    useEffect(() => {              
+        setLikes(props.movie.likes)
+        setChecks(props.movie.checks)
+        setWatchlists(props.movie.watchlists)
+        setRating(props.movie.score)    
+        getValue(props.movie.scores)
+    }, [props.movie, props.user]) // eslint-disable-line react-hooks/exhaustive-deps   
 
     function getGenre(genres) {
         let result = ""
@@ -17,49 +35,211 @@ function MovieCard1 (props) {
         return result.slice(0, result.length - 2)
     }
 
+    function onMore () {
+        setVisible(!visible)
+        setRateVisible(false)
+    }
+
+    function getValue(scores) {
+        if (props.user && scores) {
+            let data = scores.filter(x => x.user === props.user.id)
+            if (data.length > 0) {
+                setValue(data[0].score)
+            }            
+        }        
+    }
+
+    function onLike () {                
+        if (props.token && props.movie) {
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${props.movie.id}/`,
+                data: {                    
+                    token: props.token,
+                    like: true
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            })
+            .then(res => {              
+                if (res.status === 200) {
+                    setLikes(res.data.likes)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                message.error("Дахин оролдоно уу.")
+            })
+        } else {
+            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+            props.history.push('/login')  
+        }        
+    }
+
+    function onCheck () {
+        if (props.token && props.movie) {
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${props.movie.id}/`,
+                data: {                    
+                    token: props.token,
+                    check: true
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            })
+            .then(res => {              
+                if (res.status === 200) {
+                    setChecks(res.data.checks)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                message.error("Дахин оролдоно уу.")
+            })
+        } else {
+            props.history.push('/login')             
+        }
+    }
+
+    function onWatchlist () {
+        if (props.token && props.movie) {
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${props.movie.id}/`,
+                data: {                    
+                    token: props.token,
+                    watchlist: true
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            })
+            .then(res => {              
+                if (res.status === 200) {
+                    setWatchlists(res.data.watchlists)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                message.error("Дахин оролдоно уу.")
+            })
+        } else {
+            props.history.push('/login')             
+        }
+    }
+
+    function onScore (value) {                  
+        if (props.token && props.movie) {
+            axios({
+                method: 'PUT',
+                url: `${api.movies}/${props.movie.id}/`,
+                data: {                    
+                    token: props.token,
+                    score: value * 2
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${props.token}`
+                }
+            })
+            .then(res => {              
+                if (res.status === 200) {                    
+                    setRating(res.data.score)                 
+                    getValue(res.data.scores)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                message.error("Дахин оролдоно уу.")
+            })
+        } else {
+            props.history.push('/login')  
+        }                  
+    }
+
     return (
         <div>            
             <Card 
+                className="moviecard1"
                 hoverable 
                 cover={
                     <div className="container">
-                        <Link to={`/movies/${props.item.id}`}>
-                            <img className="poster" alt={props.item.name} src={props.item.poster} />
+                        <Link to={`/movies/${props.movie.id}`}>
+                            <img className="poster" alt={props.movie.name} src={props.movie.poster ? props.movie.poster : blank} style={{ opacity: '0.9' }} />
                         </Link>
                         <div className="overlay-more">
-                            <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '4px' }}>
-                                <Button type="ghost" shape="circle" icon={<MoreOutlined />} onClick={() => setVisible(!visible)} />
+                            <div>
+                                <Button type="ghost" shape="circle" icon={<MoreOutlined />} onClick={onMore} />
                             </div>
                             { visible ? 
-                            <div className="actions">   
-                                <Button type="ghost" shape="circle" icon={<HeartOutlined />} />
-                                <Button type="ghost" shape="circle" icon={<CheckOutlined />} />
-                                <Button type="ghost" shape="circle" icon={<PlusOutlined />} />
-                                <Button type="ghost" shape="circle" icon={<StarOutlined />} />
-                            </div>
+                                <div className="actions">   
+                                    <Tooltip title="Таалагдсан">
+                                        <Button className="like" type={props.user && likes && likes.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<HeartOutlined />} onClick={onLike} />
+                                    </Tooltip>
+                                    <Tooltip title="Үзсэн">
+                                        <Button className="check" type={props.user && checks && checks.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<CheckOutlined />} onClick={onCheck} />
+                                    </Tooltip>
+                                    <Tooltip title="Дараа үзэх">
+                                        <Button className="watchlist" type={props.user && watchlists && watchlists.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<PlusOutlined />} onClick={onWatchlist} />
+                                    </Tooltip>
+                                    <Tooltip title="Үнэлгээ өгөх">
+                                    {value ? (
+                                        <Button className="score" type="primary" shape="circle" onClick={() => setRateVisible(!rateVisible)}>{value}</Button>
+                                    ) : (
+                                        <Button className="score" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                    )}                                       
+                                    </Tooltip>
+                                </div>
                             : 
-                            <></>
+                                <></>
                             }
                         </div>
+                        {rateVisible ? (
+                        <div className="overlay-rate">
+                            <div style={{ background: '#0d1117', padding: '4px' }}>                                
+                                <Rate allowHalf style={{ fontSize: '18px' }} value={value ? value / 2 : undefined} onChange={onScore} />                                
+                            </div>
+                        </div>
+                        ) : (
+                            <></>
+                        )}
                         <div className="overlay-score">
-                            <Progress type="circle" percent={props.item.score} width={40} strokeColor="yellow" />
+                            <Progress type="circle" percent={rating} width={44} strokeColor="#fadb14" trailColor="#1b262c" strokeWidth={4} />
                         </div>
                     </div>
                 } 
                 style={{ border: 0 }} 
                 size="small"
-            >                                    
-                <Card.Meta 
-                    title={
-                        <Tooltip title={props.item.name}>
-                            {`${props.item.name} /${moment(props.item.releasedate).format("YYYY")}/`} 
-                        </Tooltip>
-                    }
-                    description={getGenre(props.item.genre)} 
-                />
+            >                            
+                <Link to={`/movies/${props.movie.id}`}>                                        
+                    <Card.Meta 
+                        title={
+                            <Tooltip title={props.movie.name}>
+                                {`${props.movie.name} /${moment(props.movie.releasedate).format("YYYY")}/`} 
+                            </Tooltip>
+                        }
+                        description={
+                            <Typography.Paragraph ellipsis={true} style={{ margin: 0 }}>
+                                {getGenre(props.movie.genre)}
+                            </Typography.Paragraph>
+                        } 
+                    />
+                </Link>        
             </Card>            
         </div>
     )
 }
 
-export default MovieCard1
+const mapStateToProps = state => {
+    return {
+        token: state.token
+    }
+}
+
+export default connect(mapStateToProps)(MovieCard1);

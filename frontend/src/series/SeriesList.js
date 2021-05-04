@@ -121,7 +121,7 @@ function SeriesList() {
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>
-            <div style={{ padding: getPadding(), display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'  }}>
+            <div style={{ padding: getPadding(), display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh'  }}>
                 <Result
                     status="500"
                     title="Бэлэн биш"

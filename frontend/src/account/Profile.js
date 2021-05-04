@@ -16,9 +16,12 @@ const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const { useBreakpoint } = Grid;
 
 function Profile (props) {
-    const screens = useBreakpoint();
-    const [loading, setLoading] = useState(false);
-    const [user, setUser] = useState();
+    const screens = useBreakpoint()
+    const [loading, setLoading] = useState(false)
+    const [likesCount, setLikesCount] = useState(0)
+    const [checksCount, setChecksCount] = useState(0)
+    const [watchlistsCount, setWatchlistsCount] = useState(0)
+    const [user, setUser] = useState()
 
     useEffect(() => {        
         if (props.token && props.token !== null) {
@@ -79,20 +82,20 @@ function Profile (props) {
                         </Tabs.TabPane>                        
                         <Tabs.TabPane tab={<span><HeartOutlined style={{ fontSize: '18px' }} />Таалагдсан кино</span>} key="2">
                             <div style={{ padding: '8px' }}>
-                                <Typography.Title level={5}>Таалагдсан кино</Typography.Title>
-                                <MoviesLiked token={props.token} state="like" user={user} />                 
+                                <Typography.Title level={5}>Таалагдсан кино ({likesCount})</Typography.Title>
+                                <MoviesLiked token={props.token} state="like" user={user} setCount={(count) => setLikesCount(count)} />                 
                             </div>
                         </Tabs.TabPane>
                         <Tabs.TabPane tab={<span><CheckCircleOutlined style={{ fontSize: '18px' }} />Үзсэн кино</span>} key="3">                            
                             <div style={{ padding: '8px' }}>
-                                <Typography.Title level={5}>Үзсэн кино</Typography.Title>
-                                <MoviesLiked token={props.token} state="check" user={user} />                 
+                                <Typography.Title level={5}>Үзсэн кино ({checksCount})</Typography.Title>
+                                <MoviesLiked token={props.token} state="check" user={user} setCount={(count) => setChecksCount(count)} />                 
                             </div>       
                         </Tabs.TabPane>
                         <Tabs.TabPane tab={<span><PlusCircleOutlined style={{ fontSize: '18px' }} />Дараа үзэх кино</span>} key="4">                              
                             <div style={{ padding: '8px' }}>
-                                <Typography.Title level={5}>Дараа үзэх кино</Typography.Title>
-                                <MoviesLiked token={props.token} state="watchlist" user={user} />                 
+                                <Typography.Title level={5}>Дараа үзэх кино ({watchlistsCount})</Typography.Title>
+                                <MoviesLiked token={props.token} state="watchlist" user={user} setCount={(count) => setWatchlistsCount(count)} />                 
                             </div>  
                         </Tabs.TabPane>                        
                         { user.profile.role === "1" || user.profile.role === "2" ? (

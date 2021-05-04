@@ -57,7 +57,7 @@
 .moviecard2 .container .content .bot {
     height: 50%;
     background: rgb(8, 8, 8);
-    padding: 8px 16px;
+    padding: 8px;
 }
 
 .moviecard2 .container .content .actions .ant-btn-ghost {

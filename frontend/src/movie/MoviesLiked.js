@@ -3,8 +3,7 @@ import { List, Pagination, Spin } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import api from '../api';
-// import MovieCard from './MovieCard';
-import MovieCard3 from './MovieCard3';
+import MovieCard1 from './cards/MovieCard1';
 
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -26,9 +25,9 @@ function MoviesLiked (props) {
             url: `${url}&page=${page}`,            
         })
         .then(res => {
-            console.log(res.data)
             setMovies(res.data.results)
             setTotal(res.data.count)
+            props.setCount(res.data.count)
             setLoading(false)
         })
         .catch(err => {
@@ -37,7 +36,7 @@ function MoviesLiked (props) {
         })
     }
 
-    function onPageChange (pageNum, pageSize) {        
+    function onPageChange (pageNum) {        
         setPage(pageNum)
     }
 
@@ -60,25 +59,26 @@ function MoviesLiked (props) {
                             sm: 1,
                             md: 2,
                             lg: 2,
-                            xl: 3,
-                            xxl: 4,
+                            xl: 4,
+                            xxl: 5,
                         }}                                      
                         style={{ marginTop: '16px' }}                
                         dataSource={movies ? movies : undefined}
                         renderItem={item => (
                             <List.Item>
-                                <MovieCard3 movie={item} user={props.user} />                                
+                                <MovieCard1 movie={item} user={props.user} />                                
                             </List.Item>
                         )}
                     />
                     <Pagination
                         current={page}
                         total={total}
-                        pageSize={24}
+                        pageSize={20}
                         hideOnSinglePage={true}
                         showSizeChanger={false}
                         showTotal={showTotal}
                         onChange={onPageChange}
+                        size="small"
                     />
                 </>
             )}            

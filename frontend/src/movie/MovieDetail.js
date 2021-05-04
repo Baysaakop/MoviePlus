@@ -1,66 +1,32 @@
-import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Modal, Rate, notification } from 'antd';
+import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Rate, notification, Progress, Descriptions } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, CommentOutlined, CreditCardOutlined, HeartOutlined, LoadingOutlined, PlayCircleOutlined, PlusCircleOutlined, PlusOutlined, StarOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, CreditCardOutlined, HeartOutlined, LoadingOutlined, PlayCircleOutlined, PlusCircleOutlined, PlusOutlined, StarOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import { connect } from "react-redux";
 import MovieMembers from './MovieMembers';
 import MovieCast from './MovieCast';
 import MovieComment from './MovieComment';
 import moment from 'moment';
+import Trailer from '../components/Trailer';
 
 const scoreValues = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
 const { useBreakpoint } = Grid;
 const spinIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-function MovieDetail (props) {
-    const screens = useBreakpoint(); 
+function MovieDetail (props) {    
+    const screens = useBreakpoint()
     const [user, setUser] = useState()
     const [movie, setMovie] = useState()
-    const [modalVisible, setModalVisible] = useState(false)
+    const [trailer, setTrailer] = useState(false)
+    const [rateVisible, setRateVisible] = useState(false)
 
     useEffect(() => {               
         getUser()
         getMovie()        
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps    
-
-    function getWidth() {
-        if (screens.xxl) {
-            return 1200            
-        } else if (screens.xl) {
-            return 1000
-        } else if (screens.lg) {
-            return 700
-        } else if (screens.md) {
-            return 600
-        } else if (screens.sm) {
-            return 500
-        } else if(screens.xs) {
-            return 400
-        } else {
-            return 400
-        }       
-    }
-
-    function getHeight() {
-        if (screens.xxl) {
-            return 600
-        } else if (screens.xl) {
-            return 500
-        } else if (screens.lg) {
-            return 350
-        } else if (screens.md) {
-            return 300
-        } else if (screens.sm) {
-            return 250
-        } else if(screens.xs) {
-            return 200
-        } else {
-            return 200
-        }       
-    }
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps        
 
     function getUser() {
         if (props.token && props.token !== null) {
@@ -126,7 +92,7 @@ function MovieDetail (props) {
                         message: 'Жагсаалтад нэмэгдлээ',
                         description: `${movie.name} кино таны таалагдсан киноны жагсаалтад нэмэгдлээ.`,
                         icon: <HeartOutlined style={{ color: '#c0392b' }} />,
-                    })      
+                    })                          
                 }
                 getMovie()
             })
@@ -135,7 +101,7 @@ function MovieDetail (props) {
                 message.error("Дахин оролдоно уу.")
             })
         } else {
-            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+            props.history.push('/login')   
         }        
     }
 
@@ -174,7 +140,7 @@ function MovieDetail (props) {
                 message.error("Дахин оролдоно уу.")
             })
         } else {
-            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+            props.history.push('/login')             
         }                
     }
 
@@ -213,7 +179,7 @@ function MovieDetail (props) {
                 message.error("Дахин оролдоно уу.")
             })
         } else {
-            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+            props.history.push('/login')               
         }                
     }
 
@@ -252,7 +218,7 @@ function MovieDetail (props) {
                 message.error("Дахин оролдоно уу.")
             })
         } else {
-            message.warning("Та эхлээд системд нэвтрэх шаардлагатай.")            
+            props.history.push('/login')          
         }                  
     }
         
@@ -264,14 +230,6 @@ function MovieDetail (props) {
         } else {
             return count.toString();
         }
-    }
-
-    const showModal = () => {        
-        setModalVisible(true);
-    }
-
-    const hideModal = () => {        
-        setModalVisible(false);
     }
 
     function getPadding() {
@@ -290,140 +248,134 @@ function MovieDetail (props) {
         }
     }
 
+    function getDirector(members) {
+        let result = ""
+        members.forEach(member => {
+            if (member.role.id === 2) {
+                result = result + member.artist.name + ", "
+            }
+        })
+        return result.slice(0, result.length - 2)
+    }
+
     return (
         <div className="moviedetail" style={{ marginTop: '80px', minHeight: '80vh' }}>
             { movie ? (
                 <div>
-                    <div style={{ height: `${getHeight()}px` }}>
+                    <div style={{ height: `${window.screen.availHeight * 0.55}px` }}>
                         {movie.landscape ? (
-                            <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.3', backgroundColor: '#000', filter: 'blur(2px)' }} />                        
+                            // <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'fill', backgroundColor: '#000', background: 'rgba(0, 0, 0, 0.5)', filter: 'blur(1px)' }} />                        
+                            <div
+                                style={{
+                                    backgroundImage: `linear-gradient(60deg, rgba(11, 20, 30, 0.6), rgba(22, 35, 49, 0.8)), url(${movie.landscape})`,
+                                    width: '100%',
+                                    height: '100%',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    backgroundSize: 'cover'                                                                                           
+                                }}
+                            >
+                            </div>
                         ) : (
-                            <div style={{ width: '100%', height: '100%', opacity: '0.5', backgroundColor: '#000' }} />
-                        )}                        
+                            <div style={{ width: '100%', height: '100%', opacity: '0' }} />
+                        )}                                            
                     </div>
                     <div style={{ padding: getPadding() }} className="detail">
-                        <Row gutter={[16, 16]} style={{ marginTop: '-30%', paddingBottom: '40px' }}>
-                            <Col xs={24} sm={8} md={8} lg={8} xl={6} style={{ padding: '0 32px' }}>
-                                <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />
-                                <Row gutter={[8, 8]} style={{ marginTop: '8px', width: '100%' }}>
-                                    {/* <Col span={6} style={{ textAlign: 'center' }}>
-                                        <EyeOutlined style={{ fontSize: '20px' }} />
-                                        <br></br>
-                                        <Typography.Text>{formatCount(movie.view_count)}</Typography.Text>
-                                    </Col> */}
-                                    <Col span={6} style={{ textAlign: 'center' }}>
-                                        <HeartOutlined style={{ fontSize: '20px' }} />
-                                        <br></br>
-                                        <Typography.Text>{formatCount(movie.likes.length)}</Typography.Text>
-                                    </Col>
-                                    <Col span={6} style={{ textAlign: 'center' }}>
-                                        <CheckCircleOutlined style={{ fontSize: '20px' }} />
-                                        <br></br>
-                                        <Typography.Text>{formatCount(movie.checks.length)}</Typography.Text>
-                                    </Col>
-                                    <Col span={6} style={{ textAlign: 'center' }}>
-                                        <PlusCircleOutlined style={{ fontSize: '20px' }} />
-                                        <br></br>
-                                        <Typography.Text>{formatCount(movie.watchlists.length)}</Typography.Text>    
-                                    </Col>
-                                    <Col span={6} style={{ textAlign: 'center' }}>
-                                        <CommentOutlined style={{ fontSize: '20px' }} />
-                                        <br></br>
-                                        <Typography.Text>{formatCount(movie.comments.length)}</Typography.Text>
-                                    </Col>
-                                </Row>
-                                <Button block type="primary" icon={<PlayCircleOutlined />}>Үзэх</Button> 
-                                <Button danger block type="primary" icon={<CreditCardOutlined />} style={{ marginTop: '8px' }}>Тасалбар захиалах</Button> 
+                        <Row gutter={[16, 16]} style={{ marginTop: '-30%', marginBottom: '40px' }}>
+                            <Col xs={24} sm={8} md={8} lg={8} xl={6} style={ screens.xs ? { padding: '0 8px' } : { padding: '0 32px 0 0'}}>
+                                <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />                                
+                                <Button size="large" block type="primary" icon={<PlayCircleOutlined />} style={{ marginTop: '8px' }}>Үзэх</Button> 
+                                <Button size="large" danger block type="primary" icon={<CreditCardOutlined />} style={{ marginTop: '8px' }}>Тасалбар захиалах</Button> 
+                                <div className="actions">                                        
+                                    <Tooltip title="Трэйлэр үзэх">
+                                        <Button size="large" type="ghost" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={() => setTrailer(true)} />
+                                    </Tooltip>
+                                    {trailer ? <Trailer title={movie.title} trailer={movie.trailer} hide={() => setTrailer(false)} /> : <></>}
+                                    <Tooltip title="Таалагдсан">
+                                        <Button className="like" size="large" type={user && movie.likes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<HeartOutlined />} onClick={() => onLike(user && movie.likes.filter(x => x === user.id).length > 0)}></Button>
+                                    </Tooltip>
+                                    <Tooltip title="Үзсэн">
+                                        <Button className="check" size="large" type={user && movie.checks.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<CheckOutlined />} onClick={() => onCheck(user && movie.checks.filter(x => x === user.id).length > 0)}></Button>
+                                    </Tooltip>
+                                    <Tooltip title="Дараа үзэх">
+                                        <Button className="watchlist" size="large" type={user && movie.watchlists.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<PlusOutlined />} onClick={() => onWatchlist(user && movie.watchlists.filter(x => x === user.id).length > 0)}></Button>
+                                    </Tooltip> 
+                                    <Tooltip title="Үнэлгээ өгөх">
+                                    {user && movie.scores.filter(x => x.user === user.id).length > 0 ? (
+                                        <Button className="score" size="large" type="primary" onClick={() => setRateVisible(!rateVisible)}>{user && movie.scores.filter(x => x.user === user.id)[0].score}</Button>
+                                    ) : (
+                                        <Button className="score" size="large" type="ghost" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                    )}                                                                               
+                                    </Tooltip>                                         
+                                </div>
+                                {rateVisible ? (
+                                <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                                    <Typography.Title level={5} style={{ marginBottom: 0 }}>Таны үнэлгээ: {user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : ''}</Typography.Title>                                        
+                                    <Rate style={{ fontSize: '18px' }} tooltips={scoreValues} value={user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : 0} count={10} onChange={onScore} />
+                                </div>
+                                ) : (<></>)}                                 
                             </Col>
                             <Col xs={24} sm={16} md={16} lg={16} xl={18}>
-                                <div style={{ borderRadius: '5px', height: '100%' }}>
-                                    <Typography.Title level={2} style={{ marginBottom: '0' }}>{movie.name} /{moment(movie.releasedate).format("YYYY")}/</Typography.Title>                                    
-                                    <div className="genre" style={{ marginTop: '8px' }}>
+                                <div style={{ borderRadius: '5px', backgroundColor: 'rgba(0, 0, 0, 0.4)', padding: '8px' }}>
+                                    <Typography.Title level={1}>{movie.name} /{moment(movie.releasedate).format("YYYY")}/</Typography.Title>                                    
+                                    <div className="genre">
                                         {movie.genre.map(g => {
-                                            return (                                                
-                                                // <GenreTag genre={g.name} />
-                                                <span style={{ fontSize: '16px' }}>{g.name} | </span>                                                
+                                            return (                                                                                                
+                                                <span style={{ marginRight: '8px', color: 'white', padding: '8px', border: '1px solid white', borderRadius: '4px', fontSize: '16px' }}>{g.name}</span>
                                             )                                            
                                         })}
                                     </div>                                    
-                                    <div className="info">
-                                        { movie.rating ? <Typography.Text type="secondary">Ангилал: {movie.rating.name} |</Typography.Text> : <></> }
-                                        <p style={{ fontSize: '16px', margin: 0 }}> Үргэлжлэх хугацаа: {movie.duration} мин</p>
-                                        <p style={{ fontSize: '16px', margin: 0 }}> Нээлтийн огноо: {movie.releasedate}</p>
-                                    </div>
-                                    <div className="actions" style={{ marginTop: '16px' }}>                                        
-                                        <Tooltip title="Трэйлэр үзэх">
-                                            <Button size="large" type="ghost" shape="circle" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={showModal} />
-                                        </Tooltip>
-                                        <Modal 
-                                            centered                                            
-                                            title={movie.name}                                              
-                                            visible={modalVisible}
-                                            footer={null}                    
-                                            onCancel={hideModal}                                                      
-                                            width={getWidth()}
-                                        >                                                                                        
-                                            <div>
-                                                <iframe title={movie.name} width="100%" height={getHeight()} src={movie.trailer} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                                                
-                                            </div> 
-                                        </Modal>
-                                        <Tooltip title="Таалагдсан">
-                                            <Button className="like" size="large" type={user && movie.likes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<HeartOutlined />} onClick={() => onLike(user && movie.likes.filter(x => x === user.id).length > 0)}></Button>
-                                        </Tooltip>
-                                        <Tooltip title="Үзсэн">
-                                            <Button className="check" size="large" type={user && movie.checks.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<CheckOutlined />} onClick={() => onCheck(user && movie.checks.filter(x => x === user.id).length > 0)}></Button>
-                                        </Tooltip>
-                                        <Tooltip title="Дараа үзэх">
-                                            <Button className="watchlist" size="large" type={user && movie.watchlists.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} shape="circle" icon={<PlusOutlined />} onClick={() => onWatchlist(user && movie.watchlists.filter(x => x === user.id).length > 0)}></Button>
-                                        </Tooltip>                                         
-                                    </div>    
-                                    <div style={{ margin: '16px 0' }}>
-                                        <Typography.Title level={5}>Таны үнэлгээ: {user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : ''}</Typography.Title>                                        
-                                        <Rate tooltips={scoreValues} value={user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : 0} count={10} onChange={onScore} />
-                                    </div>
-                                    <div className="rating" style={{ margin: '16px 0', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>                                       
-                                        <div style={{ background: '#8e44ad', marginRight: '24px', padding: '8px' }}>
-                                            <Typography.Title level={5} style={{ margin: 0 }}>Үзэгчдийн үнэлгээ:</Typography.Title>                                        
-                                            <span>                                                                                    
-                                                <span style={{ fontSize: '32px', fontWeight: 'bold' }}> {movie.score / 10}</span>                                        
-                                                <span style={{ fontSize: '20px', fontWeight: 'bold' }}> / 10</span>
-                                                <span style={{ fontSize: '14px' }}> (нийт {movie.score_count})</span>
-                                            </span>
+                                    <div className="info" style={{ marginTop: '24px' }}>
+                                        <Descriptions column={2} size="small" style={{ fontSize: '16px' }}>
+                                            <Descriptions.Item label="Найруулагч">{getDirector(movie.members)}</Descriptions.Item>
+                                            <Descriptions.Item label="Сонирхсон">{movie.views}</Descriptions.Item>
+                                            <Descriptions.Item label="Нээлт">{movie.releasedate}</Descriptions.Item>
+                                            <Descriptions.Item label="Таалагдсан">{movie.likes.length}</Descriptions.Item>
+                                            <Descriptions.Item label="Үргэлжлэх хугацаа">{movie.duration}</Descriptions.Item>
+                                            <Descriptions.Item label="Үзсэн">{movie.checks.length}</Descriptions.Item>
+                                            <Descriptions.Item label="Насны ангилал">13+</Descriptions.Item>
+                                            <Descriptions.Item label="Дараа үзэх">{movie.watchlists.length}</Descriptions.Item>
+                                        </Descriptions>                                                                        
+                                    </div>                                    
+                                    <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '16px' }}>
+                                        <div>
+                                            <Progress type="circle" percent={movie.score} width={96} strokeColor="#fadb14" trailColor="#1b262c" strokeWidth={6} />
                                         </div>
-                                        {/* <div style={{ background: '#8e44ad', padding: '8px' }}>
-                                            <Typography.Title level={5} style={{ margin: 0 }}>Шүүмжлэгчдийн үнэлгээ:</Typography.Title>                                        
-                                            <span>                                                                                    
-                                                <span style={{ fontSize: '32px', fontWeight: 'bold' }}> 7.3</span>                                        
-                                                <span style={{ fontSize: '20px', fontWeight: 'bold' }}> / 10</span>
-                                                <span style={{ fontSize: '14px' }}> (нийт 16)</span>
-                                            </span>
-                                        </div> */}
-                                    </div>                                
-                                    <div className="infotabs">
-                                        <Tabs defaultActiveKey="1">
-                                            <Tabs.TabPane tab="Мэдээлэл" key="1">
-                                                <Typography.Title level={5}>Дэлгэрэнгүй</Typography.Title>
-                                                <Typography.Paragraph>{movie.description}</Typography.Paragraph>
-                                                <Typography.Title level={5}>Агуулга</Typography.Title>
-                                                <Typography.Paragraph>{movie.plot}</Typography.Paragraph>
-                                            </Tabs.TabPane>
-                                            <Tabs.TabPane tab="Бүрэлдэхүүн" key="2">
-                                                <Typography.Title level={5}>Баг бүрэлдэхүүн</Typography.Title>
-                                                <MovieMembers members={movie.members} />
-                                            </Tabs.TabPane>
-                                            <Tabs.TabPane tab="Жүжигчид" key="3">
-                                                <Typography.Title level={5}>Жүжигчид</Typography.Title>
-                                                <MovieCast actors={movie.actors} />                                                
-                                            </Tabs.TabPane>
-                                            <Tabs.TabPane tab="Сэтгэгдэл" key="4">
-                                                <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>
-                                                <MovieComment token={props.token} user={user} movieID={movie.id} />
-                                            </Tabs.TabPane>
-                                            <Tabs.TabPane tab="Зураг" key="5">
-                                                <Typography.Title level={5}>Зураг</Typography.Title>                                                
-                                            </Tabs.TabPane>
-                                        </Tabs>
-                                    </div>
+                                        <div style={{ marginLeft: '8px', padding: '8px', background: '#161b22', borderRadius: '4px' }}>
+                                            <Typography.Text style={{ fontSize: '22px', fontWeight: 'bold' }}>
+                                                Үзэгчдийн үнэлгээ                                                                                                
+                                            </Typography.Text>                  
+                                            <br />
+                                            <Typography.Text style={{ fontSize: '16px' }}>
+                                                (Нийт {formatCount(movie.scores.length)})
+                                            </Typography.Text>
+                                        </div>
+                                    </div>                                         
+                                </div>
+                                <div className="infotabs">
+                                    <Tabs defaultActiveKey="1" style={{ fontSize: '16px' }}>
+                                        <Tabs.TabPane tab="Мэдээлэл" key="1">
+                                            <Typography.Title level={5}>Дэлгэрэнгүй</Typography.Title>
+                                            <Typography.Paragraph>{movie.description ? movie.description : 'In consectetur orci tellus, nec tristique leo rhoncus non. Morbi tempor, augue non interdum auctor, nisl diam euismod enim, sed euismod ex ligula nec odio. Integer sed varius nisl, nec vestibulum lectus. Phasellus nec purus et turpis pellentesque cursus sed eget mi. Vivamus eu dolor id eros consectetur lobortis non id ipsum. In non ante erat. Cras in neque id eros egestas viverra. Nullam at egestas dui, ac pulvinar dolor.'}</Typography.Paragraph>
+                                            <Typography.Title level={5}>Агуулга</Typography.Title>
+                                            <Typography.Paragraph>{movie.plot ? movie.plot : 'Nam dignissim velit et elit condimentum porta. Maecenas imperdiet mollis diam vulputate ultrices. Quisque vitae enim quis purus varius accumsan. Nunc tempus, ipsum eget ornare vulputate, mauris neque viverra erat, a faucibus nisl enim eu diam. Nulla blandit sed tortor in gravida. Curabitur at lacinia enim, vitae aliquam nulla. Maecenas eu tortor aliquam augue vehicula dapibus. Cras a diam dapibus, consectetur lectus eu, imperdiet nibh. Nunc dignissim id nisl ut hendrerit.'}</Typography.Paragraph>
+                                        </Tabs.TabPane>
+                                        <Tabs.TabPane tab="Бүрэлдэхүүн" key="2">
+                                            <Typography.Title level={5}>Баг бүрэлдэхүүн</Typography.Title>
+                                            <MovieMembers members={movie.members} />
+                                        </Tabs.TabPane>
+                                        <Tabs.TabPane tab="Жүжигчид" key="3">
+                                            <Typography.Title level={5}>Жүжигчид</Typography.Title>
+                                            <MovieCast actors={movie.actors} />                                                
+                                        </Tabs.TabPane>
+                                        <Tabs.TabPane tab="Сэтгэгдэл" key="4">
+                                            <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>
+                                            <MovieComment token={props.token} user={user} movieID={movie.id} />
+                                        </Tabs.TabPane>
+                                        <Tabs.TabPane tab="Зураг" key="5">
+                                            <Typography.Title level={5}>Зураг</Typography.Title>                                                
+                                        </Tabs.TabPane>
+                                    </Tabs>
                                 </div>
                             </Col>
                         </Row>

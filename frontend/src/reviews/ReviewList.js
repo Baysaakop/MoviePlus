@@ -114,36 +114,12 @@ function ReviewList (props) {
                     genre: "all",
                     order: "created_at"
                 }}>
-                    <Row gutter={[16, 16]}>
+                    <Row gutter={[16, 0]}>
                         <Col xs={24} sm={24} md={24} lg={12}>
                             <Form.Item name="name" label="Нийтлэл хайх:">                            
                                 <Search placeholder="Нийтлэл нэрээр хайх" onSearch={onNameSearch} enterButton />
                             </Form.Item>
                         </Col>
-                        {/* <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="genre" label="Төрөл жанр сонгох">                                
-                                <Select                                                                                          
-                                    showSearch                            
-                                    style={{ width: '100%' }}
-                                    placeholder="Бүгд"                
-                                    onChange={selectGenre}
-                                    optionFilterProp="children"                                                 
-                                >
-                                    <Option key="all">Бүгд</Option>
-                                    { genres ? (
-                                        <>
-                                            {genres.map(item => {
-                                                return (
-                                                    <Option key={item.id}>{item.name}</Option>
-                                                )
-                                            })}
-                                        </>
-                                    ) : (
-                                        <></>
-                                    )}
-                                </Select>
-                            </Form.Item>                                                    
-                        </Col>                                                            */}
                         <Col xs={24} sm={24} md={24} lg={12}>
                             <Form.Item name="order" label="Эрэмбэлэх:">                                
                                 <Select                                
@@ -241,11 +217,12 @@ function ReviewList (props) {
                         <Pagination
                             current={1}
                             total={total}
-                            pageSize={24}
+                            pageSize={20}
                             hideOnSinglePage={true}
                             showSizeChanger={false}
                             showTotal={showTotal}
                             onChange={onPageChange}
+                            size="small"
                         />
                     </>
                 )}

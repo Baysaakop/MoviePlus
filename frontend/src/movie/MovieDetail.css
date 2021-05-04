@@ -1,10 +1,23 @@
-.detail .actions .ant-btn-ghost {
-    margin-right: 8px;
+.detail .ant-tabs-tab,
+.detail .ant-descriptions-item-label,
+.detail .ant-descriptions-item-content {
+    font-size: 16px;
+}
+
+.detail .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+    width: 100%;
+}
+
+.detail .actions .ant-btn {
+    width: 18%;
 }
 
 
 .detail .actions .ant-btn-primary {
-    margin-right: 8px;
     background: rgba(24, 144, 255, 1);
 }
 
@@ -14,33 +27,47 @@
 }
 
 .detail .actions .ant-btn-primary.like {
-    background: #c0392b;
+    background: #c23616;
 }
 
 .detail .actions .ant-btn-primary.check {
-    background: #2ecc71;
+    background: #44bd32;
 }
 
 .detail .actions .ant-btn-primary.watchlist {
-    background: #3498db;
+    background: #00a8ff;
 }
 
-.detail .actions .ant-btn-primary.rate {
-    background: #e9950e;
+.detail .actions .ant-btn-primary.score {
+    background: #fadb14;
+    color: #000;
 }
 
 .detail .actions .ant-btn-ghost.like:hover {
-    background: #c0392b;
+    background: #c23616;
 }
 
 .detail .actions .ant-btn-ghost.check:hover {
-    background: #2ecc71;
+    background: #44bd32;
 }
 
 .detail .actions .ant-btn-ghost.watchlist:hover {
-    background: #3498db;
+    background: #00a8ff;
 }
 
-.detail .actions .ant-btn-ghost.rate:hover {
-    background: #f39c12;
+.detail .actions .ant-btn-ghost.score:hover {
+    background: #fadb14;
+    color: #000;    
+}
+
+.detail .ant-rate-star {
+    margin-right: 4px;
+}
+
+.detail .ant-progress-circle .ant-progress-inner {    
+    border: 4px solid #0d1117;    
+}
+
+.detail .ant-progress {
+    font-weight: bold;
 }
