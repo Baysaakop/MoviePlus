@@ -104,19 +104,19 @@ function CustomFooter (props) {
                         </Typography.Paragraph>
                         <div className="social" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', width: '100%', marginTop: '8px' }}>
                             <Tooltip title="Facebook">
-                                <Button className="facebook" type="ghost" shape="circle" icon={<FacebookFilled />} style={{ marginRight: '8px' }} size="large" /> 
+                                <Button className="facebook" href="#" type="ghost" icon={<FacebookFilled />} style={{ marginRight: '8px', padding: 0 }} size="large" /> 
                             </Tooltip>
                             <Tooltip title="Google">
-                                <Button className="google" type="ghost" shape="circle" icon={<GoogleOutlined />} style={{ marginRight: '8px' }} size="large" /> 
+                                <Button className="google" href="#" type="ghost" icon={<GoogleOutlined />} style={{ marginRight: '8px', padding: 0 }} size="large" /> 
                             </Tooltip>
                             <Tooltip title="Twitter">
-                                <Button className="twitter" type="ghost" shape="circle" icon={<TwitterOutlined />} style={{ marginRight: '8px' }} size="large" /> 
+                                <Button className="twitter" href="#" type="ghost" icon={<TwitterOutlined />} style={{ marginRight: '8px', padding: 0 }} size="large" /> 
                             </Tooltip>
                             <Tooltip title="Instagram">
-                                <Button className="instagram" type="ghost" shape="circle" icon={<InstagramOutlined />} style={{ marginRight: '8px' }} size="large" /> 
+                                <Button className="instagram" href="#" type="ghost" icon={<InstagramOutlined />} style={{ marginRight: '8px', padding: 0 }} size="large" /> 
                             </Tooltip>
                             <Tooltip title="Youtube">
-                                <Button className="youtube" type="ghost" shape="circle" icon={<YoutubeFilled />} style={{ marginRight: '8px' }} size="large" /> 
+                                <Button className="youtube" href="#" type="ghost" icon={<YoutubeFilled />} style={{ marginRight: '8px', padding: 0 }} size="large" /> 
                             </Tooltip>                   
                         </div>
                     </Col>

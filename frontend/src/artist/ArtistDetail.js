@@ -1,12 +1,13 @@
-import { Grid, Col, message, Row, Spin, Typography } from 'antd';
+import { Grid, Col, message, Row, Spin, Typography, Button, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { LoadingOutlined } from '@ant-design/icons';
+import { FacebookFilled, InstagramOutlined, LoadingOutlined, TwitterOutlined } from '@ant-design/icons';
 import '../movie/MovieDetail.css';
 import { connect } from "react-redux";
 import Filmography from './Filmography';
 import moment from 'moment'
+import '../components/CustomFooter.css'
 
 const { useBreakpoint } = Grid;
 
@@ -67,6 +68,17 @@ function ArtistDetail (props) {
                     <Row gutter={[16, 16]}>
                         <Col xs={24} sm={8} md={8} lg={8} xl={6} style={{ padding: '0 24px' }}>
                             <img src={artist.avatar} alt="avatar" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />
+                            <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+                                <Tooltip title="Facebook">
+                                    <Button className="facebook" type="ghost" icon={<FacebookFilled />} style={{ marginRight: '8px' }} size="large" /> 
+                                </Tooltip>
+                                <Tooltip title="Twitter">
+                                    <Button className="twitter" type="ghost" icon={<TwitterOutlined />} style={{ marginRight: '8px' }} size="large" /> 
+                                </Tooltip>
+                                <Tooltip title="Instagram">
+                                    <Button className="instagram" type="ghost" icon={<InstagramOutlined />} style={{ marginRight: '8px' }} size="large" /> 
+                                </Tooltip>
+                            </div>
                             <Typography.Title level={4} style={{ margin: '16px 0 0 0' }}>Мэргэжил</Typography.Title>
                             {artist.occupation.map(o => {
                                 return (                                                
@@ -75,6 +87,8 @@ function ArtistDetail (props) {
                             })}
                             <Typography.Title level={4} style={{ margin: '16px 0 0 0' }}>Төрсөн өдөр</Typography.Title>
                             <Typography.Text style={{ fontSize: '16px' }}>{artist.birthday ? `${artist.birthday} (${getAge(artist.birthday)} нас)` : '* * * * - * * - * *'}</Typography.Text>
+                            <Typography.Title level={4} style={{ margin: '16px 0 0 0' }}>Улс</Typography.Title>
+                            <Typography.Text style={{ fontSize: '16px' }}>Монгол</Typography.Text>
                             {/* <Typography.Title level={4} style={{ margin: '16px 0 0 0' }}>Хүйс</Typography.Title>
                             <Typography.Text style={{ fontSize: '16px' }}>{artist.gender && artist.gender === 'm' ? 'Эр' : artist.gender === 'f' ? 'Эм' : '--'}</Typography.Text> */}
                         </Col>
@@ -82,7 +96,7 @@ function ArtistDetail (props) {
                             <div style={{ borderRadius: '5px', height: '100%' }}>
                                 <Typography.Title level={1} style={{ marginBottom: '0' }}>{artist.name}</Typography.Title>
                                 <Typography.Title level={4}>Танилцуулга</Typography.Title>
-                                <Typography.Paragraph style={{ fontSize: '16px' }}>{artist.biography ? artist.biography : 'Maecenas in tellus et nunc scelerisque gravida. Praesent vitae vestibulum nibh. Mauris vitae magna cursus lacus facilisis eleifend ut nec dui. Sed enim dui, maximus non erat id, auctor efficitur dui. Ut tristique pretium interdum. Nam ultrices, nulla eget sollicitudin molestie, ligula leo scelerisque orci, vel pellentesque quam tellus vitae quam. Vestibulum id diam eu ligula faucibus malesuada non sed ante. Vestibulum euismod, nisl nec viverra tristique, nulla tellus mattis quam, sit amet egestas ante quam a orci. Vivamus ut elit magna. Vivamus sed sapien dolor. Donec sollicitudin ligula in diam accumsan, nec consectetur nibh scelerisque. Fusce molestie tincidunt finibus. Nunc hendrerit, libero id rutrum sollicitudin, justo mi imperdiet lorem, vel euismod dolor risus vel libero. Pellentesque metus odio, luctus in dui vitae, tincidunt semper enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis fringilla nunc lobortis, eleifend ligula et, ullamcorper sapien.'}</Typography.Paragraph>                                                                                                                                                                                                      
+                                <Typography.Paragraph style={{ fontSize: '16px' }}>{artist.biography ? artist.biography : 'Maecenas in tellus et nunc scelerisque gravida. Praesent vitae vestibulum nibh. Mauris vitae magna cursus lacus facilisis eleifend ut nec dui. Sed enim dui, maximus non erat id, auctor efficitur dui. Ut tristique pretium interdum. Nam ultrices, nulla eget sollicitudin molestie, ligula leo scelerisque orci, vel pellentesque quam tellus vitae quam. Vestibulum id diam eu ligula faucibus malesuada non sed ante. Vestibulum euismod, nisl nec viverra tristique, nulla tellus mattis quam, sit amet egestas ante quam a orci. Vivamus ut elit magna. Vivamus sed sapien dolor. Donec sollicitudin ligula in diam accumsan, nec consectetur nibh scelerisque. Fusce molestie tincidunt finibus. Nunc hendrerit, libero id rutrum sollicitudin, justo mi imperdiet lorem, vel euismod dolor risus vel libero. Pellentesque metus odio, luctus in dui vitae, tincidunt semper enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis fringilla nunc lobortis, eleifend ligula et, ullamcorper sapien.'}</Typography.Paragraph>                                                                                                                                                                                                                                      
                                 <Filmography id={artist.id} occupation={artist.occupation[0].id} />                                           
                             </div>
                         </Col>
