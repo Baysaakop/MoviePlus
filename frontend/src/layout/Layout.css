@@ -125,7 +125,7 @@ body {
 .ant-input-focused,
 .ant-input:focus,
 .ant-input:hover {
-    border-color: #40a9ff;
+    border-color: #8e44ad;
     background: transparent;
     color: inherit;
 }
@@ -169,6 +169,10 @@ body {
 .ant-btn-primary:hover,
 .ant-btn-ghost:hover {
     background: #8e44ad;
+}
+
+.ant-btn-primary {
+    border: 0;
 }
 
 .ant-divider {

@@ -47,7 +47,7 @@ function HomeCarousel (props) {
 
     return (
         <div>
-            <Carousel autoplay autoplaySpeed={8000} className="carousel" effect="fade" style={{ zIndex: '1' }}>
+            <Carousel autoplay autoplaySpeed={5000} className="carousel" effect="fade" style={{ zIndex: '1' }}>
                     {movies ? movies.map(movie => {
                             return (
                                 <div>

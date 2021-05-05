@@ -1,11 +1,35 @@
-import { Button, Typography, Skeleton, Row, Col } from 'antd'
+import { Button, Typography, Skeleton, List, Grid } from 'antd'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';  
 import api from '../api';
 import MovieCard1 from '../movie/cards/MovieCard1';
 import InfiniteCarousel from 'react-leaf-carousel';
 
+const { useBreakpoint } = Grid
+
+const dummy = [
+    {
+        name: '1'
+    },
+    {
+        name: '2'
+    },
+    {
+        name: '3'
+    },
+    {
+        name: '4'
+    },
+    {
+        name: '5'
+    },
+    {
+        name: '6'
+    }
+]
+
 function MoviesRow (props) {
+    const screens = useBreakpoint()
     const [movies, setMovies] = useState()
 
     useEffect(() => {             
@@ -23,6 +47,22 @@ function MoviesRow (props) {
         });
     }, [props]) 
 
+    function getListNumber () {
+        if (screens.xxl) {
+            return 6
+        } else if (screens.xl) {
+            return 5
+        } else if (screens.lg) {
+            return 4
+        } else if (screens.md) {
+            return 3
+        } else if (screens.sm) {
+            return 2
+        } else if (screens.xs) {
+            return 2
+        }
+    }
+
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 0' }}>
@@ -35,38 +75,38 @@ function MoviesRow (props) {
             </div>
             { movies ? (
                 <InfiniteCarousel
-                    breakpoints={[
-                    {
-                        breakpoint: 768,
-                        settings: {                            
-                            slidesToShow: 2,                            
-                        },
-                    },
-                    {
-                        breakpoint: 992,
-                        settings: {                            
-                            slidesToShow: 3,                            
-                        },
-                    },
-                    {
-                        breakpoint: 1200,
-                        settings: {                            
-                            slidesToShow: 4,                            
-                        },
-                    },
-                    {
-                        breakpoint: 1600,
-                        settings: {                            
-                            slidesToShow: 5,                            
-                        },
-                    },
-                    ]}
+                    // breakpoints={[
+                    // {
+                    //     breakpoint: 768,
+                    //     settings: {                            
+                    //         slidesToShow: 2,                            
+                    //     },
+                    // },
+                    // {
+                    //     breakpoint: 992,
+                    //     settings: {                            
+                    //         slidesToShow: 3,                            
+                    //     },
+                    // },
+                    // {
+                    //     breakpoint: 1200,
+                    //     settings: {                            
+                    //         slidesToShow: 4,                            
+                    //     },
+                    // },
+                    // {
+                    //     breakpoint: 1600,
+                    //     settings: {                            
+                    //         slidesToShow: 5,                            
+                    //     },
+                    // },
+                    // ]}
                     dots={false}
                     showSides={true}
                     sidesOpacity={.5}
                     sideSize={.1}
                     slidesToScroll={2}
-                    slidesToShow={6}
+                    slidesToShow={getListNumber()}
                     scrollOnDevice={true}
                 >
                     {movies.map(item => {
@@ -76,32 +116,27 @@ function MoviesRow (props) {
                     })}
                 </InfiniteCarousel>
             ) : (
-                <Row gutter={[8, 8]}>
-                    <Col xs={12} sm={12} md={12} lg={8} xl={6} xxl={4} >                           
-                        <Skeleton.Button active size={150} />
-                        <Skeleton paragraph={{ rows: 1 }} active />
-                    </Col>  
-                    <Col xs={12} sm={12} md={12} lg={8} xl={6} xxl={4} >                           
-                        <Skeleton.Button active size={150} />
-                        <Skeleton paragraph={{ rows: 1 }} active />
-                    </Col>  
-                    <Col xs={12} sm={12} md={12} lg={8} xl={6} xxl={4} >                           
-                        <Skeleton.Button active size={150} />
-                        <Skeleton paragraph={{ rows: 1 }} active />
-                    </Col>  
-                    <Col xs={12} sm={12} md={12} lg={8} xl={6} xxl={4} >                           
-                        <Skeleton.Button active size={150} />
-                        <Skeleton paragraph={{ rows: 1 }} active />
-                    </Col>  
-                    <Col xs={12} sm={12} md={12} lg={8} xl={6} xxl={4} >                           
-                        <Skeleton.Button active size={150} />
-                        <Skeleton paragraph={{ rows: 1 }} active />
-                    </Col>  
-                    <Col xs={12} sm={12} md={12} lg={8} xl={6} xxl={4} >                           
-                        <Skeleton.Button active size={150} />
-                        <Skeleton paragraph={{ rows: 1 }} active />
-                    </Col>                   
-                </Row>
+                <List                        
+                    grid={{
+                        gutter: 16,
+                        xs: 2,
+                        sm: 2,
+                        md: 3,
+                        lg: 4,
+                        xl: 5,
+                        xxl: 6,
+                    }}                                      
+                    style={{ marginTop: '16px' }}      
+                    dataSource={dummy.slice(0, getListNumber())}
+                    renderItem={item => (
+                        <List.Item>
+                            <>                            
+                                <Skeleton.Button active size={180} />
+                                <Skeleton paragraph={{ rows: 1 }} active />
+                            </>                            
+                        </List.Item>
+                    )}
+                />
             )}            
             {/* <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ borderLeft: '12px solid #8e44ad' }}>                                    

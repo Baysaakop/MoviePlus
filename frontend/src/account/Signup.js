@@ -3,7 +3,6 @@ import { Form, Input, Button, Typography, Spin, Row, Col, Divider, message } fro
 import { LoadingOutlined, LockOutlined, MailOutlined, UserOutlined, GoogleOutlined, FacebookFilled } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
-import svg from './signup.svg';
 import { Redirect } from 'react-router';
 
 const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -36,7 +35,7 @@ const Signup = (props) => {
         <Row gutter={[16, 16]} style={{ marginTop: '80px', width: '100%', padding: '5% 15%' }}>            
             <Col xs={24} sm={12}>
                 <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <img src={svg} alt="illustration-login" style={{ width: '70%', height: 'auto' }} />
+                    {/* <img src={svg} alt="illustration-login" style={{ width: '70%', height: 'auto' }} /> */}
                 </div>
             </Col>
             <Col xs={24} sm={12}>

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 import axios from 'axios';
 import api from '../api';
-// import MovieIcon from '../icons/MovieIcon';
+import MovieIcon from '../icons/MovieIcon';
 
 const { useBreakpoint } = Grid;
 
@@ -77,7 +77,7 @@ function CustomMenu (props) {
         alignItems: 'center',
         height: '80px',    
         boxShadow: '0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%)',
-        padding: getPadding()
+        padding: getPadding()        
     }
     
     const styleHeaderMobile = {
@@ -92,7 +92,11 @@ function CustomMenu (props) {
     const styleLogo = {
         display: 'flex',
         justifyContent: 'flex-start', 
-        alignItems: 'center',                    
+        alignItems: 'center',
+        // background: '#8e44ad',     
+        borderRadius: '4px',
+        fontFamily: 'Josefin Sans',       
+        color: '#FFF'  
     }    
 
     const styleMenuItemMobile = {    
@@ -115,11 +119,11 @@ function CustomMenu (props) {
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center' }}>
                         <Link to="/">
                             <div style={styleLogo}>         
-                                {/* <div style={{ display: 'flex', alignItems: 'center', paddingTop: '4px' }}>                                    
+                                <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '4px', marginRight: '4px' }}>                                    
                                     <MovieIcon style={{ fontSize: '32px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
-                                </div> */}
-                                <Typography.Title level={2} style={ scrollTop ? { color: '#FFF', margin: 0 } : { margin: 0 }}>
-                                    Movie+  
+                                </div>
+                                <Typography.Title level={2} style={ scrollTop ? { color: '#FFF', margin: 0, padding: 0 } : { margin: 0,  padding: 0 }}>
+                                    Film+
                                 </Typography.Title>
                             </div>       
                         </Link>
