@@ -106,7 +106,8 @@ body {
 .layout-dark .ant-tabs-nav-more,
 .layout-dark .ant-descriptions-title,
 .layout-dark .ant-descriptions-item-label,
-.layout-dark .ant-descriptions-item-content {
+.layout-dark .ant-descriptions-item-content,
+.layout-dark .ant-checkbox-wrapper {
     color: rgba(255, 255, 255, 0.85);
 }
 

@@ -71,7 +71,7 @@ function HomeCarousel (props) {
                                         </Link>
                                         <div style={{ position: 'absolute', left: screens.xxl ? '15%' : screens.xl ? '10%' : screens.lg ? '8%' : '5%', bottom: '10%', padding: '16px', backgroundColor: 'rgba(0, 0, 0, 0.4)', borderRadius: '4px' }}>
                                             <Typography.Title level={1} style={{ marginBottom: 0 }}>{movie.name}</Typography.Title>                                                                                                                                  
-                                            <Typography.Text style={{ fontSize: '16px', display: 'block' }}>Найруулагч: {getDirector(movie.members)}</Typography.Text>
+                                            <Typography.Text style={{ fontSize: '16px', display: 'block' }}>Продюсер: {getDirector(movie.members)}</Typography.Text>
                                             <Typography.Text style={{ fontSize: '16px', display: 'block' }}>Нээлт: {moment(movie.releasedate).format("YYYY-MM-DD")}</Typography.Text>
                                             <Typography.Text style={{ fontSize: '16px', display: 'block' }}>Хугацаа: {movie.duration} мин</Typography.Text>
                                             <Button type="ghost" icon={<PlayCircleOutlined />} style={{ marginTop: '8px', marginRight: '8px' }} onClick={() => showTrailer(movie.trailer)}>Трейлер үзэх</Button>

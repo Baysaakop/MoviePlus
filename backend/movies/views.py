@@ -299,6 +299,8 @@ class MovieViewSet(viewsets.ModelViewSet):
         queryset = Movie.objects.all().order_by('-created_at')
         name = self.request.query_params.get('name', None)
         genre = self.request.query_params.get('genre', None)
+        yearfrom = self.request.query_params.get('yearfrom', None)
+        yearto = self.request.query_params.get('yearto', None)
         order = self.request.query_params.get('order', None)
         member = self.request.query_params.get('member', None)
         actor = self.request.query_params.get('actor', None)
@@ -307,6 +309,10 @@ class MovieViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(name__icontains=name).distinct()
         if genre is not None:
             queryset = queryset.filter(genre__id=genre).distinct()
+        if yearfrom is not None:
+            queryset = queryset.filter(releasedate__year__gte=yearfrom).distinct()
+        if yearto is not None:
+            queryset = queryset.filter(releasedate__year__lte=yearto).distinct()
         if member is not None:
             queryset = queryset.filter(members__artist__id=member).distinct()
         if actor is not None:
