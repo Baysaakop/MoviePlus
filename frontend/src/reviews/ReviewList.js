@@ -3,7 +3,7 @@ import axios from 'axios';
 import api from '../api';
 import { Link } from 'react-router-dom';
 import { Grid, List, Avatar, Breadcrumb, Typography, Button, Pagination, Form, Select, Row, Col, Input, Spin } from 'antd';
-import { LikeOutlined, EyeOutlined, StarFilled, DislikeOutlined, CommentOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LikeOutlined, EyeOutlined, StarFilled, DislikeOutlined, CommentOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -20,7 +20,7 @@ function ReviewList (props) {
     const [page, setPage] = useState(1)
     const [total, setTotal] = useState()
     const [name, setName] = useState()
-    const [order, setOrder] = useState()
+    const [order, setOrder] = useState('created_at')
 
     useEffect(() => {
         getPosts()
@@ -110,17 +110,20 @@ function ReviewList (props) {
                 </Breadcrumb>
             </div>
             <div style={{ padding: getPadding() }}>     
-                <Form form={form} layout="vertical" initialValues={{
-                    genre: "all",
-                    order: "created_at"
-                }}>
-                    <Row gutter={[16, 0]}>
-                        <Col xs={24} sm={24} md={24} lg={12}>
+                <Row gutter={[16, 16]}>
+                    <Col xs={24} sm={24} md={24} lg={6} xl={6} xxl={5}>
+                        <Form form={form} layout="vertical" style={{ border: '1px solid #f1f1f1', borderRadius: '4px', padding: '16px 16px 0 16px' }} initialValues={{
+                            order: order
+                        }}>
                             <Form.Item name="name" label="Нийтлэл хайх:">                            
-                                <Search placeholder="Нийтлэл нэрээр хайх" onSearch={onNameSearch} enterButton />
+                                <Search 
+                                    placeholder="Нийтлэл нэрээр хайх" 
+                                    onSearch={onNameSearch} 
+                                    enterButton={
+                                        <Button type="primary" icon={<SearchOutlined />} style={{ width: '44px', border: '1px solid #FFF' }} ></Button>
+                                    }
+                                />
                             </Form.Item>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={12}>
                             <Form.Item name="order" label="Эрэмбэлэх:">                                
                                 <Select                                
                                     showSearch                            
@@ -131,101 +134,103 @@ function ReviewList (props) {
                                 >                                    
                                     <Option key="created_at">Шинээр нэмэгдсэн</Option>                                                                        
                                     <Option key="views">Хандалтын тоогоор</Option>
-                                    <Option key="likes">Таалагдсан тоогоор</Option>        
-                                    <Option key="dislikes">Таалагдаагүй тоогоор</Option>     
+                                    <Option key="likes">Like-н тоогоор</Option>        
+                                    <Option key="dislikes">Dislike-н тоогоор</Option>     
                                     <Option key="comments">Сэтгэгдлийн тоогоор</Option>        
-                                    <Option key="title">Үсгийн дарааллаар (A - Z)</Option>                                    
+                                    <Option key="title">Үсгийн дарааллаар</Option>                                    
                                 </Select>
-                            </Form.Item>  
-                        </Col>
-                    </Row>
-                </Form>           
-                { loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center' , alignItems: 'center', width: '100%', height: '70vh'}}>
-                        <Spin indicator={indicator} tip="Ачааллаж байна..." />
-                    </div>                    
-                ) : (
-                    <>
-                        <List
-                            itemLayout="vertical"
-                            size="large"
-                            style={{
-                                marginBottom: '16px'
-                            }}
-                            dataSource={posts ? posts : undefined}
-                            renderItem={item => (
-                            <List.Item
-                                key={item.title}
-                                extra={
-                                    <Link to={`/reviews/${item.id}/`}>
-                                        <img
-                                            width={300}
-                                            alt="logo"
-                                            src={item.thumbnail}
-                                        />
-                                    </Link>
-                                }
-                            >
-                                <List.Item.Meta
-                                    avatar={<Avatar size={60} src={item.user.profile.avatar} />}
-                                    title={<Link to={`/reviews/${item.id}/`}>{item.title}</Link>}
-                                    description={
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            </Form.Item> 
+                        </Form>
+                    </Col>
+                    <Col xs={24} sm={24} md={24} lg={18} xl={18} xxl={19}>
+                    { loading ? (
+                        <div style={{ display: 'flex', justifyContent: 'center' , alignItems: 'center', width: '100%', height: '70vh'}}>
+                            <Spin indicator={indicator} tip="Ачааллаж байна..." />
+                        </div>                    
+                    ) : (
+                        <>
+                            <List
+                                itemLayout="vertical"
+                                size="large"
+                                style={{
+                                    marginBottom: '16px'
+                                }}
+                                dataSource={posts ? posts : undefined}
+                                renderItem={item => (
+                                <List.Item
+                                    key={item.title}
+                                    extra={
+                                        <Link to={`/reviews/${item.id}/`}>
+                                            <img
+                                                width={240}
+                                                alt="logo"
+                                                src={item.thumbnail}
+                                            />
+                                        </Link>
+                                    }
+                                >
+                                    <List.Item.Meta
+                                        avatar={<Avatar size={60} src={item.user.profile.avatar} />}
+                                        title={<Link to={`/reviews/${item.id}/`}>{item.title}</Link>}
+                                        description={
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div>
+                                                    <Typography.Text>
+                                                        Нийтлэсэн: {item.user.username}                     
+                                                    </Typography.Text>
+                                                </div>
+                                                <div>
+                                                    <Typography.Text style={{ fontSize: '16px' }}>
+                                                        Оноо: <StarFilled style={{ color: 'orange' }} /> {item.score}/10                                   
+                                                    </Typography.Text>
+                                                </div>                                                                        
+                                            </div>
+                                        }                            
+                                    />
+                                        <Typography.Paragraph ellipsis={{ rows: 5 }}>
+                                            <div dangerouslySetInnerHTML={{__html: item.content }} style={{ maxWidth: '1000px' }} />                                                                    
+                                        </Typography.Paragraph>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                            <Typography.Text>Огноо: {moment(item.created_at).format("YYYY-MM-DD")}</Typography.Text>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
+                                                <div style={{ marginRight: '16px' }}>
+                                                    <Typography.Text style={{ fontSize: '16px' }}><EyeOutlined /> {formatCount(item.views)} </Typography.Text>
+                                                </div>
+                                                <div style={{ marginRight: '16px' }}>
+                                                    <Typography.Text style={{ fontSize: '16px' }}><LikeOutlined /> {formatCount(item.likes.length)} </Typography.Text>
+                                                </div>
+                                                <div style={{ marginRight: '16px' }}>
+                                                    <Typography.Text style={{ fontSize: '16px' }}><DislikeOutlined /> {formatCount(item.dislikes.length)} </Typography.Text>
+                                                </div>
+                                                <div style={{ marginRight: '16px' }}>
+                                                    <Typography.Text style={{ fontSize: '16px' }}><CommentOutlined /> {formatCount(item.comments.length)} </Typography.Text>
+                                                </div>                           
+                                            </div>
                                             <div>
-                                                <Typography.Text>
-                                                    Нийтлэсэн: {item.user.username}                     
-                                                </Typography.Text>
+                                                <Link to={`/reviews/${item.id}/`}>
+                                                    <Button type="ghost" style={{ alignSelf: 'flex-end' }}>Унших</Button>
+                                                </Link>
                                             </div>
-                                            <div>
-                                                <Typography.Text style={{ fontSize: '16px' }}>
-                                                    Оноо: <StarFilled style={{ color: 'orange' }} /> {item.score}/10                                   
-                                                </Typography.Text>
-                                            </div>                                                                        
                                         </div>
-                                    }                            
-                                />
-                                    <Typography.Paragraph ellipsis={{ rows: 5 }}>
-                                        <div dangerouslySetInnerHTML={{__html: item.content }} style={{ maxWidth: '1000px' }} />                                                                    
-                                    </Typography.Paragraph>
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                        <Typography.Text>Огноо: {moment(item.created_at).format("YYYY-MM-DD")}</Typography.Text>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
-                                            <div style={{ marginRight: '16px' }}>
-                                                <Typography.Text style={{ fontSize: '16px' }}><EyeOutlined /> {formatCount(item.views)} </Typography.Text>
-                                            </div>
-                                            <div style={{ marginRight: '16px' }}>
-                                                <Typography.Text style={{ fontSize: '16px' }}><LikeOutlined /> {formatCount(item.likes.length)} </Typography.Text>
-                                            </div>
-                                            <div style={{ marginRight: '16px' }}>
-                                                <Typography.Text style={{ fontSize: '16px' }}><DislikeOutlined /> {formatCount(item.dislikes.length)} </Typography.Text>
-                                            </div>
-                                            <div style={{ marginRight: '16px' }}>
-                                                <Typography.Text style={{ fontSize: '16px' }}><CommentOutlined /> {formatCount(item.comments.length)} </Typography.Text>
-                                            </div>                           
-                                        </div>
-                                        <div>
-                                            <Link to={`/reviews/${item.id}/`}>
-                                                <Button type="ghost" style={{ alignSelf: 'flex-end' }}>Унших</Button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                            </List.Item>
-                            )}
-                        />
-                        <Pagination
-                            current={1}
-                            total={total}
-                            pageSize={20}
-                            hideOnSinglePage={true}
-                            showSizeChanger={false}
-                            showTotal={showTotal}
-                            onChange={onPageChange}
-                            size="small"
-                        />
-                    </>
-                )}
+                                </List.Item>
+                                )}
+                            />
+                            <Pagination
+                                current={1}
+                                total={total}
+                                pageSize={20}
+                                hideOnSinglePage={true}
+                                showSizeChanger={false}
+                                showTotal={showTotal}
+                                onChange={onPageChange}
+                                size="small"
+                            />
+                        </>
+                    )}
+                    </Col>
+                </Row>                        
             </div>            
         </div>
     )

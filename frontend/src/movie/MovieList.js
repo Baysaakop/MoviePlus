@@ -170,7 +170,13 @@ function MovieList(props) {
                             order: order
                         }}>
                             <Form.Item name="name" label="Кино хайх:">                            
-                                <Search placeholder="Киноны нэрээр хайх" onSearch={onNameSearch} enterButton />
+                                <Search 
+                                    placeholder="Киноны нэрээр хайх" 
+                                    onSearch={onNameSearch} 
+                                    enterButton={
+                                        <Button type="primary" icon={<SearchOutlined />} style={{ width: '44px', border: '1px solid #FFF' }} ></Button>
+                                    } 
+                                />
                             </Form.Item>
                             <Form.Item name="order" label="Эрэмбэлэх:">                                
                                 <Select                                
@@ -196,7 +202,7 @@ function MovieList(props) {
                                     <InputNumber defaultValue={yearTo} min={1900} max={3000} style={{ width: '100%' }} onChange={(value) => setYearTo(value)} />
                                 </Form.Item>
                                 <Form.Item name="search" label={<span style={{ visibility: 'hidden' }}>Хайх</span>} style={{ width: '44px', textAlign: 'right' }}>                                
-                                    <Button type="primary" icon={<SearchOutlined />} style={{ width: '100%' }} onClick={searchByYear}></Button>
+                                    <Button type="primary" icon={<SearchOutlined />} style={{ width: '100%', border: '1px solid #FFF' }} onClick={searchByYear}></Button>
                                 </Form.Item>
                             </div>
                             <Form.Item name="genre" label="Төрөл">

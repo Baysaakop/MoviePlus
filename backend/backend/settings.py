@@ -1,10 +1,15 @@
 import os
+import dotenv
 from pathlib import Path
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Add .env variables anywhere before SECRET_KEY
+dotenv_file = os.path.join(BASE_DIR, ".env")
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -182,11 +187,11 @@ MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 AWS_QUERYSTRING_AUTH = False
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE='storages.backends.s3boto3.S3Boto3Storage'
 
-AWS_ACCESS_KEY_ID = 'AKIA3IGK2KCXCNSEWUWW'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'movieplus'
+AWS_ACCESS_KEY_ID='AKIA3IGK2KCXCNSEWUWW'
+AWS_SECRET_ACCESS_KEY=os.environ['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME='movieplus'
 
 DJRICHTEXTFIELD_CONFIG = {
     'js': ['//cdn.tiny.cloud/1/wpwv44irouwa2fnzez4rgccg20gz5bri6qmwlt4wbeuha01r/tinymce/5/tinymce.min.js'],

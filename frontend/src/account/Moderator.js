@@ -1,6 +1,7 @@
 import { EditOutlined, PlusCircleOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
-import { Tabs } from 'antd';
+import { Button, Tabs } from 'antd';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import ArtistAdd from '../artist/ArtistAdd';
 import ArtistAddMovie from '../artist/ArtistAddMovie';
 import ArtistUpdate from '../artist/ArtistUpdate';
@@ -47,7 +48,12 @@ function Moderator (props) {
                         <Tabs.TabPane key="4" tab={<span><EditOutlined />Кино засах</span>}>
                             <ArtistUpdateMovie />
                         </Tabs.TabPane>
-                    </Tabs>
+                    </Tabs>                     
+                </Tabs.TabPane>
+                <Tabs.TabPane tab="Нийтлэл" key="4">             
+                    <Link to="/newreview">
+                        <Button type="primary" icon={<PlusOutlined />}>Нийтлэл бичих</Button>
+                    </Link>       
                 </Tabs.TabPane>
             </Tabs>
         </div>

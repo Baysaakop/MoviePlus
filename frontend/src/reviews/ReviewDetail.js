@@ -230,7 +230,7 @@ function ReviewDetail (props) {
                                 <Divider />
                                 <Typography.Title level={5} style={{ marginTop: '16px' }}>Өгсөн оноо:</Typography.Title>
                                 <Statistic prefix={<StarFilled style={{ color: 'orange' }} />} value={review.score} suffix=" /10" />
-                                <Typography.Title level={5} style={{ marginTop: '16px' }}>Киноны мэдээлэл:</Typography.Title>                                
+                                {/* <Typography.Title level={5} style={{ marginTop: '16px' }}>Киноны мэдээлэл:</Typography.Title>                                 */}
                             </Col>
                         </Row>
                     </div>

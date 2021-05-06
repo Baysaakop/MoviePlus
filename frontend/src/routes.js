@@ -16,6 +16,7 @@ import SeriesList from './series/SeriesList';
 import ReviewList from './reviews/ReviewList';
 import ReviewDetail from './reviews/ReviewDetail';
 import Page404 from './components/Page404';
+import ReviewCreate from './reviews/ReviewCreate';
 
 function BaseRouter () {
     return (
@@ -30,6 +31,7 @@ function BaseRouter () {
             {/* Reviews urls */}
             <Route exact path="/reviews" component={ReviewList} />
             <Route exact path="/reviews/:reviewID" component={ReviewDetail} />    
+            <Route exact path="/newreview" component={ReviewCreate} />
             {/* User urls */}
             <Route exact path="/login" component={Login} />
             {/* <Route exact path="/logout" component={Logout} />

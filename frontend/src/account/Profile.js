@@ -4,12 +4,10 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import api from '../api';
 import AccountDetail from './AccountDetail';
-import { CheckCircleOutlined, CloseCircleOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined, LoadingOutlined, FormOutlined, HeartOutlined, MailOutlined, PhoneOutlined, CrownOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined, LoadingOutlined, HeartOutlined, MailOutlined, PhoneOutlined, CrownOutlined } from '@ant-design/icons';
 import Logout from './Logout';
 import Moderator from './Moderator';
 import MoviesLiked from '../movie/MoviesLiked';
-import ReviewCreate from '../reviews/ReviewCreate';
-import ReviewUpdate from '../reviews/ReviewUpdate';
 
 const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -136,12 +134,6 @@ function Profile (props) {
                                 <>
                                     <Tabs.TabPane tab={<span><SettingOutlined style={{ fontSize: '18px' }} />Модератор цонх</span>} key="6">
                                         <Moderator />      
-                                    </Tabs.TabPane>
-                                    <Tabs.TabPane tab={<span><FormOutlined style={{ fontSize: '18px' }} />Нийтлэл оруулах</span>} key="7">
-                                        <ReviewCreate token={props.token} />
-                                    </Tabs.TabPane>
-                                    <Tabs.TabPane tab={<span><FormOutlined style={{ fontSize: '18px' }} />Нийтлэл засах</span>} key="8">
-                                        <ReviewUpdate token={props.token} userID={user.id} />
                                     </Tabs.TabPane>
                                 </>
                             ) : (
