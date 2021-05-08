@@ -1,4 +1,4 @@
-import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Rate, notification, Progress, Descriptions } from 'antd';
+import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Rate, notification, Progress } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
@@ -281,7 +281,7 @@ function MovieDetail (props) {
                         )}                                            
                     </div>
                     <div style={{ padding: getPadding() }} className="detail">
-                        <Row gutter={[16, 16]} style={{ marginTop: '-30%', marginBottom: '40px' }}>
+                        <Row gutter={[16, 16]} style={{ marginTop: '-25%', marginBottom: '40px' }}>
                             <Col xs={24} sm={8} md={8} lg={8} xl={6} style={ screens.xs ? { padding: '0 8px' } : { padding: '0 32px 0 0'}}>
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />                                
                                 <Button size="large" block type="primary" icon={<PlayCircleOutlined />} style={{ marginTop: '8px' }}>Үзэх</Button> 
@@ -316,7 +316,7 @@ function MovieDetail (props) {
                                 ) : (<></>)}                                 
                             </Col>
                             <Col xs={24} sm={16} md={16} lg={16} xl={18}>
-                                <div style={{ borderRadius: '5px', backgroundColor: 'rgba(0, 0, 0, 0.4)', padding: '8px' }}>
+                                <div style={{ borderRadius: '5px', backgroundColor: 'rgba(0, 0, 0, 0)', padding: '8px' }}>
                                     <Typography.Title level={1}>{movie.name} /{moment(movie.releasedate).format("YYYY")}/</Typography.Title>                                    
                                     <div className="genre">
                                         {movie.genre.map(g => {
@@ -325,17 +325,33 @@ function MovieDetail (props) {
                                             )                                            
                                         })}
                                     </div>                                    
-                                    <div className="info" style={{ marginTop: '24px' }}>
-                                        <Descriptions column={2} size="small" style={{ fontSize: '16px' }}>
-                                            <Descriptions.Item label="Найруулагч">{getDirector(movie.members)}</Descriptions.Item>
-                                            <Descriptions.Item label="Сонирхсон">{movie.views}</Descriptions.Item>
-                                            <Descriptions.Item label="Нээлт">{movie.releasedate}</Descriptions.Item>
-                                            <Descriptions.Item label="Таалагдсан">{movie.likes.length}</Descriptions.Item>
-                                            <Descriptions.Item label="Үргэлжлэх хугацаа">{movie.duration}</Descriptions.Item>
-                                            <Descriptions.Item label="Үзсэн">{movie.checks.length}</Descriptions.Item>
-                                            <Descriptions.Item label="Насны ангилал">13+</Descriptions.Item>
-                                            <Descriptions.Item label="Дараа үзэх">{movie.watchlists.length}</Descriptions.Item>
-                                        </Descriptions>                                                                        
+                                    <div className="info" style={{ marginTop: '24px', fontSize: '16px' }}>
+                                        <Row gutter={[8, 8]}>
+                                            <Col span={16}>
+                                                <Typography.Text>Найруулагч: {getDirector(movie.members)}</Typography.Text>
+                                            </Col>
+                                            <Col span={8}>
+                                                <Typography.Text>Сонирхсон: {formatCount(movie.views)}</Typography.Text>
+                                            </Col>
+                                            <Col span={16}>
+                                                <Typography.Text>Нээлт: {movie.releasedate}</Typography.Text>
+                                            </Col>
+                                            <Col span={8}>
+                                                <Typography.Text>Таалагдсан: {formatCount(movie.likes.length)}</Typography.Text>
+                                            </Col>
+                                            <Col span={16}>
+                                                <Typography.Text>Үргэлжлэх хугацаа: {movie.duration} мин</Typography.Text>
+                                            </Col>
+                                            <Col span={8}>
+                                                <Typography.Text>Үзсэн: {formatCount(movie.checks.length)}</Typography.Text>
+                                            </Col>
+                                            <Col span={16}>
+                                                <Typography.Text>Насны ангилал: 13+</Typography.Text>
+                                            </Col>
+                                            <Col span={8}>
+                                                <Typography.Text>Дараа үзэх: {formatCount(movie.watchlists.length)}</Typography.Text>
+                                            </Col>
+                                        </Row>
                                     </div>                                    
                                     <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '16px' }}>
                                         <div>

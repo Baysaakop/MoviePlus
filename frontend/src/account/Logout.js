@@ -3,6 +3,7 @@ import { Button, Result } from 'antd';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 import { Redirect } from 'react-router';
+import { CloseCircleOutlined } from '@ant-design/icons';
 
 const Logout = (props) => {    
     
@@ -20,7 +21,7 @@ const Logout = (props) => {
                 status="warning"
                 title="Та системээс гарахдаа итгэлтэй байна уу?"
                 extra={
-                    <Button danger size="large" type="primary" onClick={onClick}>
+                    <Button danger size="large" type="primary" icon={<CloseCircleOutlined />} onClick={onClick}>
                         Гарах
                     </Button>
                 }

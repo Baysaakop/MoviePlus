@@ -16,22 +16,27 @@ import SeriesList from './series/SeriesList';
 import ReviewList from './reviews/ReviewList';
 import ReviewDetail from './reviews/ReviewDetail';
 import Page404 from './components/Page404';
-import ReviewCreate from './reviews/ReviewCreate';
+import ReviewAdd from './reviews/ReviewAdd';
+import MovieAdd from './movie/MovieAdd';
 
 function BaseRouter () {
     return (
         <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/about" component={About} />
+            {/* Movie urls */}
             <Route exact path="/movies" component={MovieList} />
             <Route exact path="/movies/:movieID" component={MovieDetail} />
+            <Route exact path="/newmovie" component={MovieAdd} />
+            {/* Artist urls */}
             <Route exact path="/artists" component={ArtistList} />
             <Route exact path="/artists/:artistID" component={ArtistDetail} />
+            {/* Series urls */}
             <Route exact path="/series" component={SeriesList} />
             {/* Reviews urls */}
             <Route exact path="/reviews" component={ReviewList} />
             <Route exact path="/reviews/:reviewID" component={ReviewDetail} />    
-            <Route exact path="/newreview" component={ReviewCreate} />
+            <Route exact path="/newreview" component={ReviewAdd} />
             {/* User urls */}
             <Route exact path="/login" component={Login} />
             {/* <Route exact path="/logout" component={Logout} />

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, Avatar, Typography } from 'antd';
+import { Button, Grid, Avatar, Typography, Dropdown, Menu } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
-import { MenuOutlined, UserOutlined } from '@ant-design/icons';
+import { BellFilled, MenuOutlined, PlusCircleOutlined, UserOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 import axios from 'axios';
 import api from '../api';
-import MovieIcon from '../icons/MovieIcon';
+// import MovieIcon from '../icons/MovieIcon'
 
 const { useBreakpoint } = Grid;
 
@@ -101,7 +101,7 @@ function CustomMenu (props) {
 
     const styleMenuItemMobile = {    
         width: '100%',
-        height: '20%',                
+        height: '80px',                
         margin: '0',
         padding: '0',
         display: 'flex',
@@ -119,11 +119,11 @@ function CustomMenu (props) {
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center' }}>
                         <Link to="/">
                             <div style={styleLogo}>         
-                                <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '4px', marginRight: '4px' }}>                                    
+                                {/* <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '4px', marginRight: '4px' }}>                                    
                                     <MovieIcon style={{ fontSize: '32px', color: scrollTop ? '#fff' : props.darkMode ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)' }} />
-                                </div>
+                                </div> */}
                                 <Typography.Title level={2} style={ scrollTop ? { color: '#FFF', margin: 0, padding: 0 } : { margin: 0,  padding: 0 }}>
-                                    Film+
+                                    Movie+
                                 </Typography.Title>
                             </div>       
                         </Link>
@@ -152,13 +152,41 @@ function CustomMenu (props) {
                     </div>
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                         { user ? (
-                            <Link to="/profile">
-                                {user.profile.avatar ? <Avatar src={user.profile.avatar} size="large" /> : <Avatar icon={<UserOutlined />} size="large" />}
-                                <Typography.Text style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</Typography.Text>
-                            </Link>
+                            <div>
+                                <Dropdown 
+                                    trigger={['click']}
+                                    overlay={
+                                        <Menu>
+                                            <Menu.Item key="1">
+                                                <Link to="/newmovie">Кино нэмэх</Link>
+                                            </Menu.Item>
+                                            <Menu.Item key="2">
+                                                <Link to="/newseries">ТВ Цуврал нэмэх</Link>
+                                            </Menu.Item>
+                                            <Menu.Item key="3">
+                                                <Link to="/newartist">Уран бүтээлч нэмэх</Link>
+                                            </Menu.Item>
+                                            <Menu.Item key="4">
+                                                <Link to="/newreview">Нийтлэл бичих</Link>
+                                            </Menu.Item>
+                                        </Menu>
+                                    }
+                                >
+                                    <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<PlusCircleOutlined />}></Button>
+                                </Dropdown>
+                                <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<BellFilled />}></Button>
+                                <Link to="/profile">                                    
+                                    { user.profile.avatar ?                                         
+                                        <Avatar style={{ marginBottom: '4px' }} src={user.profile.avatar} size="large" /> 
+                                    :                                         
+                                        <Avatar style={{ backgroundColor: '#8e44ad', color: '#fff', fontWeight: 'bold', marginBottom: '4px' }} size="large">{user.username.slice(0, 1)}</Avatar>                                      
+                                    }
+                                    {/* <Typography.Text style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</Typography.Text> */}
+                                </Link>
+                            </div>
                         ) : (
                             <Link to="/login">
-                                <Button type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'ghost' } size="large">
+                                <Button icon={<UserOutlined />} type={current && (current.startsWith('/login') || current.startsWith('/signup')) ? 'primary' : 'ghost' } size="large" style={{ border: 0 }}>
                                     НЭВТРЭХ
                                 </Button>
                             </Link>
@@ -191,7 +219,7 @@ function CustomMenu (props) {
                     { collapsed ? (
                         <></>
                     ) : (
-                        <div style={{ background: props.darkMode ? "#161b22" : "#fff", height: '96vh' }}>                            
+                        <div style={{ background: props.darkMode ? "#161b22" : "#fff" }}>                            
                             <Link to="/movies">
                                 <Button block type="text" size="large" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
                                     Кино
@@ -213,13 +241,46 @@ function CustomMenu (props) {
                                 </Button>
                             </Link>
                             { user ? (
-                                <Link to="/profile" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
-                                    {user.profile.avatar ? <Avatar src={user.profile.avatar} size="default" /> : <Avatar icon={<UserOutlined />} size="default" />}
-                                    <span style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</span>
-                                </Link>
+                                <div style={styleMenuItemMobile}>
+                                    <div>
+                                        <Dropdown 
+                                            trigger={['click']}
+                                            overlay={
+                                                <Menu>
+                                                    <Menu.Item key="1">
+                                                        <Link to="/newmovie" onClick={handleMenuCollapsed}>Кино нэмэх</Link>
+                                                    </Menu.Item>
+                                                    <Menu.Item key="2">
+                                                        <Link to="/newseries" onClick={handleMenuCollapsed}>ТВ Цуврал нэмэх</Link>
+                                                    </Menu.Item>
+                                                    <Menu.Item key="3">
+                                                        <Link to="/newartist" onClick={handleMenuCollapsed}>Уран бүтээлч нэмэх</Link>
+                                                    </Menu.Item>
+                                                    <Menu.Item key="4">
+                                                        <Link to="/newreview" onClick={handleMenuCollapsed}>Нийтлэл бичих</Link>
+                                                    </Menu.Item>
+                                                </Menu>
+                                            }
+                                        >
+                                            <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<PlusCircleOutlined />}></Button>
+                                        </Dropdown>
+                                    </div>
+                                    <div>
+                                        <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<BellFilled />}></Button>
+                                    </div>
+                                    <div>
+                                        <Link to="/profile" onClick={handleMenuCollapsed}>                                    
+                                            { user.profile.avatar ?                                         
+                                                <Avatar src={user.profile.avatar} size="large" /> 
+                                            :                                         
+                                                <Avatar style={{ backgroundColor: '#8e44ad', color: '#fff', fontWeight: 'bold', marginBottom: '4px' }} size="large">{user.username.slice(0, 1)}</Avatar>                                      
+                                            }                                            
+                                        </Link>
+                                    </div>
+                                </div>
                             ) : (
                                 <Link to="/login">
-                                    <Button block type="text" size="large" style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
+                                    <Button block type="text" size="large" icon={<UserOutlined />} style={styleMenuItemMobile} onClick={handleMenuCollapsed}>
                                         Нэвтрэх
                                     </Button> 
                                 </Link>

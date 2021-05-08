@@ -56,10 +56,10 @@ function MoviesLiked (props) {
                         grid={{
                             gutter: 16,
                             xs: 2,
-                            sm: 1,
-                            md: 2,
-                            lg: 2,
-                            xl: 4,
+                            sm: 2,
+                            md: 4,
+                            lg: 4,
+                            xl: 5,
                             xxl: 5,
                         }}                                      
                         style={{ marginTop: '16px' }}                

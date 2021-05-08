@@ -125,10 +125,10 @@ function CustomFooter (props) {
             <Divider />
             <Row gutter={[8, 8]}>
                 <Col xs={24} sm={24} md={24} lg={8}>
-                    <Typography.Text>© 2021 Movie Plus.</Typography.Text>
+                    <Typography.Text>© 2021 Movie+</Typography.Text>
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={16} style={ screens.lg ? { textAlign: 'right' } : { textAlign: 'left' }}>
-                    <Typography.Text>Зохиогчийн эрх хуулиар хамгаалагдсан. Хөгжүүлсэн On Plus.</Typography.Text>
+                    <Typography.Text>Зохиогчийн эрх хуулиар хамгаалагдсан. Хөгжүүлсэн On+</Typography.Text>
                 </Col>
             </Row>              
         </div>

@@ -50,7 +50,8 @@ body {
 .layout-dark .ant-input-affix-wrapper,
 .layout-dark .ant-input-number-input-wrap,
 .layout-dark .ant-input-number-handler-wrap,
-.layout-dark .ant-picker {
+.layout-dark .ant-picker,
+.layout-dark .ant-radio-button-wrapper {
     background-color: #161b22;
     color: rgba(255, 255, 255, 0.85);
 }
@@ -163,7 +164,9 @@ body {
     color: #fff;
 }
 
-.ant-btn-primary {
+.ant-btn-primary,
+.ant-radio-group-solid 
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
     background: #8e44ad;
 }
 

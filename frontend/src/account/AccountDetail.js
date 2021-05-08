@@ -57,13 +57,13 @@ function AccountDetail (props) {
 
     return (
         <div>
-            <Typography.Title level={3}>Хэрэглэгчийн мэдээлэл</Typography.Title>
+            <Typography.Title level={3}>Профайл засах</Typography.Title>
             <Form layout="vertical" form={form} onFinish={onFinish}>
                 <Row gutter={[16, 0]}>
                     <Col xs={24} md={6}>
                         <Form.Item name="avatar" label="Профайл зураг:">
-                            <div style={{ width: '150px', height: '150px' }}>
-                                <ImageUpload onImageSelected={onImageSelected} image={props.user.profile.avatar} height="150px" width="150px" />   
+                            <div style={{ width: '200px', height: '200px' }}>
+                                <ImageUpload onImageSelected={onImageSelected} image={props.user.profile.avatar} height="200px" width="200px" />   
                             </div>                             
                         </Form.Item>
                     </Col>

@@ -4,14 +4,14 @@ import axios from 'axios';
 import api from '../api';
 import ImageUpload from '../components/ImageUpload';
 import { Editor } from '@tinymce/tinymce-react';
-import './ReviewCreate.css';
+import './ReviewAdd.css';
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
 const { Option } = Select;
 
-const ReviewCreate = (props) => {
+const ReviewAdd = (props) => {
     const screens = useBreakpoint()
     const [form] = Form.useForm()    
     const [image, setImage] = useState();
@@ -96,14 +96,12 @@ const ReviewCreate = (props) => {
                         <Link to="/reviews">Нийтлэл</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
-                        Шинэ нийтлэл*
+                        Нийтлэл бичих
                     </Breadcrumb.Item>
                 </Breadcrumb>
             </div>
             <div style={{ padding: getPadding() }}>
-                <Typography.Title level={3}>
-                    Нийтлэл бичих
-                </Typography.Title>       
+                <Typography.Title level={3}>Нийтлэл бичих</Typography.Title>       
                 <Form                             
                     form={form}  
                     name="postform"              
@@ -194,4 +192,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(ReviewCreate);
+export default connect(mapStateToProps)(ReviewAdd);
