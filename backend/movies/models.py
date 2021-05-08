@@ -69,8 +69,11 @@ class Artist(models.Model):
     views = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, null=True, blank=True, related_name="artist_likes")
     follows = models.ManyToManyField(User, null=True, blank=True, related_name="artist_follows")  
+    is_accepted = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='artist_created_by')
-    created_at = models.DateTimeField(auto_now_add=True, null=True)        
+    created_at = models.DateTimeField(auto_now_add=True, null=True)      
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='artist_updated_by')
+    updated_at = models.DateTimeField(auto_now=True, null=True)    
 
     def __str__(self):
         return self.name
@@ -112,8 +115,11 @@ class Movie(models.Model):
     trailer = models.CharField(max_length=200, null=True, blank=True)
     is_released = models.BooleanField(default=True)
     in_theater = models.BooleanField(default=False)
+    is_accepted = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='movie_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)            
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='movie_updated_by')
+    updated_at = models.DateTimeField(auto_now=True, null=True)            
 
     def __str__(self):
         return self.name
@@ -144,8 +150,11 @@ class Series(models.Model):
     is_released = models.BooleanField(default=True)
     on_tv = models.BooleanField(default=False)
     is_finished = models.BooleanField(default=True)
+    is_accepted = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='series_created_by')
-    created_at = models.DateTimeField(auto_now_add=True, null=True)            
+    created_at = models.DateTimeField(auto_now_add=True, null=True)         
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='series_updated_by')
+    updated_at = models.DateTimeField(auto_now=True, null=True)     
 
     def __str__(self):
         return self.name

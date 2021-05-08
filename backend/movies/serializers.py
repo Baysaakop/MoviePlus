@@ -45,10 +45,12 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class ArtistSerializer(serializers.ModelSerializer):
     occupation = OccupationSerializer(read_only=True, many=True)
+    created_by = UserSerializer(read_only=True)
+    updated_by = UserSerializer(read_only=True)
     class Meta:
         model = Artist
         fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 
-        'views', 'likes', 'follows', 'created_by', 'created_at')  
+        'views', 'likes', 'follows', 'created_by', 'created_at', 'updated_by', 'updated_at')  
 
 class MemberSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
@@ -71,11 +73,13 @@ class MovieSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     members = MemberSerializer(read_only=True, many=True)
     actors = ActorSerializer(read_only=True, many=True)
+    created_by = UserSerializer(read_only=True)
+    updated_by = UserSerializer(read_only=True)
     class Meta:
         model = Movie
         fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 
         'views', 'likes', 'checks', 'watchlists', 'scores', 'comments', 'members', 'actors',
-        'score', 'poster', 'landscape', 'trailer', 'is_released', 'in_theater', 'created_by', 'created_at')  
+        'score', 'poster', 'landscape', 'trailer', 'is_released', 'in_theater', 'created_by', 'created_at', 'updated_by', 'updated_at')  
 
 class SeriesSerializer(serializers.ModelSerializer):
     rating = RatingSerializer(read_only=True)

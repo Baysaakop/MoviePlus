@@ -18,6 +18,8 @@ import ReviewDetail from './reviews/ReviewDetail';
 import Page404 from './components/Page404';
 import ReviewAdd from './reviews/ReviewAdd';
 import MovieAdd from './movie/MovieAdd';
+import MovieUpdate from './movie/MovieUpdate';
+import MovieRequests from './movie/MovieRequests';
 
 function BaseRouter () {
     return (
@@ -28,6 +30,8 @@ function BaseRouter () {
             <Route exact path="/movies" component={MovieList} />
             <Route exact path="/movies/:movieID" component={MovieDetail} />
             <Route exact path="/newmovie" component={MovieAdd} />
+            <Route exact path="/updatemovie/:movieID" component={MovieUpdate} />
+            <Route exact path="/movierequests" component={MovieRequests} />
             {/* Artist urls */}
             <Route exact path="/artists" component={ArtistList} />
             <Route exact path="/artists/:artistID" component={ArtistDetail} />

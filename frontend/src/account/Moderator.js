@@ -1,19 +1,23 @@
-import { EditOutlined, PlusCircleOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
-import { Button, Tabs } from 'antd';
+// import { EditOutlined, PlusCircleOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
+// import { Button, Tabs } from 'antd';
+import { Button } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ArtistAdd from '../artist/ArtistAdd';
-import ArtistAddMovie from '../artist/ArtistAddMovie';
-import ArtistUpdate from '../artist/ArtistUpdate';
-import ArtistUpdateMovie from '../artist/ArtistUpdateMovie';
-import MovieAdd from '../movie/MovieAdd';
-import MovieUpdate from '../movie/MovieUpdate';
-import SeriesAdd from '../series/SeriesAdd';
+// import ArtistAdd from '../artist/ArtistAdd';
+// import ArtistAddMovie from '../artist/ArtistAddMovie';
+// import ArtistUpdate from '../artist/ArtistUpdate';
+// import ArtistUpdateMovie from '../artist/ArtistUpdateMovie';
+// import MovieAdd from '../movie/MovieAdd';
+// import MovieUpdate from '../movie/MovieUpdate';
+// import SeriesAdd from '../series/SeriesAdd';
 
 function Moderator (props) {
     return (
         <div>
-            <Tabs defaultActiveKey="1">
+            <Link to="/movierequests">
+                <Button type="ghost">Шинэ киноны хүсэлтүүд</Button>
+            </Link>
+            {/* <Tabs defaultActiveKey="1">
                 <Tabs.TabPane tab="Кино" key="1">                    
                     <Tabs defaultActiveKey="1">
                         <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
@@ -29,8 +33,7 @@ function Moderator (props) {
                         <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
                             <SeriesAdd />
                         </Tabs.TabPane>
-                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>
-                            {/* <MovieUpdate /> */}
+                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>                            
                         </Tabs.TabPane>
                     </Tabs>
                 </Tabs.TabPane> 
@@ -55,7 +58,7 @@ function Moderator (props) {
                         <Button type="primary" icon={<PlusOutlined />}>Нийтлэл бичих</Button>
                     </Link>       
                 </Tabs.TabPane>
-            </Tabs>
+            </Tabs> */}
         </div>
     )
 }

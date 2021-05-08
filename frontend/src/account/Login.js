@@ -193,7 +193,7 @@ const Login = (props) => {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh', marginTop: '80px' }}>            
             {props.loading ? (
-                <Spin indicator={loadingIcon} tip="Ачааллаж байна..." />
+                <Spin indicator={loadingIcon} tip="Уншиж байна..." />
             ) : (
                 <div style={{ border: '1px solid #8e44ad', borderRadius: '4px', padding: '16px', textAlign: 'center', width: '500px', margin: '16px' }}>
                     <Typography.Title level={1}>

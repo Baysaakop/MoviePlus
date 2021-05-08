@@ -2,7 +2,7 @@ import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Rate,
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, CreditCardOutlined, HeartOutlined, LoadingOutlined, PlayCircleOutlined, PlusCircleOutlined, PlusOutlined, StarOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, HeartOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarOutlined, ToolOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import { connect } from "react-redux";
 import MovieMembers from './MovieMembers';
@@ -10,6 +10,7 @@ import MovieCast from './MovieCast';
 import MovieComment from './MovieComment';
 import moment from 'moment';
 import Trailer from '../components/Trailer';
+import { Link } from 'react-router-dom';
 
 const scoreValues = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
@@ -284,8 +285,11 @@ function MovieDetail (props) {
                         <Row gutter={[16, 16]} style={{ marginTop: '-25%', marginBottom: '40px' }}>
                             <Col xs={24} sm={8} md={8} lg={8} xl={6} style={ screens.xs ? { padding: '0 8px' } : { padding: '0 32px 0 0'}}>
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />                                
-                                <Button size="large" block type="primary" icon={<PlayCircleOutlined />} style={{ marginTop: '8px' }}>Үзэх</Button> 
-                                <Button size="large" danger block type="primary" icon={<CreditCardOutlined />} style={{ marginTop: '8px' }}>Тасалбар захиалах</Button> 
+                                {/* <Button size="large" block type="primary" icon={<PlayCircleOutlined />} style={{ marginTop: '8px' }}>Үзэх</Button> 
+                                <Button size="large" block type="primary" icon={<CreditCardOutlined />} style={{ marginTop: '8px' }}>Тасалбар захиалах</Button>  */}
+                                <Link to={`/updatemovie/${movie.id}`}>
+                                    <Button size="large" block type="ghost" icon={<ToolOutlined />} style={{ marginTop: '8px' }}>Мэдээлэл засах</Button> 
+                                </Link>
                                 <div className="actions">                                        
                                     <Tooltip title="Трэйлэр үзэх">
                                         <Button size="large" type="ghost" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={() => setTrailer(true)} />
@@ -399,7 +403,7 @@ function MovieDetail (props) {
                 </div>
             ) : (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-                    <Spin indicator={spinIcon} tip="Ачааллаж байна..." />
+                    <Spin indicator={spinIcon} tip="Уншиж байна..." />
                 </div>
             )}                        
         </div>

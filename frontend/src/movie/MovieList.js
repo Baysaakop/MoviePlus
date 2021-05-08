@@ -220,7 +220,7 @@ function MovieList(props) {
                     <Col xs={24} sm={24} md={24} lg={18} xl={18} xxl={19}>
                     { loading ? (
                         <div style={{ display: 'flex', justifyContent: 'center' , alignItems: 'center', width: '100%', height: '70vh'}}>
-                            <Spin indicator={indicator} tip="Ачааллаж байна..." />
+                            <Spin indicator={indicator} tip="Уншиж байна..." />
                         </div>                    
                     ) : (
                         <>
@@ -245,8 +245,7 @@ function MovieList(props) {
                             <Pagination
                                 current={page}
                                 total={total}
-                                pageSize={20}
-                                hideOnSinglePage={true}
+                                pageSize={20}                                
                                 showSizeChanger={false}
                                 showTotal={showTotal}
                                 size="small"

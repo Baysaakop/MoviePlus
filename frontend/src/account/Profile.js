@@ -138,7 +138,7 @@ function Profile (props) {
                             { user.profile.role === "1" || user.profile.role === "2" ? (
                                 <>
                                     <Tabs.TabPane tab={<span><SettingOutlined style={{ fontSize: '18px' }} />Модератор</span>} key="7">
-                                        <Moderator />      
+                                        <Moderator user={user} />      
                                     </Tabs.TabPane>
                                 </>
                             ) : (

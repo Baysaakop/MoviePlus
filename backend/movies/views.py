@@ -297,6 +297,11 @@ class MovieViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Movie.objects.all().order_by('-created_at')
+        unavailable = self.request.query_params.get('unavailable', None)
+        if unavailable is not None:
+            queryset = queryset.filter(is_accepted=False)
+        else:
+            queryset = queryset.filter(is_accepted=True)
         name = self.request.query_params.get('name', None)
         genre = self.request.query_params.get('genre', None)
         yearfrom = self.request.query_params.get('yearfrom', None)
@@ -304,7 +309,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         order = self.request.query_params.get('order', None)
         member = self.request.query_params.get('member', None)
         actor = self.request.query_params.get('actor', None)
-        user = self.request.query_params.get('user', None)
+        user = self.request.query_params.get('user', None)        
         if name is not None:
             queryset = queryset.filter(name__icontains=name).distinct()
         if genre is not None:
@@ -354,19 +359,29 @@ class MovieViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    def create(self, request, *args, **kwargs):              
-        user = Token.objects.get(key=request.data['token']).user                                
+    def create(self, request, *args, **kwargs):                     
+        user = Token.objects.get(key=request.data['token']).user                      
         movie = Movie.objects.create(
             name=request.data['name'],
             description=request.data['description'],
             plot=request.data['plot'],
-            duration=request.data['duration'],
+            duration=int(request.data['duration']),
             releasedate=request.data['releasedate'],
-            is_released=request.data['is_released'],
-            in_theater=request.data['in_theater'],
+            # is_released=request.data['is_released'],
+            # in_theater=request.data['in_theater'],
             trailer=request.data['trailer'],
             created_by=user
         )
+        if 'is_released' in request.data:
+            if request.data['is_released'] == "true":
+                movie.is_released=True
+            else:
+                movie.is_released=False
+        if 'in_theater' in request.data:
+            if request.data['in_theater'] == "true":
+                movie.in_theater=True
+            else:
+                movie.in_theater=False
         if 'poster' in request.data:
             movie.poster=request.data['poster']
         if 'landscape' in request.data:
@@ -375,7 +390,8 @@ class MovieViewSet(viewsets.ModelViewSet):
             rating = Rating.objects.get(id=int(request.data['rating']))
             movie.rating=rating   
         if 'genre' in request.data:            
-            for item in request.data['genre']:
+            genres = request.data['genre'].split(",")
+            for item in genres:
                 movie.genre.add(int(item))     
         movie.save()
         serializer = MovieSerializer(movie)
@@ -385,6 +401,7 @@ class MovieViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):                         
         movie = self.get_object()                         
         user = Token.objects.get(key=request.data['token']).user  
+        movie.updated_by=user
         if 'description' in request.data:
             movie.description=request.data['description']
         if 'plot' in request.data:
@@ -441,24 +458,7 @@ class MovieViewSet(viewsets.ModelViewSet):
                 else:
                     user_score.score = score
                     user_score.save()
-            movie.score = calculateMovieScore(movie)
-        if 'comment' in request.data:
-            comment = request.data['score']
-            user_comment = movie.scores.filter(user=user).first()            
-            if user_score is None:
-                user_score = Score.objects.create(
-                    user=user,
-                    score=score
-                )
-                movie.scores.add(user_score)
-            else:
-                if score == 0:
-                    movie.scores.remove(user_score)
-                    user_score.delete()
-                else:
-                    user_score.score = score
-                    user_score.save()
-            movie.score = calculateMovieScore(movie)
+            movie.score = calculateMovieScore(movie)        
         if 'artist' in request.data:
             artist = Artist.objects.get(id=int(request.data['artist']))
             if 'role' in request.data:                
