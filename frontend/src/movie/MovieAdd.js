@@ -46,18 +46,7 @@ function MovieAdd (props) {
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
     
     function onFinish (values) {      
-        setLoading(true)
-        // const data = {
-        //     name: values.name,
-        //     description: values.description ? values.description : "",
-        //     plot: values.plot ? values.plot : "",
-        //     duration: values.duration ? values.duration : 90,
-        //     releasedate: values.releasedate ? moment(values.releasedate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD"),
-        //     is_released: values.is_released ? values.is_released : true,
-        //     in_theater: values.in_theater ? values.in_theater : false,
-        //     trailer: values.trailer ? values.trailer : "",            
-        //     token: props.token
-        // }        
+        setLoading(true)       
         var formData = new FormData();
         formData.append('name', values.name)
         formData.append('description', values.description ? values.description : "")
@@ -93,26 +82,7 @@ function MovieAdd (props) {
                 console.log(res)
                 message.info("Хүсэлтийг хүлээж авлаа.")
                 form.resetFields()
-                setLoading(false)          
-                // axios({
-                //     method: 'PUT',
-                //     url: `${api.movies}/${res.data.id}/`,
-                //     data: formData,
-                //     headers: {
-                //         'Content-Type': 'multipart/form-data',
-                //         'Authorization': `Token ${props.token}`            
-                //     }
-                // }).then(res => {                        
-                //     if (res.status === 201 || res.status === 200) {                              
-                //         message.info("Хүсэлтийг хүлээж авлаа.")
-                //         form.resetFields()
-                //         setLoading(false)          
-                //     }             
-                // }).catch(err => {   
-                //     message.error("Амжилтгүй боллоо.")
-                //     console.log(err)
-                //     setLoading(false)                 
-                // })                          
+                setLoading(false)                                               
             }             
         }).catch(err => {   
             message.error("Амжилтгүй боллоо.")
