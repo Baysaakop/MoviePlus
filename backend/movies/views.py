@@ -335,28 +335,36 @@ class TempFilmViewSet(viewsets.ModelViewSet):
                 queryset = TempFilm.objects.filter(~Q(filmid=0)).order_by('movie__created_at')        
         return queryset
 
-    def create(self, request, *args, **kwargs):                             
-        movie = createMovie(request)        
-        tempfilm = TempFilm.objects.create(movie=movie)
-        if 'filmid' in request.data:
-            tempfilm.filmid = int(request.data['filmid'])
-            tempfilm.save()
+    def create(self, request, *args, **kwargs):       
+        user = Token.objects.get(key=request.data['token']).user       
+        movie = createMovie(request)    
+        tempfilm = None                                    
+        if 'filmid' in request.data:                        
+            movie.updated_by = user           
+            movie.save()            
+            tempfilm = TempFilm.objects.create(movie=movie, filmid=int(request.data['filmid']))
+        else:                
+            movie.created_by = user
+            movie.save()
+            tempfilm = TempFilm.objects.create(movie=movie)
         serializer = TempFilmSerializer(tempfilm)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):                         
-        tempfilm = self.get_object()         
-        print(request.data)        
+        tempfilm = self.get_object()                 
         if 'accept' in request.data:
             if tempfilm.filmid == 0:
                 film = Film.objects.create(movie=tempfilm.movie)        
                 TempFilm.objects.filter(id=tempfilm.id).delete()
                 return Response(status=status.HTTP_200_OK)
             else:
-                film = Film.objects.get(id=tempfilm.filmid)                
-                film.movie = tempfilm.movie
+                film = Film.objects.get(movie__id=tempfilm.filmid)                            
+                film.movie = copyMovie(film.movie, tempfilm.movie)
                 film.save()
+                movie_id = tempfilm.movie.id
+                TempFilm.objects.filter(id=tempfilm.id).delete()
+                Movie.objects.filter(id=movie_id).delete()                
                 return Response(status=status.HTTP_200_OK)                
         return Response(status=status.HTTP_400_BAD_REQUEST)
  
@@ -414,11 +422,9 @@ def filterMovies(queryset, name, genre, yearfrom, yearto, member, actor, user, s
             queryset = queryset.order_by('-movie__views')
     return queryset
 
-def createMovie(request):
-    user = Token.objects.get(key=request.data['token']).user                      
+def createMovie(request):                     
     movie = Movie.objects.create(
         name=request.data['name'],
-        created_by=user
     )
     if 'description' in request.data: 
         movie.description=request.data['description']
@@ -538,5 +544,24 @@ def updateMovie(movie, request):
             else:
                 actor.role_name=request.data['role_name']       
                 actor.save()             
+    movie.save()
+    return movie
+
+def copyMovie(movie, tempmovie):    
+    movie.name = tempmovie.name
+    movie.description = tempmovie.description
+    movie.plot = tempmovie.plot
+    movie.trailer = tempmovie.trailer
+    movie.duration = tempmovie.duration
+    movie.releasedate = tempmovie.releasedate
+    movie.is_released = tempmovie.is_released
+    movie.is_playing = tempmovie.is_playing
+    movie.poster = tempmovie.poster
+    movie.landscape = tempmovie.landscape    
+    movie.rating = tempmovie.rating
+    movie.genre.clear()
+    for genre in tempmovie.genre.all():
+        movie.genre.add(genre)
+    movie.updated_by=tempmovie.updated_by
     movie.save()
     return movie

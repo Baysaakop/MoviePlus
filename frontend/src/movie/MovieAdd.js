@@ -49,26 +49,40 @@ function MovieAdd (props) {
         setLoading(true)       
         var formData = new FormData();
         formData.append('name', values.name)
-        formData.append('description', values.description ? values.description : "")
-        formData.append('plot', values.plot ? values.plot : "")
-        formData.append('trailer', values.trailer ? values.trailer : "")
-        formData.append('duration', values.duration ? values.duration : 90)
-        formData.append('releasedate', values.releasedate ? moment(values.releasedate).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD"))
-        formData.append('is_released', values.is_released ? values.is_released : true)
-        formData.append('in_theater', values.in_theater ? values.in_theater : false)
-        formData.append('token', props.token)
-        if (values.rating && values.rating !== null) {                        
+        if (values.description) {
+            formData.append('description', values.description)
+        }
+        if (values.plot) {
+            formData.append('plot', values.plot)
+        }
+        if (values.trailer) {
+            formData.append('trailer', values.trailer)
+        }
+        if (values.duration) {
+            formData.append('duration', values.duration)
+        }
+        if (values.releasedate) {
+            formData.append('releasedate', moment(values.releasedate).format("YYYY-MM-DD"))
+        }         
+        if (values.is_released) {
+            formData.append('is_released', values.is_released)
+        }
+        if (values.is_playing) {
+            formData.append('is_playing', values.is_playing)
+        }  
+        if (values.rating) {
             formData.append('rating', values.rating)
-        }
-        if (values.genre && values.genre !== null && values.genre.length > 0 && values.genre[0] !== "") {
+        }  
+        if (values.genre) {
             formData.append('genre', values.genre)
-        }
-        if (poster && poster !== null) {
-            formData.append('poster', poster)               
-        }
-        if (landscape && landscape !== null) {
-            formData.append('landscape', landscape)            
-        }        
+        } 
+        if (poster) {
+            formData.append('poster', poster)
+        } 
+        if (landscape) {
+            formData.append('landscape', landscape)
+        }       
+        formData.append('token', props.token)         
         axios({
             method: 'POST',
             url: `${api.tempfilms}/`,
@@ -197,7 +211,7 @@ function MovieAdd (props) {
                                             </Form.Item>
                                         </Col>             
                                         <Col xs={24} sm={12}>                        
-                                            <Form.Item name="in_theater" label="Одоо гарч буй:">                               
+                                            <Form.Item name="is_playing" label="Одоо гарч буй:">                               
                                                 <Radio.Group defaultValue={false}>
                                                     <Radio value={true}>Тийм</Radio>
                                                     <Radio value={false}>Үгүй</Radio>

@@ -61,8 +61,18 @@ function MovieUpdate (props) {
         .then(res => {
             let target = res.data  
             console.log(target)
-            setPoster(target.poster)        
-            setLandscape(target.landscape)                
+            setPoster(target.movie.poster)        
+            setLandscape(target.movie.landscape)           
+            form.setFieldsValue({
+                name: target.movie.name,
+                trailer: target.movie.trailer ? target.movie.trailer : "",
+                description: target.movie.description ? target.movie.description : "",
+                plot: target.movie.plot ? target.movie.plot : "",
+                releasedate: target.movie.releasedate ? moment(target.movie.releasedate) : undefined,
+                duration: target.movie.duration ? target.movie.duration : 90,
+                rating: target.movie.rating ? target.movie.rating.id.toString() : undefined,
+                genre: target.movie.genre ? getIDsFromArray(target.movie.genre) : undefined
+            })     
             setMovie(target)
             setLoading(false)
         })
@@ -92,56 +102,58 @@ function MovieUpdate (props) {
         return true;
     }
 
-    function onFinish (values) {      
+    function onFinish (values) {              
         setLoading(true)       
         var formData = new FormData();
-        if (values.name !== movie.name) {
-            formData.append('name', values.name)
-        }
-        if (values.description && values.description !== movie.description) {
+        formData.append('name', values.name)
+        if (values.description) {
             formData.append('description', values.description)
         }
-        if (values.plot && values.plot !== movie.plot) {
+        if (values.plot) {
             formData.append('plot', values.plot)
         }
-        if (values.trailer && values.trailer !== movie.trailer) {
+        if (values.trailer) {
             formData.append('trailer', values.trailer)
         }
-        if (values.duration && values.duration !== movie.duration) {
+        if (values.duration) {
             formData.append('duration', values.duration)
         }
-        if (values.releasedate && moment(values.releasedate).format("YYYY-MM-DD") !== moment(movie.releasedate).format("YYYY-MM-DD")) {
+        if (values.releasedate) {
             formData.append('releasedate', moment(values.releasedate).format("YYYY-MM-DD"))
-        }
-        if (values.is_released && values.is_released !== movie.is_released) {
+        }         
+        if (values.is_released) {
             formData.append('is_released', values.is_released)
         }
-        if (values.in_theater && values.in_theater !== movie.in_theater) {
-            formData.append('in_theater', values.in_theater)
-        }        
-        if (values.rating && values.rating !== movie.rating) {                        
+        if (values.is_playing) {
+            formData.append('is_playing', values.is_playing)
+        }  
+        if (values.rating) {
             formData.append('rating', values.rating)
-        }
-        if (values.genre && !compareM2M(values.genre, movie.genre)) {
+        }  
+        if (values.genre) {
             formData.append('genre', values.genre)
+        } 
+        if (poster) {
+            formData.append('poster', poster)
+        } 
+        if (landscape) {
+            formData.append('landscape', landscape)
         }
-        if (poster && poster !== null) {
-            formData.append('poster', poster)               
+        formData.append('token', props.token) 
+        formData.append('filmid', movie.movie.id) 
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', '+ pair[1]);
         }
-        if (landscape && landscape !== null) {
-            formData.append('landscape', landscape)            
-        }     
-        formData.append('token', props.token)   
         axios({
-            method: 'PUT',
-            url: `${api.movies}/${movie.id}`,
+            method: 'POST',
+            url: `${api.tempfilms}/`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Token ${props.token}`            
             }
         }).then(res => {                        
-            if (res.status === 204 || res.status === 200) {      
+            if (res.status === 201) {      
                 console.log(res)
                 message.info("Хүсэлтийг хүлээж авлаа.")
                 form.resetFields()
@@ -258,16 +270,16 @@ function MovieUpdate (props) {
                                 form={form}
                                 layout="vertical"  
                                 onFinish={onFinish} 
-                                initialValues={{
-                                    name: movie.name,
-                                    trailer: movie.trailer ? movie.trailer : "",
-                                    description: movie.description ? movie.description : "",
-                                    plot: movie.plot ? movie.plot : "",
-                                    releasedate: movie.releasedate ? moment(movie.releasedate) : undefined,
-                                    duration: movie.duration ? movie.duration : 90,
-                                    rating: movie.rating ? movie.rating.id.toString() : undefined,
-                                    genre: movie.genre ? getIDsFromArray(movie.genre) : undefined
-                                }}
+                                // initialValues={{
+                                //     name: movie.movie.name,
+                                //     trailer: movie.movie.trailer ? movie.movie.trailer : "",
+                                //     description: movie.movie.description ? movie.movie.description : "",
+                                //     plot: movie.movie.plot ? movie.movie.plot : "",
+                                //     releasedate: movie.movie.releasedate ? moment(movie.movie.releasedate) : undefined,
+                                //     duration: movie.movie.duration ? movie.movie.duration : 90,
+                                //     rating: movie.movie.rating ? movie.movie.rating.id.toString() : undefined,
+                                //     genre: movie.movie.genre ? getIDsFromArray(movie.movie.genre) : undefined
+                                // }}
                             >
                                 <Form.Item name="landscape" label="Өргөн зураг:">
                                     <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>           
@@ -294,7 +306,7 @@ function MovieUpdate (props) {
                                                 </Form.Item>
                                             </Col>             
                                             <Col xs={24} sm={12}>                        
-                                                <Form.Item name="in_theater" label="Одоо гарч буй:">                               
+                                                <Form.Item name="is_playing" label="Одоо гарч буй:">                               
                                                     <Radio.Group defaultValue={false}>
                                                         <Radio value={true}>Тийм</Radio>
                                                         <Radio value={false}>Үгүй</Radio>

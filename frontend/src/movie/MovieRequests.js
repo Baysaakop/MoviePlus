@@ -46,7 +46,7 @@ function MovieRequests (props) {
 
     function getMovies() {
         setLoading(true)
-        var url = api.tempfilms + "?page=" + page          
+        var url = api.tempfilms + "?filmid=1&page=" + page          
         axios({
             method: 'GET',
             url: url
@@ -102,8 +102,7 @@ function MovieRequests (props) {
         return `Нийт ${total} кино:`;
     }
 
-    function onAccept (id) {
-        setLoading(true)              
+    function onAccept (id) {        
         axios({
             method: 'PUT',
             url: `${api.tempfilms}/${id}/`,
@@ -116,8 +115,8 @@ function MovieRequests (props) {
             }
         }).then(res => {                        
             if (res.status === 200) {                      
-                message.info("Зөвшөөрлөө.")                
-                setLoading(false)                                               
+                message.info("Зөвшөөрлөө.")       
+                getMovies()                                                             
             }             
         }).catch(err => {   
             message.error("Амжилтгүй боллоо.")
@@ -222,7 +221,7 @@ function MovieRequests (props) {
                                             <Button danger type="primary" icon={<CloseCircleOutlined />} style={{ marginRight: '8px' }} onClick={() => onDecline(item.id)}>Татгалзах</Button>
                                         </Col>
                                         <Col xs={24} sm={24} md={24} lg={12} style={{ textAlign: 'end' }}>
-                                            <Typography.Text>Нэмсэн: {item.movie.created_by.username}</Typography.Text>
+                                            <Typography.Text>Нэмсэн: {item.movie.updated_by.username}</Typography.Text>
                                             <br />
                                             <Typography.Text>Он сар өдөр: {moment(item.movie.created_at).format("YYYY-MM-DD")}</Typography.Text>
                                         </Col>
