@@ -71,14 +71,14 @@ function MovieAdd (props) {
         }        
         axios({
             method: 'POST',
-            url: `${api.movies}/`,
+            url: `${api.tempfilms}/`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Token ${props.token}`            
             }
         }).then(res => {                        
-            if (res.status === 201 || res.status === 200) {      
+            if (res.status === 201) {      
                 console.log(res)
                 message.info("Хүсэлтийг хүлээж авлаа.")
                 form.resetFields()

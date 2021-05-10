@@ -1,31 +1,30 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Actor, Movie, Series, Review, Comment, Score
+from .models import Genre, Rating, Production, Occupation, Artist, Member, Actor, Movie, Film, TempFilm, Series, Review, Comment, Score
 # from users.models import User, Profile
 from users.serializers import UserSerializer
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ('id', 'name', 'description')     
+        fields = ('id', 'name', 'description', 'count')     
 
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
-        fields = ('id', 'name', 'description') 
+        fields = ('id', 'name', 'description', 'count') 
 
 class ProductionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Production
-        fields = ('id', 'name', 'description')      
+        fields = ('id', 'name', 'description', 'count')      
 
 class OccupationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Occupation
-        fields = ('id', 'name', 'description')        
+        fields = ('id', 'name', 'description', 'count')        
 
-class ScoreSerializer(serializers.ModelSerializer):          
-    ## user = UserSerializer(read_only=True)  
+class ScoreSerializer(serializers.ModelSerializer):              
     class Meta:
         model = Score
         fields = ('id', 'user', 'score')    
@@ -79,18 +78,22 @@ class MovieSerializer(serializers.ModelSerializer):
         model = Movie
         fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 
         'views', 'likes', 'checks', 'watchlists', 'scores', 'comments', 'members', 'actors',
-        'score', 'poster', 'landscape', 'trailer', 'is_released', 'in_theater', 'created_by', 'created_at', 'updated_by', 'updated_at')  
+        'score', 'poster', 'landscape', 'trailer', 'is_released', 'is_playing', 'created_by', 'created_at', 'updated_by', 'updated_at')  
+
+class FilmSerializer(serializers.ModelSerializer):
+    movie = MovieSerializer(read_only=True)
+    class Meta:
+        model = Film
+        fields = ('id', 'movie')  
+
+class TempFilmSerializer(serializers.ModelSerializer):
+    movie = MovieSerializer(read_only=True)
+    class Meta:
+        model = TempFilm
+        fields = ('id', 'movie', 'filmid')  
 
 class SeriesSerializer(serializers.ModelSerializer):
-    rating = RatingSerializer(read_only=True)
-    genre = GenreSerializer(read_only=True, many=True)
-    production = ProductionSerializer(read_only=True, many=True)
-    scores = ScoreSerializer(read_only=True, many=True)
-    comments = CommentSerializer(read_only=True, many=True)
-    members = MemberSerializer(read_only=True, many=True)
-    actors = ActorSerializer(read_only=True, many=True)
+    movie = MovieSerializer(read_only=True)
     class Meta:
         model = Series
-        fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 'season_count', 'episode_count', 
-        'views', 'likes', 'checks', 'watchlists', 'scores', 'comments', 'members', 'actors',
-        'score', 'poster', 'landscape', 'trailer', 'is_released', 'on_tv', 'is_finished', 'created_by', 'created_at')  
+        fields = ('id', 'movie', 'season_count', 'episode_count', 'is_finished')  

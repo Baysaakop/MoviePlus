@@ -237,7 +237,7 @@ function MovieList(props) {
                                 dataSource={movies ? movies : undefined}
                                 renderItem={item => (
                                     <List.Item>                                    
-                                        <MovieCard1 movie={item} user={user} />
+                                        <MovieCard1 item={item} user={user} />
                                     </List.Item>
                                 )} 
                                 

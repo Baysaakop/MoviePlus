@@ -46,8 +46,7 @@ function MovieRequests (props) {
 
     function getMovies() {
         setLoading(true)
-        var url = api.movies + "?unavailable=true"        
-        url += "page=" + page                
+        var url = api.tempfilms + "?page=" + page          
         axios({
             method: 'GET',
             url: url
@@ -103,11 +102,31 @@ function MovieRequests (props) {
         return `Нийт ${total} кино:`;
     }
 
-    function onAccept () {
-        
+    function onAccept (id) {
+        setLoading(true)              
+        axios({
+            method: 'PUT',
+            url: `${api.tempfilms}/${id}/`,
+            data: {
+                accept: true
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.token}`            
+            }
+        }).then(res => {                        
+            if (res.status === 200) {                      
+                message.info("Зөвшөөрлөө.")                
+                setLoading(false)                                               
+            }             
+        }).catch(err => {   
+            message.error("Амжилтгүй боллоо.")
+            console.log(err)            
+            setLoading(false)          
+        })             
     }
 
-    function onDecline () {
+    function onDecline (id) {
 
     }
 
@@ -143,7 +162,7 @@ function MovieRequests (props) {
                                     <img
                                         width={272}
                                         alt="logo"
-                                        src={item.landscape}
+                                        src={item.movie.landscape}
                                     />
                                 }
                                 style={{ 
@@ -153,40 +172,40 @@ function MovieRequests (props) {
                             >
                                 <List.Item.Meta
                                     avatar={
-                                        <img alt={item.name} src={item.poster} style={{ width: '100px' }} />
+                                        <img alt={item.movie.name} src={item.movie.poster} style={{ width: '100px' }} />
                                     }
                                     title={
                                         <Typography.Title level={5}>
-                                            {item.name}
+                                            {item.movie.name}
                                         </Typography.Title>
                                     }
                                     description={
                                         <div>
                                             <div style={ screens.xs ? { display: 'block' } : { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div>
-                                                    <Typography.Text>Төрөл: {getGenres(item.genre)}</Typography.Text>
+                                                    <Typography.Text>Төрөл: {getGenres(item.movie.genre)}</Typography.Text>
                                                 </div>
                                                 <div>
-                                                    <Typography.Text>Нээлт: {moment(item.releasedate).format("YYYY-MM-DD")}</Typography.Text>
+                                                    <Typography.Text>Нээлт: {moment(item.movie.releasedate).format("YYYY-MM-DD")}</Typography.Text>
                                                 </div>
                                                 <div>
-                                                    <Typography.Text>Хугацаа: {item.duration} мин</Typography.Text>
+                                                    <Typography.Text>Хугацаа: {item.movie.duration} мин</Typography.Text>
                                                 </div>
                                                 <div>
-                                                    <Typography.Text>Насны ангилал: {item.rating ? item.rating : '---'}</Typography.Text>
+                                                    <Typography.Text>Насны ангилал: {item.movie.rating ? item.movie.rating : '---'}</Typography.Text>
                                                 </div>
                                                 <div>
                                                     <Typography.Text>
                                                         Трейлер:              
-                                                        <Button type="link" onClick={() => showTrailer(item.trailer)}>Тоглуулах</Button>                                       
-                                                        {trailer ? <Trailer title={item.name} trailer={trailer} hide={() => hideTrailer()} /> : <></>}
+                                                        <Button type="link" onClick={() => showTrailer(item.movie.trailer)}>Тоглуулах</Button>                                       
+                                                        {trailer ? <Trailer title={item.movie.name} trailer={trailer} hide={() => hideTrailer()} /> : <></>}
                                                     </Typography.Text>       
                                                 </div>
                                             </div>
                                             <div style={{ marginTop: '8px' }}>                                                                                  
                                                 <Typography.Text>Дэлгэрэнгүй:</Typography.Text>
                                                 <Typography.Paragraph>
-                                                    {item.description}
+                                                    {item.movie.description}
                                                 </Typography.Paragraph>                                            
                                             </div>
                                         </div>
@@ -195,17 +214,17 @@ function MovieRequests (props) {
                                 <div>
                                     <Typography.Text>Агуулга:</Typography.Text>
                                     <Typography.Paragraph>
-                                        {item.plot}
+                                        {item.movie.plot}
                                     </Typography.Paragraph>
                                     <Row gutter={[16, 16]}>
                                         <Col xs={24} sm={24} md={24} lg={12}>
-                                            <Button type="primary" icon={<CheckCircleOutlined />} style={{ marginRight: '8px' }} onClick={onAccept}>Зөвшөөрөх</Button>
-                                            <Button danger type="primary" icon={<CloseCircleOutlined />} style={{ marginRight: '8px' }} onClick={onDecline}>Татгалзах</Button>
+                                            <Button type="primary" icon={<CheckCircleOutlined />} style={{ marginRight: '8px' }} onClick={() => onAccept(item.id)}>Зөвшөөрөх</Button>
+                                            <Button danger type="primary" icon={<CloseCircleOutlined />} style={{ marginRight: '8px' }} onClick={() => onDecline(item.id)}>Татгалзах</Button>
                                         </Col>
                                         <Col xs={24} sm={24} md={24} lg={12} style={{ textAlign: 'end' }}>
-                                            <Typography.Text>Нэмсэн: {item.created_by.username}</Typography.Text>
+                                            <Typography.Text>Нэмсэн: {item.movie.created_by.username}</Typography.Text>
                                             <br />
-                                            <Typography.Text>Он сар өдөр: {moment(item.created_at).format("YYYY-MM-DD")}</Typography.Text>
+                                            <Typography.Text>Он сар өдөр: {moment(item.movie.created_at).format("YYYY-MM-DD")}</Typography.Text>
                                         </Col>
                                     </Row>                                                                    
                                 </div>

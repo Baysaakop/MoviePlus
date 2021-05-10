@@ -5,6 +5,7 @@ from djrichtextfield.models import RichTextField
 class Genre(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)    
+    count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -12,6 +13,7 @@ class Genre(models.Model):
 class Rating(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)    
+    count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -19,6 +21,7 @@ class Rating(models.Model):
 class Production(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)    
+    count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -26,6 +29,7 @@ class Production(models.Model):
 class Occupation(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)    
+    count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -114,8 +118,7 @@ class Movie(models.Model):
     landscape = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     trailer = models.CharField(max_length=200, null=True, blank=True)
     is_released = models.BooleanField(default=True)
-    in_theater = models.BooleanField(default=False)
-    is_accepted = models.BooleanField(default=False)
+    is_playing = models.BooleanField(default=False)    
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='movie_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)            
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='movie_updated_by')
@@ -124,37 +127,25 @@ class Movie(models.Model):
     def __str__(self):
         return self.name
 
-class Series(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True, blank=True)    
-    plot = models.TextField(null=True, blank=True)    
-    duration = models.IntegerField(default=90)
-    releasedate = models.DateField(auto_now=False, null=True, blank=True)
-    rating = models.ForeignKey(Rating, on_delete=models.CASCADE, null=True, blank=True)
-    genre = models.ManyToManyField(Genre, null=True, blank=True)    
-    production = models.ManyToManyField(Production, null=True, blank=True)    
-    season_count = models.IntegerField(default=1)
-    episode_count = models.IntegerField(default=1)
-    views = models.IntegerField(default=0)
-    likes = models.ManyToManyField(User, null=True, blank=True, related_name="series_likes")
-    checks = models.ManyToManyField(User, null=True, blank=True, related_name="series_checks")
-    watchlists = models.ManyToManyField(User, null=True, blank=True, related_name="series_watchlists")
-    scores = models.ManyToManyField(Score, null=True, blank=True, related_name="series_scores")
-    comments = models.ManyToManyField(Comment, null=True, blank=True, related_name="series_comments")    
-    members = models.ManyToManyField(Member, null=True, blank=True, related_name="series_members")
-    actors = models.ManyToManyField(Member, null=True, blank=True, related_name="series_actors")
-    score = models.IntegerField(default=0)
-    poster = models.ImageField(upload_to='series/%Y/%m/%d', null=True, blank=True)
-    landscape = models.ImageField(upload_to='series/%Y/%m/%d', null=True, blank=True)
-    trailer = models.CharField(max_length=200, null=True, blank=True)
-    is_released = models.BooleanField(default=True)
-    on_tv = models.BooleanField(default=False)
-    is_finished = models.BooleanField(default=True)
-    is_accepted = models.BooleanField(default=False)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='series_created_by')
-    created_at = models.DateTimeField(auto_now_add=True, null=True)         
-    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='series_updated_by')
-    updated_at = models.DateTimeField(auto_now=True, null=True)     
+class Film(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.DO_NOTHING, null=True, blank=True)       
 
     def __str__(self):
-        return self.name
+        return self.movie.name
+
+class TempFilm(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.DO_NOTHING, null=True, blank=True)       
+    filmid = models.IntegerField(default=0) # 0. Create 1. Update /filmID/
+
+    def __str__(self):
+        return self.movie.name
+
+class Series(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.DO_NOTHING, null=True, blank=True)       
+    season_count = models.IntegerField(default=1)
+    episode_count = models.IntegerField(default=1)
+    is_finished = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.movie.name
+

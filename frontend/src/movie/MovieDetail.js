@@ -20,6 +20,7 @@ const spinIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 function MovieDetail (props) {    
     const screens = useBreakpoint()
     const [user, setUser] = useState()
+    const [filmId, setFilmId] = useState()
     const [movie, setMovie] = useState()
     const [trailer, setTrailer] = useState(false)
     const [rateVisible, setRateVisible] = useState(false)
@@ -59,7 +60,8 @@ function MovieDetail (props) {
         })
         .then(res => {
             console.log(res.data)
-            setMovie(res.data)
+            setFilmId(res.data.id)
+            setMovie(res.data.movie)            
         })
         .catch(err => {
             message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
@@ -67,10 +69,10 @@ function MovieDetail (props) {
     }
 
     function onLike (type) {                
-        if (props.token && movie) {
+        if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${movie.id}/`,
+                url: `${api.movies}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     like: true
@@ -87,8 +89,7 @@ function MovieDetail (props) {
                         description: `${movie.name} кино таны таалагдсан киноны жагсаалтаас хасагдлаа.`,
                         icon: <HeartOutlined style={{ color: '#c0392b' }} />,
                     })                                    
-                } else {
-                    
+                } else {                    
                     notification.open({
                         message: 'Жагсаалтад нэмэгдлээ',
                         description: `${movie.name} кино таны таалагдсан киноны жагсаалтад нэмэгдлээ.`,
@@ -107,10 +108,10 @@ function MovieDetail (props) {
     }
 
     function onCheck (type) {
-        if (props.token && movie) {
+        if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${movie.id}/`,
+                url: `${api.movies}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     check: true
@@ -146,10 +147,10 @@ function MovieDetail (props) {
     }
 
     function onWatchlist (type) {
-        if (props.token && movie) {
+        if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${movie.id}/`,
+                url: `${api.movies}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     watchlist: true
@@ -185,10 +186,10 @@ function MovieDetail (props) {
     }
 
     function onScore (value) {                  
-        if (props.token && movie) {
+        if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${movie.id}/`,
+                url: `${api.movies}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     score: value
@@ -287,9 +288,6 @@ function MovieDetail (props) {
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />                                
                                 {/* <Button size="large" block type="primary" icon={<PlayCircleOutlined />} style={{ marginTop: '8px' }}>Үзэх</Button> 
                                 <Button size="large" block type="primary" icon={<CreditCardOutlined />} style={{ marginTop: '8px' }}>Тасалбар захиалах</Button>  */}
-                                <Link to={`/updatemovie/${movie.id}`}>
-                                    <Button size="large" block type="ghost" icon={<ToolOutlined />} style={{ marginTop: '8px' }}>Мэдээлэл засах</Button> 
-                                </Link>
                                 <div className="actions">                                        
                                     <Tooltip title="Трэйлэр үзэх">
                                         <Button size="large" type="ghost" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={() => setTrailer(true)} />
@@ -317,7 +315,10 @@ function MovieDetail (props) {
                                     <Typography.Title level={5} style={{ marginBottom: 0 }}>Таны үнэлгээ: {user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : ''}</Typography.Title>                                        
                                     <Rate style={{ fontSize: '18px' }} tooltips={scoreValues} value={user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : 0} count={10} onChange={onScore} />
                                 </div>
-                                ) : (<></>)}                                 
+                                ) : (<></>)}                 
+                                <Link to={`/updatemovie/${filmId}`}>
+                                    <Button size="large" block type="ghost" icon={<ToolOutlined />}>Мэдээлэл засах</Button> 
+                                </Link>                
                             </Col>
                             <Col xs={24} sm={16} md={16} lg={16} xl={18}>
                                 <div style={{ borderRadius: '5px', backgroundColor: 'rgba(0, 0, 0, 0)', padding: '8px' }}>

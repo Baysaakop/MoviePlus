@@ -12,6 +12,8 @@ import blank from './blank.jpg'
 function MovieCard1 (props) {
 
     const [visible, setVisible] = useState(false)
+    const [filmId, setFilmId] = useState()
+    const [movie, setMovie] = useState()
     const [likes, setLikes] = useState()    
     const [checks, setChecks] = useState()    
     const [watchlists, setWatchlists] = useState()    
@@ -20,12 +22,14 @@ function MovieCard1 (props) {
     const [rateVisible, setRateVisible] = useState(false)
 
     useEffect(() => {              
-        setLikes(props.movie.likes)
-        setChecks(props.movie.checks)
-        setWatchlists(props.movie.watchlists)
-        setRating(props.movie.score)    
-        getValue(props.movie.scores)
-    }, [props.movie, props.user]) // eslint-disable-line react-hooks/exhaustive-deps   
+        setFilmId(props.item.id)
+        setMovie(props.item.movie)
+        setLikes(props.item.movie.likes)
+        setChecks(props.item.movie.checks)
+        setWatchlists(props.item.movie.watchlists)
+        setRating(props.item.movie.score)    
+        getValue(props.item.movie.scores)
+    }, [props.item, props.user]) // eslint-disable-line react-hooks/exhaustive-deps   
 
     function getGenre(genres) {
         let result = ""
@@ -50,10 +54,10 @@ function MovieCard1 (props) {
     }
 
     function onLike () {                
-        if (props.token && props.movie) {
+        if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${props.movie.id}/`,
+                url: `${api.movies}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     like: true
@@ -63,9 +67,9 @@ function MovieCard1 (props) {
                     'Authorization': `Token ${props.token}`
                 }
             })
-            .then(res => {              
+            .then(res => {                              
                 if (res.status === 200) {
-                    setLikes(res.data.likes)
+                    setLikes(res.data.movie.likes)
                 }
             })
             .catch(err => {
@@ -79,10 +83,10 @@ function MovieCard1 (props) {
     }
 
     function onCheck () {
-        if (props.token && props.movie) {
+        if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${props.movie.id}/`,
+                url: `${api.movies}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     check: true
@@ -94,7 +98,7 @@ function MovieCard1 (props) {
             })
             .then(res => {              
                 if (res.status === 200) {
-                    setChecks(res.data.checks)
+                    setChecks(res.data.movie.checks)
                 }
             })
             .catch(err => {
@@ -107,10 +111,10 @@ function MovieCard1 (props) {
     }
 
     function onWatchlist () {
-        if (props.token && props.movie) {
+        if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${props.movie.id}/`,
+                url: `${api.movies}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     watchlist: true
@@ -122,7 +126,7 @@ function MovieCard1 (props) {
             })
             .then(res => {              
                 if (res.status === 200) {
-                    setWatchlists(res.data.watchlists)
+                    setWatchlists(res.data.movie.watchlists)
                 }
             })
             .catch(err => {
@@ -135,10 +139,10 @@ function MovieCard1 (props) {
     }
 
     function onScore (value) {                  
-        if (props.token && props.movie) {
+        if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${props.movie.id}/`,
+                url: `${api.movies}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     score: value * 2
@@ -150,8 +154,8 @@ function MovieCard1 (props) {
             })
             .then(res => {              
                 if (res.status === 200) {                    
-                    setRating(res.data.score)                 
-                    getValue(res.data.scores)
+                    setRating(res.data.movie.score)                 
+                    getValue(res.data.movie.scores)
                 }
             })
             .catch(err => {
@@ -165,13 +169,14 @@ function MovieCard1 (props) {
 
     return (
         <div>            
+            { movie ? (
             <Card 
                 className="moviecard1"
                 hoverable 
                 cover={
                     <div className="container">
-                        <Link to={`/movies/${props.movie.id}`}>
-                            <img className="poster" alt={props.movie.name} src={props.movie.poster ? props.movie.poster : blank} style={{ opacity: '0.9' }} />
+                        <Link to={`/movies/${filmId}`}>
+                            <img className="poster" alt={movie.name} src={movie.poster ? movie.poster : blank} style={{ opacity: '0.9' }} />
                         </Link>
                         <div className="overlay-more">
                             <div>
@@ -217,21 +222,22 @@ function MovieCard1 (props) {
                 style={{ border: 0 }} 
                 size="small"
             >                            
-                <Link to={`/movies/${props.movie.id}`}>                                        
+                <Link to={`/movies/${filmId}`}>                                        
                     <Card.Meta 
                         title={
-                            <Tooltip title={props.movie.name}>
-                                {`${props.movie.name} /${moment(props.movie.releasedate).format("YYYY")}/`} 
+                            <Tooltip title={movie.name}>
+                                {`${movie.name} /${moment(movie.releasedate).format("YYYY")}/`} 
                             </Tooltip>
                         }
                         description={
                             <Typography.Paragraph ellipsis={true} style={{ margin: 0 }}>
-                                {getGenre(props.movie.genre)}
+                                {getGenre(movie.genre)}
                             </Typography.Paragraph>
                         } 
                     />
                 </Link>        
-            </Card>            
+            </Card>
+            ) : (<></>)}            
         </div>
     )
 }

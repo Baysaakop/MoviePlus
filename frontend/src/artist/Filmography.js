@@ -19,9 +19,9 @@ function Filmography (props) {
         axios({
             method: 'GET',
             url: url
-        }).then(res => {                                        
-            let data = res.data.results                             
-            setMembers(data.sort((a, b) => parseInt(a.releasedate.slice(0, 4)) - parseInt(b.releasedate.slice(0, 4))))
+        }).then(res => {                                   
+            let data = res.data.results                                          
+            setMembers(data.sort((a, b) => parseInt(a.movie.releasedate.slice(0, 4)) - parseInt(b.movie.releasedate.slice(0, 4))))
         }).catch(err => {
             console.log(err.message)
         });        
@@ -34,7 +34,7 @@ function Filmography (props) {
             url: url
         }).then(res => {                                        
             let data = res.data.results                 
-            setActors(data.sort((a, b) => parseInt(a.releasedate.slice(0, 4)) - parseInt(b.releasedate.slice(0, 4))))
+            setActors(data.sort((a, b) => parseInt(a.movie.releasedate.slice(0, 4)) - parseInt(b.movie.releasedate.slice(0, 4))))
         }).catch(err => {
             console.log(err.message)
         });        
@@ -71,22 +71,22 @@ function Filmography (props) {
                             return (
                                 <Timeline.Item>
                                     <Typography.Text style={{ fontSize: '16px' }}>
-                                        {moment(item.releasedate).format("YYYY")}
+                                        {moment(item.movie.releasedate).format("YYYY")}
                                         <Popover 
                                             title={
                                                 <Typography.Title level={5} style={{ margin: 0 }}>
-                                                    {item.name}
+                                                    {item.movie.name}
                                                 </Typography.Title>
                                             } 
                                             content={
                                                 <div style={{ width: '300px' }}>
                                                     <Row gutter={[8, 8]}>
                                                         <Col span={10}>
-                                                            <img alt={item.name} src={item.poster} style={{ width: '100%', height: 'auto' }} />
+                                                            <img alt={item.movie.name} src={item.movie.poster} style={{ width: '100%', height: 'auto' }} />
                                                         </Col>
                                                         <Col span={14}>
                                                             <Typography.Paragraph ellipsis={{ rows: 8 }}>
-                                                                {item.description}
+                                                                {item.movie.description}
                                                             </Typography.Paragraph>
                                                         </Col>
                                                     </Row>
@@ -94,11 +94,11 @@ function Filmography (props) {
                                             }
                                         >                                        
                                             <Link to={`/movies/${item.id}`}>
-                                                {` - ${item.name} | `}
+                                                {` - ${item.movie.name} | `}
                                             </Link>
                                         </Popover>
-                                        {getRole(item.members)}
-                                        {` | Үнэлгээ: ${item.score}%`}
+                                        {getRole(item.movie.members)}
+                                        {` | Үнэлгээ: ${item.movie.score}%`}
                                     </Typography.Text>
                                 </Timeline.Item>
                             )
@@ -116,12 +116,34 @@ function Filmography (props) {
                             return (
                                 <Timeline.Item>
                                     <Typography.Text style={{ fontSize: '16px' }}>
-                                        {moment(item.releasedate).format("YYYY")} 
-                                        <Link to={`/movies/${item.id}`}>
-                                            {` - ${item.name}`}
-                                        </Link>
-                                        {` | Дүр: ${getRoleName(item.actors)}`}
-                                        {` | Үнэлгээ: ${item.score}%`}
+                                        {moment(item.movie.releasedate).format("YYYY")} 
+                                        <Popover 
+                                            title={
+                                                <Typography.Title level={5} style={{ margin: 0 }}>
+                                                    {item.movie.name}
+                                                </Typography.Title>
+                                            } 
+                                            content={
+                                                <div style={{ width: '300px' }}>
+                                                    <Row gutter={[8, 8]}>
+                                                        <Col span={10}>
+                                                            <img alt={item.movie.name} src={item.movie.poster} style={{ width: '100%', height: 'auto' }} />
+                                                        </Col>
+                                                        <Col span={14}>
+                                                            <Typography.Paragraph ellipsis={{ rows: 8 }}>
+                                                                {item.movie.description}
+                                                            </Typography.Paragraph>
+                                                        </Col>
+                                                    </Row>
+                                                </div>
+                                            }
+                                        >                                        
+                                            <Link to={`/movies/${item.id}`}>
+                                                {` - ${item.movie.name} | `}
+                                            </Link>
+                                        </Popover>
+                                        {` | Дүр: ${getRoleName(item.movie.actors)}`}
+                                        {` | Үнэлгээ: ${item.movie.score}%`}
                                     </Typography.Text>
                                 </Timeline.Item>
                             )

@@ -66,7 +66,7 @@ function MoviesLiked (props) {
                         dataSource={movies ? movies : undefined}
                         renderItem={item => (
                             <List.Item>
-                                <MovieCard1 movie={item} user={props.user} />                                
+                                <MovieCard1 movie={item.movie} user={props.user} />                                
                             </List.Item>
                         )}
                     />

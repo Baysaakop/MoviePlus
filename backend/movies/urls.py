@@ -1,4 +1,7 @@
-from .views import GenreViewSet, RatingViewSet, ProductionViewSet, OccupationViewSet, ScoreViewSet, CommentViewSet, ReviewViewSet, ArtistViewSet, MemberViewSet, ActorViewSet, MovieViewSet, SeriesViewSet
+from .views import (
+    GenreViewSet, RatingViewSet, ProductionViewSet, OccupationViewSet, 
+    ScoreViewSet, CommentViewSet, ReviewViewSet, ArtistViewSet, 
+    MemberViewSet, ActorViewSet, MovieViewSet, FilmViewSet, TempFilmViewSet, SeriesViewSet)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -13,5 +16,7 @@ router.register(r'artists', ArtistViewSet, basename='artists')
 router.register(r'members', MemberViewSet, basename='members')
 router.register(r'actors', ActorViewSet, basename='actors')
 router.register(r'movies', MovieViewSet, basename='movies')
+router.register(r'films', FilmViewSet, basename='films')
+router.register(r'tempfilms', TempFilmViewSet, basename='tempfilms')
 router.register(r'series', SeriesViewSet, basename='series')
 urlpatterns = router.urls

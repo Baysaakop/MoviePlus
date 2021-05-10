@@ -3,7 +3,8 @@ const baseUrl = "http://localhost:8000/"
 // const baseUrl = "https://movieplusback.herokuapp.com/"
 
 const api = {
-    movies: baseUrl + 'api/movies/movies',
+    movies: baseUrl + 'api/movies/films',
+    tempfilms: baseUrl + 'api/movies/tempfilms',
     series: baseUrl + 'api/movies/series',
     ratings: baseUrl + 'api/movies/ratings',
     genres: baseUrl + 'api/movies/genres',

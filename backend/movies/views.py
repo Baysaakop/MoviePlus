@@ -2,8 +2,12 @@ import json
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Score, Comment, Review, Artist, Member, Actor, Movie, Series
-from .serializers import GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, ScoreSerializer, CommentSerializer, ReviewSerializer, ArtistSerializer, MemberSerializer, ActorSerializer, MovieSerializer, SeriesSerializer
+from .models import Genre, Rating, Production, Occupation, Score, Comment, Review, Artist, Member, Actor, Movie, Film, TempFilm, Series
+from .serializers import (
+    GenreSerializer, RatingSerializer, ProductionSerializer, OccupationSerializer, 
+    ScoreSerializer, CommentSerializer, ReviewSerializer, ArtistSerializer, 
+    MemberSerializer, ActorSerializer, MovieSerializer, FilmSerializer, TempFilmSerializer, SeriesSerializer
+)
 from rest_framework import viewsets, filters
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -37,7 +41,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Comment.objects.all().order_by('-created_at')        
         movie = self.request.query_params.get('movie', None)
-        series = self.request.query_params.get('series', None)
         review = self.request.query_params.get('review', None)
         if movie is not None:
             movie_obj = Movie.objects.get(id=movie)
@@ -60,13 +63,6 @@ class CommentViewSet(viewsets.ModelViewSet):
             movie.comments.add(comment)
             movie.save()
             score_obj = movie.scores.filter(user=user).first()
-            if score_obj is not None:
-                comment.score = score_obj.score
-        if 'series' in request.data:
-            series = Series.objects.get(id=int(request.data['series']))
-            series.comments.add(comment)
-            series.save()
-            score_obj = series.scores.filter(user=user).first()
             if score_obj is not None:
                 comment.score = score_obj.score
         if 'review' in request.data:
@@ -281,209 +277,266 @@ class ActorViewSet(viewsets.ModelViewSet):
     serializer_class = ActorSerializer
     queryset = Actor.objects.all().order_by('artist__id') 
 
-def calculateMovieScore(movie):
-    total = 0
-    if (movie.scores.count() == 0):
-        return 0
-    for obj in movie.scores.all():
-        total = total + obj.score
-    average = int((total * 10) / movie.scores.count())
-    return average
-        
-
 class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
     queryset = Movie.objects.all().order_by('-created_at')
 
+class FilmViewSet(viewsets.ModelViewSet):
+    serializer_class = FilmSerializer
+    queryset = Film.objects.all()
+
     def get_queryset(self):
-        queryset = Movie.objects.all().order_by('-created_at')
-        unavailable = self.request.query_params.get('unavailable', None)
-        if unavailable is not None:
-            queryset = queryset.filter(is_accepted=False)
-        else:
-            queryset = queryset.filter(is_accepted=True)
+        queryset = Film.objects.all().order_by('-movie__created_at')
         name = self.request.query_params.get('name', None)
         genre = self.request.query_params.get('genre', None)
         yearfrom = self.request.query_params.get('yearfrom', None)
-        yearto = self.request.query_params.get('yearto', None)
-        order = self.request.query_params.get('order', None)
+        yearto = self.request.query_params.get('yearto', None)        
         member = self.request.query_params.get('member', None)
         actor = self.request.query_params.get('actor', None)
-        user = self.request.query_params.get('user', None)        
-        if name is not None:
-            queryset = queryset.filter(name__icontains=name).distinct()
-        if genre is not None:
-            queryset = queryset.filter(genre__id=genre).distinct()
-        if yearfrom is not None:
-            queryset = queryset.filter(releasedate__year__gte=yearfrom).distinct()
-        if yearto is not None:
-            queryset = queryset.filter(releasedate__year__lte=yearto).distinct()
-        if member is not None:
-            queryset = queryset.filter(members__artist__id=member).distinct()
-        if actor is not None:
-            queryset = queryset.filter(actors__artist__id=actor).distinct()
-        if user is not None:            
-            state = self.request.query_params.get('state', None)
-            if state is not None:
-                if state == 'like':                    
-                    queryset = queryset.filter(likes__id=user).distinct() 
-                elif state == 'check':                    
-                    queryset = queryset.filter(checks__id=user).distinct() 
-                elif state == 'watchlist':                    
-                    queryset = queryset.filter(watchlists__id=user).distinct()    
-        if order is not None:
-            if (order == 'created_at'):
-                queryset = queryset.order_by('-created_at')
-            elif (order == 'releasedate'):
-                queryset = queryset.order_by('-releasedate')
-            elif (order == 'duration'):
-                queryset = queryset.order_by('-duration')
-            elif (order == 'name'):
-                queryset = queryset.order_by('name')
-            elif (order == 'score'):
-                queryset = queryset.order_by('-score')
-            elif (order == 'likes'):
-                queryset = queryset.order_by('-likes')
-            elif (order == 'checks'):
-                queryset = queryset.order_by('-checks')
-            elif (order == 'watchlists'):
-                queryset = queryset.order_by('-watchlists')
-            elif (order == 'views'):
-                queryset = queryset.order_by('-views')
+        user = self.request.query_params.get('user', None)                
+        state = self.request.query_params.get('state', None)
+        order = self.request.query_params.get('order', None)
+        queryset = filterMovies(queryset, name, genre, yearfrom, yearto, member, actor, user, state, order)
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.views = instance.views + 1        
-        instance.save()
+        instance.movie.views = instance.movie.views + 1                
+        instance.movie.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    def create(self, request, *args, **kwargs):                     
-        user = Token.objects.get(key=request.data['token']).user                      
-        movie = Movie.objects.create(
-            name=request.data['name'],
-            description=request.data['description'],
-            plot=request.data['plot'],
-            duration=int(request.data['duration']),
-            releasedate=request.data['releasedate'],
-            # is_released=request.data['is_released'],
-            # in_theater=request.data['in_theater'],
-            trailer=request.data['trailer'],
-            created_by=user
-        )
-        if 'is_released' in request.data:
-            if request.data['is_released'] == "true":
-                movie.is_released=True
+    # def create(self, request, *args, **kwargs):                     
+    #     movie = createMovie(request)
+    #     film = Film.objects.create(movie=movie)
+    #     serializer = FilmSerializer(film)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # def update(self, request, *args, **kwargs):                         
+    #     film = self.get_object()                         
+    #     updateMovie(film.movie, request)
+    #     film.save()
+    #     serializer = FilmSerializer(film)
+    #     headers = self.get_success_headers(serializer.data)        
+    #     return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+class TempFilmViewSet(viewsets.ModelViewSet):
+    serializer_class = TempFilmSerializer
+    queryset = TempFilm.objects.all().order_by('-movie__created_at')
+
+    def get_queryset(self):        
+        queryset = TempFilm.objects.all().order_by('-movie__created_at')
+        filmid = self.request.query_params.get('filmid', None)
+        if filmid is not None:
+            if filmid == 0:
+                queryset = TempFilm.objects.filter(filmid=0).order_by('movie__created_at')        
             else:
-                movie.is_released=False
-        if 'in_theater' in request.data:
-            if request.data['in_theater'] == "true":
-                movie.in_theater=True
-            else:
-                movie.in_theater=False
-        if 'poster' in request.data:
-            movie.poster=request.data['poster']
-        if 'landscape' in request.data:
-            movie.landscape=request.data['landscape']        
-        if 'rating' in request.data:            
-            rating = Rating.objects.get(id=int(request.data['rating']))
-            movie.rating=rating   
-        if 'genre' in request.data:            
-            genres = request.data['genre'].split(",")
-            for item in genres:
-                movie.genre.add(int(item))     
-        movie.save()
-        serializer = MovieSerializer(movie)
+                queryset = TempFilm.objects.filter(~Q(filmid=0)).order_by('movie__created_at')        
+        return queryset
+
+    def create(self, request, *args, **kwargs):                             
+        movie = createMovie(request)        
+        tempfilm = TempFilm.objects.create(movie=movie)
+        if 'filmid' in request.data:
+            tempfilm.filmid = int(request.data['filmid'])
+            tempfilm.save()
+        serializer = TempFilmSerializer(tempfilm)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):                         
-        movie = self.get_object()                         
-        user = Token.objects.get(key=request.data['token']).user  
-        movie.updated_by=user
-        if 'description' in request.data:
-            movie.description=request.data['description']
-        if 'plot' in request.data:
-            movie.plot=request.data['plot']
-        if 'duration' in request.data:
-            movie.duration=request.data['duration']
-        if 'releasedate' in request.data:
-            movie.releasedate=request.data['releasedate']
-        if 'trailer' in request.data:
-            movie.trailer=request.data['trailer']
-        if 'poster' in request.data:
-            movie.poster=request.data['poster']
-        if 'landscape' in request.data:
-            movie.landscape=request.data['landscape']
-        if 'is_released' in request.data:
-            movie.is_released=request.data['is_released']
-        if 'in_theater' in request.data:
-            movie.in_theater=request.data['in_theater']
-        if 'rating' in request.data:            
-            rating = Rating.objects.get(id=int(request.data['rating']))
-            movie.rating=rating   
-        if 'genre' in request.data:           
-            movie.genre.clear()   
-            for item in request.data['genre']:
-                movie.genre.add(int(item))             
-        if 'like' in request.data:
-            if user in movie.likes.all():
-                movie.likes.remove(user)
+        tempfilm = self.get_object()         
+        print(request.data)        
+        if 'accept' in request.data:
+            if tempfilm.filmid == 0:
+                film = Film.objects.create(movie=tempfilm.movie)        
+                TempFilm.objects.filter(id=tempfilm.id).delete()
+                return Response(status=status.HTTP_200_OK)
             else:
-                movie.likes.add(user)
-        if 'check' in request.data:
-            if user in movie.checks.all():
-                movie.checks.remove(user)
-            else:
-                movie.checks.add(user)
-        if 'watchlist' in request.data:
-            if user in movie.watchlists.all():
-                movie.watchlists.remove(user)
-            else:
-                movie.watchlists.add(user)
-        if 'score' in request.data:
-            score = int(request.data['score'])
-            user_score = movie.scores.filter(user=user).first()            
-            if user_score is None:
-                user_score = Score.objects.create(
-                    user=user,
-                    score=score
-                )
-                movie.scores.add(user_score)
-            else:
-                if score == 0:
-                    movie.scores.remove(user_score)
-                    user_score.delete()
-                else:
-                    user_score.score = score
-                    user_score.save()
-            movie.score = calculateMovieScore(movie)        
-        if 'artist' in request.data:
-            artist = Artist.objects.get(id=int(request.data['artist']))
-            if 'role' in request.data:                
-                role = int(request.data['role'])
-                member = Member.objects.filter(artist=artist, role__id=role).first()                 
-                if member is None:
-                    member = Member.objects.create(
-                        artist=artist,
-                        role=Occupation.objects.get(id=role)
-                    )
-                if member not in movie.members.all():                                        
-                    movie.members.add(member)                
-            if 'role_name' in request.data:
-                actor = movie.actors.filter(artist=artist).first()
-                if actor is None:
-                    actor, created = Actor.objects.get_or_create(artist=artist, role_name=request.data['role_name'])
-                    movie.actors.add(actor)
-                else:
-                    actor.role_name=request.data['role_name']       
-                    actor.save()             
-        movie.save()
-        serializer = MovieSerializer(movie)
-        headers = self.get_success_headers(serializer.data)        
-        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
-
+                film = Film.objects.get(id=tempfilm.filmid)                
+                film.movie = tempfilm.movie
+                film.save()
+                return Response(status=status.HTTP_200_OK)                
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+ 
 class SeriesViewSet(viewsets.ModelViewSet):
     serializer_class = SeriesSerializer
-    queryset = Series.objects.all().order_by('-created_at')
+    queryset = Series.objects.all()
+
+def calculateScore(item):
+    total = 0
+    if (item.scores.count() == 0):
+        return 0
+    for obj in item.scores.all():
+        total = total + obj.score
+    average = int((total * 10) / item.scores.count())
+    return average
+
+def filterMovies(queryset, name, genre, yearfrom, yearto, member, actor, user, state, order):
+    if name is not None:
+        queryset = queryset.filter(movie__name__icontains=name).distinct()
+    if genre is not None:
+        queryset = queryset.filter(movie__genre__id=genre).distinct()
+    if yearfrom is not None:
+        queryset = queryset.filter(movie__releasedate__year__gte=yearfrom).distinct()
+    if yearto is not None:
+        queryset = queryset.filter(movie__releasedate__year__lte=yearto).distinct()
+    if member is not None:
+        queryset = queryset.filter(movie__members__artist__id=member).distinct()
+    if actor is not None:
+        queryset = queryset.filter(movie__actors__artist__id=actor).distinct()
+    if user is not None and state is not None:                         
+        if state == 'like':                    
+            queryset = queryset.filter(movie__likes__id=user).distinct() 
+        elif state == 'check':                    
+            queryset = queryset.filter(movie__checks__id=user).distinct() 
+        elif state == 'watchlist':                    
+            queryset = queryset.filter(movie__watchlists__id=user).distinct()  
+    if order is not None:
+        if (order == 'created_at'):
+            queryset = queryset.order_by('-movie__created_at')
+        elif (order == 'releasedate'):
+            queryset = queryset.order_by('-movie__releasedate')
+        elif (order == 'duration'):
+            queryset = queryset.order_by('-movie__duration')
+        elif (order == 'name'):
+            queryset = queryset.order_by('movie__name')
+        elif (order == 'score'):
+            queryset = queryset.order_by('-movie__score')
+        elif (order == 'likes'):
+            queryset = queryset.annotate(likes_count=Count('movie__likes')).order_by('-likes_count')
+        elif (order == 'checks'):
+            queryset = queryset.annotate(checks_count=Count('movie__checks')).order_by('-checks_count')
+        elif (order == 'watchlists'):
+            queryset = queryset.annotate(watchlists_count=Count('movie__watchlists')).order_by('-watchlists_count')
+        elif (order == 'views'):
+            queryset = queryset.order_by('-movie__views')
+    return queryset
+
+def createMovie(request):
+    user = Token.objects.get(key=request.data['token']).user                      
+    movie = Movie.objects.create(
+        name=request.data['name'],
+        created_by=user
+    )
+    if 'description' in request.data: 
+        movie.description=request.data['description']
+    if 'plot' in request.data: 
+        movie.plot=request.data['plot']
+    if 'duration' in request.data: 
+        movie.duration=request.data['duration']
+    if 'releasedate' in request.data: 
+        movie.releasedate=request.data['releasedate']
+    if 'trailer' in request.data: 
+        movie.trailer=request.data['trailer']
+    if 'description' in request.data: 
+        movie.description=request.data['description']
+    if 'is_released' in request.data:
+        if request.data['is_released'] == "true":
+            movie.is_released=True
+        else:
+            movie.is_released=False
+    if 'is_playing' in request.data:
+        if request.data['is_playing'] == "true":
+            movie.is_playing=True
+        else:
+            movie.is_playing=False
+    if 'poster' in request.data:
+        movie.poster=request.data['poster']
+    if 'landscape' in request.data:
+        movie.landscape=request.data['landscape']        
+    if 'rating' in request.data:            
+        rating = Rating.objects.get(id=int(request.data['rating']))
+        movie.rating=rating   
+    if 'genre' in request.data:            
+        genres = request.data['genre'].split(",")
+        for item in genres:
+            movie.genre.add(int(item))     
+    movie.save()
+    return movie
+
+def updateMovie(movie, request):
+    user = Token.objects.get(key=request.data['token']).user  
+    movie.updated_by=user
+    if 'name' in request.data:
+        movie.name=request.data['name']
+    if 'description' in request.data:
+        movie.description=request.data['description']
+    if 'plot' in request.data:
+        movie.plot=request.data['plot']
+    if 'duration' in request.data:
+        movie.duration=request.data['duration']
+    if 'releasedate' in request.data:
+        movie.releasedate=request.data['releasedate']
+    if 'trailer' in request.data:
+        movie.trailer=request.data['trailer']
+    if 'poster' in request.data:
+        movie.poster=request.data['poster']
+    if 'landscape' in request.data:
+        movie.landscape=request.data['landscape']
+    if 'is_released' in request.data:
+        movie.is_released=request.data['is_released']
+    if 'is_playing' in request.data:
+        movie.is_playing=request.data['is_playing']
+    if 'rating' in request.data:            
+        rating = Rating.objects.get(id=int(request.data['rating']))
+        movie.rating=rating   
+    if 'genre' in request.data:           
+        movie.genre.clear()   
+        for item in request.data['genre']:
+            movie.genre.add(int(item))             
+    if 'like' in request.data:
+        if user in movie.likes.all():
+            movie.likes.remove(user)
+        else:
+            movie.likes.add(user)
+    if 'check' in request.data:
+        if user in movie.checks.all():
+            movie.checks.remove(user)
+        else:
+            movie.checks.add(user)
+    if 'watchlist' in request.data:
+        if user in movie.watchlists.all():
+            movie.watchlists.remove(user)
+        else:
+            movie.watchlists.add(user)
+    if 'score' in request.data:
+        score = int(request.data['score'])
+        user_score = movie.scores.filter(user=user).first()            
+        if user_score is None:
+            user_score = Score.objects.create(
+                user=user,
+                score=score
+            )
+            movie.scores.add(user_score)
+        else:
+            if score == 0:
+                movie.scores.remove(user_score)
+                user_score.delete()
+            else:
+                user_score.score = score
+                user_score.save()
+        movie.score = calculateMovieScore(movie)        
+    if 'artist' in request.data:
+        artist = Artist.objects.get(id=int(request.data['artist']))
+        if 'role' in request.data:                
+            role = int(request.data['role'])
+            member = Member.objects.filter(artist=artist, role__id=role).first()                 
+            if member is None:
+                member = Member.objects.create(
+                    artist=artist,
+                    role=Occupation.objects.get(id=role)
+                )
+            if member not in movie.members.all():                                        
+                movie.members.add(member)                
+        if 'role_name' in request.data:
+            actor = movie.actors.filter(artist=artist).first()
+            if actor is None:
+                actor, created = Actor.objects.get_or_create(artist=artist, role_name=request.data['role_name'])
+                movie.actors.add(actor)
+            else:
+                actor.role_name=request.data['role_name']       
+                actor.save()             
+    movie.save()
+    return movie
