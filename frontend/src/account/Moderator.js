@@ -1,64 +1,32 @@
-// import { EditOutlined, PlusCircleOutlined, PlusOutlined, ToolOutlined } from '@ant-design/icons';
-// import { Button, Tabs } from 'antd';
-import { Button } from 'antd';
+import { Button, Col, Row } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
-// import ArtistAdd from '../artist/ArtistAdd';
-// import ArtistAddMovie from '../artist/ArtistAddMovie';
-// import ArtistUpdate from '../artist/ArtistUpdate';
-// import ArtistUpdateMovie from '../artist/ArtistUpdateMovie';
-// import MovieAdd from '../movie/MovieAdd';
-// import MovieUpdate from '../movie/MovieUpdate';
-// import SeriesAdd from '../series/SeriesAdd';
 
 function Moderator (props) {
     return (
-        <div>
-            <Link to="/movierequests">
-                <Button type="ghost">Шинэ киноны хүсэлтүүд</Button>
-            </Link>
-            {/* <Tabs defaultActiveKey="1">
-                <Tabs.TabPane tab="Кино" key="1">                    
-                    <Tabs defaultActiveKey="1">
-                        <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
-                            <MovieAdd />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>
-                            <MovieUpdate />
-                        </Tabs.TabPane>
-                    </Tabs>
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="ТВ Цуврал" key="2">                    
-                    <Tabs defaultActiveKey="1">
-                        <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
-                            <SeriesAdd />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>                            
-                        </Tabs.TabPane>
-                    </Tabs>
-                </Tabs.TabPane> 
-                <Tabs.TabPane tab="Уран бүтээлч" key="3">
-                    <Tabs defaultActiveKey="1">
-                        <Tabs.TabPane key="1" tab={<span><PlusOutlined />Нэмэх</span>}>
-                            <ArtistAdd />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key="2" tab={<span><ToolOutlined />Засах/Устгах</span>}>
-                            <ArtistUpdate />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key="3" tab={<span><PlusCircleOutlined />Кино нэмэх</span>}>
-                            <ArtistAddMovie />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane key="4" tab={<span><EditOutlined />Кино засах</span>}>
-                            <ArtistUpdateMovie />
-                        </Tabs.TabPane>
-                    </Tabs>                     
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="Нийтлэл" key="4">             
-                    <Link to="/newreview">
-                        <Button type="primary" icon={<PlusOutlined />}>Нийтлэл бичих</Button>
-                    </Link>       
-                </Tabs.TabPane>
-            </Tabs> */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '40vh' }}>
+            <Row gutter={[16, 16]}>
+                <Col xs={24} sm={24} md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Link to="/movieaddrequests">
+                        <Button size="large" type="ghost" style={{ width: '300px', height: '100px', fontSize: '20px' }}>Шинэ кино</Button>
+                    </Link>
+                </Col>  
+                <Col xs={24} sm={24} md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Link to="/movieupdaterequests">
+                        <Button size="large" type="ghost" style={{ width: '300px', height: '100px', fontSize: '20px' }}>Кино засвар</Button>
+                    </Link> 
+                </Col>  
+                <Col xs={24} sm={24} md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Link to="/artistaddrequests">
+                        <Button size="large" type="ghost" style={{ width: '300px', height: '100px', fontSize: '20px' }}>Шинэ уран бүтээлч</Button>
+                    </Link> 
+                </Col>  
+                <Col xs={24} sm={24} md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Link to="/artistupdaterequests">
+                        <Button size="large" type="ghost" style={{ width: '300px', height: '100px', fontSize: '20px' }}>Уран бүтээлч засвар</Button>
+                    </Link> 
+                </Col>             
+            </Row>
         </div>
     )
 }

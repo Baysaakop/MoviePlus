@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import api from '../api';
 import AccountDetail from './AccountDetail';
-import { CheckCircleOutlined, CloseCircleOutlined, PlusCircleOutlined, SettingOutlined, UserOutlined, LoadingOutlined, HeartOutlined, MailOutlined, PhoneOutlined, CrownOutlined, InfoCircleOutlined, StarOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, PlusCircleOutlined, UserOutlined, LoadingOutlined, HeartOutlined, MailOutlined, PhoneOutlined, CrownOutlined, InfoCircleOutlined, StarOutlined, FileAddOutlined } from '@ant-design/icons';
 import Logout from './Logout';
 import Moderator from './Moderator';
 import MoviesLiked from '../movie/MoviesLiked';
@@ -117,10 +117,6 @@ function Profile (props) {
                             </Tabs.TabPane>                        
                             <Tabs.TabPane tab={<span><HeartOutlined style={{ fontSize: '18px' }} />Таалагдсан</span>} key="2">                                
                                 <Typography.Title level={5}>Таалагдсан кино ({likesCount})</Typography.Title>
-                                {/* <Radio.Group defaultValue="m" buttonStyle="solid">
-                                    <Radio.Button value="m">Кино</Radio.Button>
-                                    <Radio.Button value="s">ТВ Цуврал</Radio.Button>
-                                </Radio.Group> */}
                                 <MoviesLiked token={props.token} state="like" user={user} setCount={(count) => setLikesCount(count)} />                                                 
                             </Tabs.TabPane>
                             <Tabs.TabPane tab={<span><CheckCircleOutlined style={{ fontSize: '18px' }} />Үзсэн</span>} key="3">                            
@@ -133,11 +129,11 @@ function Profile (props) {
                             </Tabs.TabPane>
                             <Tabs.TabPane tab={<span><StarOutlined style={{ fontSize: '18px' }} />Үнэлгээ өгсөн</span>} key="5">                                                              
                                 <Typography.Title level={5}>Үнэлгээ өгсөн кино ({watchlistsCount})</Typography.Title>
-                                <MoviesLiked token={props.token} state="watchlist" user={user} setCount={(count) => setWatchlistsCount(count)} />                  
+                                <MoviesLiked token={props.token} state="score" user={user} setCount={(count) => setWatchlistsCount(count)} />                  
                             </Tabs.TabPane>                        
                             { user.profile.role === "1" || user.profile.role === "2" ? (
                                 <>
-                                    <Tabs.TabPane tab={<span><SettingOutlined style={{ fontSize: '18px' }} />Модератор</span>} key="7">
+                                    <Tabs.TabPane tab={<span><FileAddOutlined style={{ fontSize: '18px' }} />Хүсэлтүүд</span>} key="7">
                                         <Moderator user={user} />      
                                     </Tabs.TabPane>
                                 </>

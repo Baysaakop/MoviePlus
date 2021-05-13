@@ -1,0 +1,11 @@
+.trailer .ant-modal-body {
+    padding: 40px 0 0 0;
+}
+
+.trailer .ant-modal-content {
+    background: rgba(0, 0, 0, 0);
+}
+
+.trailer .ant-modal-close {
+    color: #d1d1d1;
+}

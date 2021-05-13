@@ -9,38 +9,49 @@ import Profile from './account/Profile';
 // import PasswordResetConfirm from './account/PasswordResetConfirm';
 import MovieList from './movie/MovieList';
 import MovieDetail from './movie/MovieDetail';
+import MovieAdd from './movie/MovieAdd';
+import MovieUpdate from './movie/MovieUpdate';
+import MovieAddRequests from './movie/MovieAddRequests';
+import MovieUpdateRequests from './movie/MovieUpdateRequests';
 import ArtistList from './artist/ArtistList';
 import ArtistDetail from './artist/ArtistDetail';
-import About from './containers/About';
+import ArtistAdd from './artist/ArtistAdd';
+import ArtistUpdate from './artist/ArtistUpdate';
+import ArtistAddRequests from './artist/ArtistAddRequests';
+import ArtistUpdateRequests from './artist/ArtistUpdateRequests';
 import SeriesList from './series/SeriesList';
 import ReviewList from './reviews/ReviewList';
 import ReviewDetail from './reviews/ReviewDetail';
 import Page404 from './components/Page404';
-import ReviewAdd from './reviews/ReviewAdd';
-import MovieAdd from './movie/MovieAdd';
-import MovieUpdate from './movie/MovieUpdate';
-import MovieRequests from './movie/MovieRequests';
+import Add from './containers/Add';
+// import ReviewAdd from './reviews/ReviewAdd';
 
 function BaseRouter () {
     return (
         <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/about" component={About} />
+            <Route exact path="/add" component={Add} />
+            {/* <Route exact path="/about" component={About} /> */}
             {/* Movie urls */}
             <Route exact path="/movies" component={MovieList} />
             <Route exact path="/movies/:movieID" component={MovieDetail} />
             <Route exact path="/newmovie" component={MovieAdd} />
             <Route exact path="/updatemovie/:movieID" component={MovieUpdate} />
-            <Route exact path="/movierequests" component={MovieRequests} />
+            <Route exact path="/movieaddrequests" component={MovieAddRequests} />
+            <Route exact path="/movieupdaterequests" component={MovieUpdateRequests} />
             {/* Artist urls */}
             <Route exact path="/artists" component={ArtistList} />
             <Route exact path="/artists/:artistID" component={ArtistDetail} />
+            <Route exact path="/newartist" component={ArtistAdd} />
+            <Route exact path="/updateartist/:artistID" component={ArtistUpdate} />
+            <Route exact path="/artistaddrequests" component={ArtistAddRequests} />            
+            <Route exact path="/artistupdaterequests" component={ArtistUpdateRequests} />
             {/* Series urls */}
             <Route exact path="/series" component={SeriesList} />
             {/* Reviews urls */}
             <Route exact path="/reviews" component={ReviewList} />
             <Route exact path="/reviews/:reviewID" component={ReviewDetail} />    
-            <Route exact path="/newreview" component={ReviewAdd} />
+            {/* <Route exact path="/newreview" component={ReviewAdd} /> */}
             {/* User urls */}
             <Route exact path="/login" component={Login} />
             {/* <Route exact path="/logout" component={Logout} />

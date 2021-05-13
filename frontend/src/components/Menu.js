@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, Avatar, Typography, Dropdown, Menu } from 'antd';
+import { Button, Grid, Avatar, Typography, Dropdown, Menu, Tooltip } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
-import { BellFilled, MenuOutlined, PlusCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { BellFilled, MenuOutlined, PlusCircleOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 import axios from 'axios';
@@ -45,8 +45,8 @@ function CustomMenu (props) {
     function onScroll() {                
         if (window.scrollY > 0) {
             setScrollTop(false)
-        } else {
-            if (props.location.pathname === '/') {
+        } else {                        
+            if (props.location.pathname === '/' || (props.location.pathname.toString().includes('movies') && props.location.pathname.toString() !== '/movies' && props.location.pathname.toString() !== '/movies/')) {
                 setScrollTop(true)                
             } else {
                 setScrollTop(false)
@@ -153,35 +153,22 @@ function CustomMenu (props) {
                     <div style={{ width: '20%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                         { user ? (
                             <div>
-                                <Dropdown 
-                                    trigger={['click']}
-                                    overlay={
-                                        <Menu>
-                                            <Menu.Item key="1">
-                                                <Link to="/newmovie">Кино нэмэх</Link>
-                                            </Menu.Item>
-                                            <Menu.Item key="2">
-                                                <Link to="/newseries">ТВ Цуврал нэмэх</Link>
-                                            </Menu.Item>
-                                            <Menu.Item key="3">
-                                                <Link to="/newartist">Уран бүтээлч нэмэх</Link>
-                                            </Menu.Item>
-                                            <Menu.Item key="4">
-                                                <Link to="/newreview">Нийтлэл бичих</Link>
-                                            </Menu.Item>
-                                        </Menu>
-                                    }
-                                >
-                                    <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<PlusCircleOutlined />}></Button>
-                                </Dropdown>
-                                <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<BellFilled />}></Button>
+                                <Tooltip title="Нэмэх">
+                                    <Link to="/add">
+                                        <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<PlusCircleOutlined />}></Button>
+                                    </Link>
+                                </Tooltip>
+                                <Tooltip title="Тусламж">
+                                    <Link to="/help">
+                                        <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<QuestionCircleOutlined />}></Button>
+                                    </Link>
+                                </Tooltip>
                                 <Link to="/profile">                                    
                                     { user.profile.avatar ?                                         
                                         <Avatar style={{ marginBottom: '4px' }} src={user.profile.avatar} size="large" /> 
                                     :                                         
                                         <Avatar style={{ backgroundColor: '#8e44ad', color: '#fff', fontWeight: 'bold', marginBottom: '4px' }} size="large">{user.username.slice(0, 1)}</Avatar>                                      
-                                    }
-                                    {/* <Typography.Text style={{ marginLeft: '8px', fontSize: '16px', color: scrollTop || props.darkMode ? '#fff' : '#000' }}>{user.username}</Typography.Text> */}
+                                    }                                    
                                 </Link>
                             </div>
                         ) : (

@@ -1,7 +1,10 @@
 from .views import (
     GenreViewSet, RatingViewSet, ProductionViewSet, OccupationViewSet, 
-    ScoreViewSet, CommentViewSet, ReviewViewSet, ArtistViewSet, 
-    MemberViewSet, ActorViewSet, MovieViewSet, FilmViewSet, TempFilmViewSet, SeriesViewSet)
+    ScoreViewSet, ReviewViewSet,
+    MemberViewSet, ActorViewSet, MovieViewSet, SeriesViewSet)
+from .artistViews import ArtistViewSet, TempArtistViewSet
+from .filmViews import FilmViewSet, TempFilmViewSet
+from .commentViews import CommentViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -13,6 +16,7 @@ router.register(r'scores', ScoreViewSet, basename='scores')
 router.register(r'comments', CommentViewSet, basename='comments')
 router.register(r'reviews', ReviewViewSet, basename='reviews')
 router.register(r'artists', ArtistViewSet, basename='artists')
+router.register(r'tempartists', TempArtistViewSet, basename='tempartists')
 router.register(r'members', MemberViewSet, basename='members')
 router.register(r'actors', ActorViewSet, basename='actors')
 router.register(r'movies', MovieViewSet, basename='movies')

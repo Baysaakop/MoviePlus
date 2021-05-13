@@ -19,7 +19,7 @@ function MoviesLiked (props) {
 
     function getMovies() {
         setLoading(true)        
-        let url = api.movies + "?user=" + props.user.id + "&state=" + props.state
+        let url = api.films + "?user=" + props.user.id + "&state=" + props.state
         axios({
             method: 'GET',
             url: `${url}&page=${page}`,            
@@ -60,13 +60,13 @@ function MoviesLiked (props) {
                             md: 4,
                             lg: 4,
                             xl: 5,
-                            xxl: 5,
+                            xxl: 6,
                         }}                                      
                         style={{ marginTop: '16px' }}                
                         dataSource={movies ? movies : undefined}
                         renderItem={item => (
                             <List.Item>
-                                <MovieCard1 movie={item.movie} user={props.user} />                                
+                                <MovieCard1 item={item} user={props.user} />                                
                             </List.Item>
                         )}
                     />

@@ -10,7 +10,6 @@ import { connect } from 'react-redux'
 import blank from './blank.jpg'
 
 function MovieCard1 (props) {
-
     const [visible, setVisible] = useState(false)
     const [filmId, setFilmId] = useState()
     const [movie, setMovie] = useState()
@@ -57,7 +56,7 @@ function MovieCard1 (props) {
         if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${filmId}/`,
+                url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     like: true
@@ -86,7 +85,7 @@ function MovieCard1 (props) {
         if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${filmId}/`,
+                url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     check: true
@@ -114,7 +113,7 @@ function MovieCard1 (props) {
         if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${filmId}/`,
+                url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     watchlist: true
@@ -142,7 +141,7 @@ function MovieCard1 (props) {
         if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${filmId}/`,
+                url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     score: value * 2
@@ -174,10 +173,14 @@ function MovieCard1 (props) {
                 className="moviecard1"
                 hoverable 
                 cover={
-                    <div className="container">
-                        <Link to={`/movies/${filmId}`}>
-                            <img className="poster" alt={movie.name} src={movie.poster ? movie.poster : blank} style={{ opacity: '0.9' }} />
-                        </Link>
+                    <div className="container">                        
+                        <Link to={`/movies/${filmId}`}>                             
+                            <div style={{ width: '100%', height: '100%' }}>
+                                <div style={{ position: 'relative', paddingBottom: '150%', overflow: 'hidden', width: '100%', height: '100%' }}>
+                                    <img className="poster" alt={movie.name} src={movie.poster ? movie.poster : blank} style={{ opacity: '1', width: '100%', height: '100%', position: 'absolute' }} />                                                     
+                                </div>
+                            </div>
+                        </Link>                        
                         <div className="overlay-more">
                             <div>
                                 <Button type="ghost" shape="circle" icon={<MoreOutlined />} onClick={onMore} />

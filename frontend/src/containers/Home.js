@@ -62,14 +62,14 @@ function Home (props) {
             <div style={{ padding: getPadding(), marginTop: '16px' }}>   
                 <Row gutter={[32, 16]}>
                     <Col xs={24} sm={24} md={24} lg={24}>
-                        <div style={{ margin: '16px 0' }}>
+                        <div style={{ margin: '24px 0' }}>
                             <MoviesRow title="ШИНЭЭР НЭМЭГДСЭН" type="created_at" user={user} getMovieCount={getMovieCount} />
                         </div>
-                        <div style={{ margin: '16px 0' }}>
+                        <div style={{ margin: '24px 0' }}>
                             <MoviesRow title="ӨНДӨР ҮНЭЛГЭЭТЭЙ" type="score" user={user} />
                         </div>
-                        <div style={{ margin: '16px 0' }}>
-                            <MoviesRow title="ОДОО ГАРЧ БУЙ" type="releasedate" user={user} />
+                        <div style={{ margin: '24px 0' }}>
+                            <MoviesRow title="ШИНЭЭР НЭЭЛТЭЭ ХИЙСЭН" type="releasedate" user={user} />
                         </div>
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={6}>

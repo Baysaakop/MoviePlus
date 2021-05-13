@@ -200,22 +200,4 @@ body {
     background-color: rgba(0, 0, 0, 0);
 }
 
-.ant-modal-body {
-    padding: 40px 0 0 0;
-}
 
-.ant-modal-content {
-    background: rgba(0, 0, 0, 0);
-}
-
-.ant-modal-close {
-    color: #d1d1d1;
-}
-
-/* .ant-select-dropdown {
-    background-color: #161b22;    
-}
-
-.layout-dark > .ant-select-item {    
-    color: rgba(255, 255, 255, 0.85);
-} */

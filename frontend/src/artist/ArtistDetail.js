@@ -2,12 +2,13 @@ import { Grid, Col, message, Row, Spin, Typography, Button, Tooltip } from 'antd
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { FacebookFilled, InstagramOutlined, LoadingOutlined, TwitterOutlined } from '@ant-design/icons';
+import { FacebookFilled, InstagramOutlined, LoadingOutlined, ToolOutlined, TwitterOutlined } from '@ant-design/icons';
 import '../movie/MovieDetail.css';
 import { connect } from "react-redux";
 import Filmography from './Filmography';
 import moment from 'moment'
 import '../components/CustomFooter.css'
+import { Link } from 'react-router-dom';
 
 const { useBreakpoint } = Grid;
 
@@ -91,6 +92,9 @@ function ArtistDetail (props) {
                             <Typography.Text style={{ fontSize: '16px' }}>Монгол</Typography.Text>
                             {/* <Typography.Title level={4} style={{ margin: '16px 0 0 0' }}>Хүйс</Typography.Title>
                             <Typography.Text style={{ fontSize: '16px' }}>{artist.gender && artist.gender === 'm' ? 'Эр' : artist.gender === 'f' ? 'Эм' : '--'}</Typography.Text> */}
+                            <Link to={`/updateartist/${artist.id}`}>
+                                <Button size="large" block type="ghost" icon={<ToolOutlined />}>Мэдээлэл засах</Button> 
+                            </Link> 
                         </Col>
                         <Col xs={24} sm={16} md={16} lg={16} xl={18}>
                             <div style={{ borderRadius: '5px', height: '100%' }}>

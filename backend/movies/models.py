@@ -72,12 +72,29 @@ class Artist(models.Model):
     avatar = models.ImageField(upload_to='artists/%Y/%m/%d', null=True, blank=True)
     views = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, null=True, blank=True, related_name="artist_likes")
-    follows = models.ManyToManyField(User, null=True, blank=True, related_name="artist_follows")  
-    is_accepted = models.BooleanField(default=False)
+    follows = models.ManyToManyField(User, null=True, blank=True, related_name="artist_follows")      
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='artist_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)      
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='artist_updated_by')
     updated_at = models.DateTimeField(auto_now=True, null=True)    
+
+    def __str__(self):
+        return self.name
+
+class TempArtist(models.Model):
+    name = models.CharField(max_length=100)
+    firstname = models.CharField(max_length=50, blank=True, null=True)
+    lastname = models.CharField(max_length=50, blank=True, null=True)
+    biography = models.TextField(blank=True, null=True)    
+    birthday = models.DateField(auto_now=False, blank=True, null=True)
+    gender = models.CharField(max_length=10, blank=True, null=True)    
+    occupation = models.ManyToManyField(Occupation)    
+    avatar = models.ImageField(upload_to='artists/%Y/%m/%d', null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='tempartist_created_by')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)      
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='tempartist_updated_by')
+    updated_at = models.DateTimeField(auto_now=True, null=True)    
+    artistid = models.IntegerField(default=0) # 0. Create 1. Update /artistid/
 
     def __str__(self):
         return self.name

@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Form, Input, Row, Col, DatePicker, Select, Popconfirm, Button, message, Spin } from 'antd';
+import { Grid, Breadcrumb, Spin, Result, Typography, Form, Input, Row, Col, DatePicker, Select, Popconfirm, Button, message } from 'antd';
 import ImageUpload from '../components/ImageUpload';
 import axios from 'axios';
 import api from '../api';
-import { DeleteOutlined, ToolOutlined } from '@ant-design/icons';
+import { LoadingOutlined, ToolOutlined } from '@ant-design/icons';
 import { connect } from "react-redux";
 import moment from 'moment';
-import Filmography from './Filmography';
+import { Link } from 'react-router-dom';
 
-const { TextArea, Search } = Input;
+const { useBreakpoint } = Grid;
+const { TextArea } = Input;
 const { Option } = Select;
+const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function ArtistUpdate (props) {
-    const [form] = Form.useForm();
-    const [loading, setLoading] = useState();
-    const [artists, setArtists] = useState();
-    const [image, setImage] = useState(); 
-    const [occupations, setOccupations] = useState(); 
-    const [selection, setSelection] = useState(); 
+    const screens = useBreakpoint()
+    const [form] = Form.useForm()
+    const [loading, setLoading] = useState()
+    const [artist, setArtist] = useState()
+    const [image, setImage] = useState()
+    const [occupations, setOccupations] = useState()
 
     useEffect(() => {
         axios({
@@ -30,37 +32,115 @@ function ArtistUpdate (props) {
         .catch(err => {
             console.log(err.message);
         }) 
-    }, [])
+        getArtist()
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    function onArtistSearch(value) {                
+    function getArtist() {        
         setLoading(true)
+        const id = props.match.params.artistID;
+        const url = api.artists + "/" + id + "/";  
         axios({
             method: 'GET',
-            url: api.artists + "?name=" + value
+            url: url,
+            headers: {
+                'Content-Type': 'application/json'                
+            }
         })
-        .then(res => {                        
-            setArtists(res.data.results);        
-            setLoading(false)    
-        })        
+        .then(res => {
+            let target = res.data  
+            setArtist(target)
+            setLoading(false)
+        })
         .catch(err => {
-            console.log(err.message);
-        })      
+            message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
+        })
     }
 
-    function selectArtist (value) {                        
-        const target = artists.find(x => x.id === parseInt(value))             
-        console.log(target)           
-        form.setFieldsValue({
-            name: target.name !== null ? target.name : "",
-            lastname: target.lastname !== null ? target.lastname : "",
-            firstname: target.firstname !== null ? target.firstname : "",
-            biography: target.biography !== null ? target.biography : "",
-            occupation: target.occupation  !== null && target.occupation.length > 0 ? getIDsFromArray(target.occupation) : undefined,                                               
-            birthday: target.birthday !== null ? moment(target.birthday) : undefined,
-            gender: target.gender !== null ? target.gender : undefined                                                              
-        })     
-        setImage(target.avatar)        
-        setSelection(target)
+    function onImageSelected (path) {        
+        setImage(path);
+    }
+
+    function onFinish(values) {        
+        setLoading(true)
+        let count = 0
+        var formData = new FormData();
+        if (values.name) {
+            formData.append('name', values.name)
+            count++
+        }
+        if (values.lastname && values.lastname !== null) {
+            formData.append('lastname', values.lastname)
+            count++
+        }
+        if (values.firstname && values.firstname !== null) {
+            formData.append('firstname', values.firstname)
+            count++
+        }
+        if (values.birthday && values.birthday !== null) {
+            formData.append('birthday', moment(values.birthday).format("YYYY-MM-DD"))
+            count++
+        }
+        if (values.gender && values.gender !== null) {
+            formData.append('gender', values.gender)
+            count++
+        }
+        if (values.biography && values.biography !== null) {
+            formData.append('biography', values.biography)
+            count++
+        }
+        if (values.occupation && values.occupation !== null) {
+            formData.append('occupation', values.occupation)
+            count++
+        }
+        if (image && image !== null) {
+            formData.append('avatar', image)
+            count++
+        }
+        if (count > 0) {
+            formData.append('token', props.token)
+            formData.append('artistid', artist.id)
+            for (var pair of formData.entries()) {
+                console.log(pair[0]+ ', '+ pair[1])
+            }
+            axios({
+                method: 'POST',
+                url: `${api.tempartists}/`,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Token ${props.token}`            
+                }
+            }).then(res => {                        
+                if (res.status === 201 || res.status === 200) {                
+                    message.info("Хүсэлтийг хүлээж авлаа.")
+                    form.resetFields()
+                    setImage(undefined)
+                    setLoading(false)
+                }             
+            }).catch(err => {   
+                message.error("Амжилтгүй боллоо.")
+                console.log(err)
+                setLoading(false)
+            })
+        } else {
+            message.warning("Дор хаяж нэг талбарыг өөрчлөх хэрэгтэй.")
+        }                  
+    }
+
+    function getPadding() {
+        if (screens.xxl) {
+            return '16px 15%'
+        } else if (screens.xl) {
+            return '16px 10%'
+        } else if (screens.lg) {
+            return '16px 8%'
+        } else if (screens.md) {
+            return '16px 5%'
+        } else if (screens.sm) {
+            return '16px 5%'
+        } else if (screens.xs) {
+            return '16px 5%'
+        }
     }
 
     function getIDsFromArray (array) {
@@ -71,220 +151,115 @@ function ArtistUpdate (props) {
         return result
     }
 
-    function compareM2M (ids, objects) {
-        if (ids.length !== objects.length) {
-            return false;
-        }
-        let i;
-        for (i = 0; i < ids.length; i++) {
-            if (parseInt(ids[i]) !== parseInt(objects[i].id)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    function onImageSelected (path) {        
-        setImage(path);
-    }
-
-    function onFinish(values) {        
-        if (selection) {
-            var formData = new FormData();
-            if (values.name && values.name !== selection.lastname) {
-                formData.append('name', values.name);
-            }
-            if (values.lastname && values.lastname !== selection.lastname) {
-                formData.append('lastname', values.lastname);
-            }
-            if (values.firstname && values.firstname !== selection.firstname) {
-                formData.append('firstname', values.firstname);
-            }
-            if (values.birthday && moment(values.birthday).format("YYYY-MM-DD") !== selection.birthday) {
-                formData.append('birthday', moment(values.birthday).format("YYYY-MM-DD"));
-            }
-            if (values.gender && values.gender !== selection.gender) {
-                formData.append('gender', values.gender);
-            }
-            if (values.biography && values.biography !== selection.biography) {
-                formData.append('biography', values.biography);
-            }
-            if (values.occupation && !compareM2M(values.occupation, selection.occupation)) {                                
-                formData.append('occupation', values.occupation);
-            }
-            if (image && image !== selection.avatar) {
-                formData.append('avatar', image);
-            }
-            formData.append('token', props.token);
-            axios({
-                method: 'PUT',
-                url: `${api.artists}/${selection.id}/`,
-                data: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Token ${props.token}`            
-                }
-            }).then(res => {                        
-                if (res.status === 201 || res.status === 200) {                
-                    message.info("Амжилттай");
-                }             
-            }).catch(err => {   
-                message.error("Амжилтгүй"); 
-                console.log(err);            
-            })
-        } else {
-            message.warning("Та эхлээд засварлах уран бүтээлчээ сонгоно уу!")
-        }              
-    }
-
-    function onDelete() {
-        if (selection) {
-            axios({
-                method: 'DELETE',
-                url: `${api.artists}/${selection.id}/`                
-            })            
-            .then(res => {                
-                if (res.status === 200 || res.status === 204) {
-                    message.info("Устгалаа.")   
-                }                        
-                form.resetFields()             
-            })
-            .catch(err => {                            
-                message.error("Амжилтгүй боллоо.")
-            }) 
-        } else {
-            message.warning("Та эхлээд засварлах уран бүтээлчээ сонгоно уу!")
-        }   
-    }
-
     return (
-        <div>
-            <Row gutter={16}>
-                <Col sm={24} md={12}>
-                    <Typography.Text>Уран бүтээлч хайх:</Typography.Text>   
-                    <Search placeholder="Уран бүтээлчийн нэрийг бичиж хайна уу" onSearch={onArtistSearch} enterButton style={{ margin: '8px 0' }} />
-                </Col>
-                <Col sm={24} md={12}>
-                    <Typography.Text>Уран бүтээлч сонгох:</Typography.Text>   
+        <div style={{ marginTop: '80px', minHeight: '80vh' }}>
+            <div style={{ padding: getPadding() }}>
+                <Breadcrumb>
+                    <Breadcrumb.Item>
+                        <Link to="/">Нүүр</Link>
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item>
+                        <Link to="/artists">Уран бүтээлч</Link>
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item>
+                        Уран бүтээлч засах
+                    </Breadcrumb.Item>
+                </Breadcrumb>
+            </div>
+            { props.token ? (
+                <div style={{ padding: getPadding() }}>
                     { loading ? (
-                        <div style={{ width: '100%', height: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Spin />
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+                            <Spin indicator={loadingIcon} tip="Уншиж байна..." />
                         </div>
-                    ) : (
-                        <Select
-                            showSearch                
-                            style={{ width: '100%', margin: '8px 0' }}
-                            placeholder="Уран бүтээлч сонгоно уу"                
-                            onSelect={selectArtist}
-                            optionFilterProp="children"                            
-                        >
-                            { artists ? (
-                                <>
-                                    {artists.map(item => {
-                                        return (
-                                            <Option key={item.id}>{item.name}</Option>
-                                        )
-                                    })}
-                                </>
-                            ) : (
-                                <></>
-                            )}
-                        </Select> 
-                    )}                    
-                </Col>
-            </Row>             
-            { selection ? (
-                <Form layout="vertical" form={form} onFinish={onFinish}>
-                    <Row gutter={[16, 16]}>
-                        <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="name" label="Овог Нэр:" rules={[{ required: true, message: 'Та киноны нэрийг оруулна уу!' }]}>
-                                <Input />
-                            </Form.Item> 
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="lastname" label="Овог:">
-                                <Input />
-                            </Form.Item>  
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="firstname" label="Нэр:">
-                                <Input />
-                            </Form.Item>  
-                        </Col>
-                    </Row> 
-                    <Row gutter={[16, 16]}>
-                        <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="birthday" label="Төрсөн өдөр:">
-                                <DatePicker style={{ width: '100%' }} />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="gender" label="Хүйс:">
-                                <Select
-                                    showSearch                                
-                                    placeholder="Хүйс сонгох"                                                
-                                    optionFilterProp="children"                                
-                                >
-                                    <Option key="m">Эр</Option>
-                                    <Option key="f">Эм</Option>
-                                </Select> 
-                            </Form.Item>  
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="occupation" label="Мэргэжил:">
-                                <Select                                
-                                    showSearch                                
-                                    mode="multiple"
-                                    placeholder="Мэргэжил сонгох"                                                
-                                    optionFilterProp="children"                                
-                                >
-                                    { occupations ? (
-                                        <>
-                                            {occupations.map(item => {
-                                                return (
-                                                    <Option key={item.id}>{item.name}</Option>
-                                                )
-                                            })}
-                                        </>
-                                    ) : (
-                                        <></>
-                                    )}
-                                </Select>           
-                            </Form.Item>  
-                        </Col>
-                    </Row>             
-                    <Row gutter={[16, 16]}>
-                        <Col xs={24} sm={24} md={24} lg={8}>
-                            <Form.Item name="avatar" label="Зураг:">                               
-                                <ImageUpload image={image} onImageSelected={onImageSelected} height="150px" width="150px" />                        
-                            </Form.Item>
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={16}>
-                            <Form.Item name="biography" label="Намтар:">
-                                <TextArea rows={8} />
-                            </Form.Item> 
-                        </Col>
-                    </Row>   
-                    <Form.Item label="Уран бүтээлүүд">
-                        <Filmography id={selection.id} />
-                    </Form.Item>                    
-                    <Form.Item>
-                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                            <Popconfirm title="Засах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
-                                <Button type="primary" icon={<ToolOutlined />} style={{ marginRight: '8px' }}>
-                                    Засах   
-                                </Button>
-                            </Popconfirm>
-                            <Popconfirm title="Устгах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={onDelete}>
-                                <Button danger type="primary" icon={<DeleteOutlined />}>
-                                    Устгах
-                                </Button>
-                            </Popconfirm>
-                        </div>                                        
-                    </Form.Item>                                 
-                </Form>
+                    ) : artist ? (
+                        <>
+                            <Typography.Title level={3}>Уран бүтээлч засах</Typography.Title>
+                            <Form layout="vertical" form={form} onFinish={onFinish}>
+                                <Row gutter={[16, 16]}>
+                                    <Col xs={24} sm={8} md={8} lg={8} xl={6}>
+                                        <Form.Item name="avatar" label="Зураг:">                               
+                                            <ImageUpload image={artist.avatar} onImageSelected={onImageSelected} height="300px" width="200px" />                        
+                                        </Form.Item>
+                                        <Form.Item name="birthday" label="Төрсөн өдөр:">
+                                            <DatePicker style={{ width: '100%' }} defaultValue={artist.birthday ? moment(artist.birthday) : undefined}/>
+                                        </Form.Item>
+                                        <Form.Item name="gender" label="Хүйс:">
+                                            <Select
+                                                defaultValue={artist.gender ? artist.gender : undefined}
+                                                showSearch                                
+                                                placeholder="Хүйс сонгох"                                                
+                                                optionFilterProp="children"                                
+                                            >
+                                                <Option key="m">Эр</Option>
+                                                <Option key="f">Эм</Option>
+                                            </Select> 
+                                        </Form.Item>
+                                    </Col>
+                                    <Col xs={24} sm={24} md={24} lg={16} xl={18}>
+                                        <Form.Item name="name" label="Овог Нэр:">
+                                            <Input placeholder="А.Бат-Эрдэнэ" defaultValue={artist.name ? artist.name : ""} />
+                                        </Form.Item> 
+                                        <Row gutter={[16, 16]}>
+                                            <Col xs={24} sm={24} md={24} lg={12}>
+                                                <Form.Item name="lastname" label="Овог:">
+                                                    <Input placeholder="Анх-Эрдэнэ" defaultValue={artist.lastname ? artist.lastname : ""} />
+                                                </Form.Item>  
+                                            </Col>
+                                            <Col xs={24} sm={24} md={24} lg={12}>
+                                                <Form.Item name="firstname" label="Нэр:">
+                                                    <Input placeholder="Бат-Эрдэнэ" defaultValue={artist.firstname ? artist.firstname : ""} />
+                                                </Form.Item>  
+                                            </Col>                                            
+                                        </Row>
+                                        <Form.Item name="occupation" label="Мэргэжил:">
+                                            <Select
+                                                defaultValue={artist.occupation ? getIDsFromArray(artist.occupation) : undefined}
+                                                showSearch                                
+                                                mode="multiple"
+                                                placeholder="Мэргэжил сонгох"                                                
+                                                optionFilterProp="children"                                
+                                            >
+                                                { occupations ? (
+                                                    <>
+                                                        {occupations.map(item => {
+                                                            return (
+                                                                <Option key={item.id}>{item.name}</Option>
+                                                            )
+                                                        })}
+                                                    </>
+                                                ) : (
+                                                    <></>
+                                                )}
+                                            </Select>           
+                                        </Form.Item>  
+                                        <Form.Item name="biography" label="Намтар:">
+                                            <TextArea rows={10} defaultValue={artist.biography ? artist.biography : ""} />
+                                        </Form.Item> 
+                                    </Col>
+                                </Row>             
+                                <Form.Item>
+                                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                        <Popconfirm title="Засах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
+                                            <Button type="primary" icon={<ToolOutlined />} style={{ marginRight: '8px' }}>
+                                                Засах   
+                                            </Button>
+                                        </Popconfirm>
+                                    </div>                                      
+                                </Form.Item>                                 
+                            </Form>
+                        </>
+                    ) : <></>}
+                </div>
             ) : (
-                <></>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+                    <Result
+                        status="403"
+                        title="403"
+                        subTitle="Уучлаарай, та эхлээд системд нэвтэрнэ үү."
+                        extra={<Button type="primary" href="/login">Нэвтрэх цонх руу шилжих</Button>}
+                    />
+                </div>
             )}            
         </div>
     )

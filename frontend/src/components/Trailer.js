@@ -1,4 +1,5 @@
 import { Grid, Modal } from "antd"
+import './Trailer.css'
 
 const { useBreakpoint } = Grid
 
@@ -40,6 +41,7 @@ function Trailer (props) {
     return (
         <div>
             <Modal 
+                className="trailer"
                 centered                                                                                                                                 
                 visible={true}
                 footer={null}                    

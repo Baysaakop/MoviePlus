@@ -26,19 +26,19 @@ function MovieList(props) {
     const [name, setName] = useState()
     const [genres, setGenres] = useState()    
     const [genre, setGenre] = useState(0)    
-    const [order, setOrder] = useState('created_at')  
+    const [order, setOrder] = useState(props.location.search.toString().length > 0 ? props.location.search.toString().split("=")[1] : 'created_at')  
     const [yearFrom, setYearFrom] = useState(1900) 
     const [yearTo, setYearTo] = useState(moment().year()) 
 
-    useEffect(() => {
+    useEffect(() => {  
         if (!genres) {
             getGenres()
         }
         if (!user) {
             getUser()
         }
-       getMovies()
-    }, [name, genre, page, order])   // eslint-disable-line react-hooks/exhaustive-deps
+        getMovies(name, genre, page, order)       
+    }, [props.location.search, name, genre, page, order])   // eslint-disable-line react-hooks/exhaustive-deps    
 
     function getGenres() {
         axios({
@@ -71,9 +71,9 @@ function MovieList(props) {
         }
     }
 
-    function getMovies() {
+    function getMovies(name, genre, page, order) {
         setLoading(true)
-        var url = api.movies + "?"
+        var url = api.films + "?"
         var params = []
         if (name && name.length > 0) {
             params.push("name=" + name)

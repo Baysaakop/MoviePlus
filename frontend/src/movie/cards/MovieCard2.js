@@ -33,7 +33,7 @@ function MovieCard2 (props) {
         if (props.token && props.movie) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${props.movie.id}/`,
+                url: `${api.films}/${props.movie.id}/`,
                 data: {                    
                     token: props.token,
                     like: true
@@ -61,7 +61,7 @@ function MovieCard2 (props) {
         if (props.token && props.movie) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${props.movie.id}/`,
+                url: `${api.films}/${props.movie.id}/`,
                 data: {                    
                     token: props.token,
                     check: true
@@ -89,7 +89,7 @@ function MovieCard2 (props) {
         if (props.token && props.movie) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${props.movie.id}/`,
+                url: `${api.films}/${props.movie.id}/`,
                 data: {                    
                     token: props.token,
                     watchlist: true
@@ -117,7 +117,7 @@ function MovieCard2 (props) {
         if (props.token && props.movie) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${props.movie.id}/`,
+                url: `${api.films}/${props.movie.id}/`,
                 data: {                    
                     token: props.token,
                     score: value

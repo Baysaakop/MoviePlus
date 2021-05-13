@@ -2,7 +2,7 @@ import { Form, Input, Avatar, message, Comment, Button, Typography, Tooltip, Pop
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { DeleteOutlined, DislikeOutlined, EditOutlined, LikeOutlined, UserOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DislikeOutlined, EditOutlined, LikeOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const { TextArea } = Input;
@@ -197,16 +197,20 @@ function MovieComment (props) {
                                 <Tooltip key="comment-basic-dislike" title="Таалагдаагүй">
                                     <Button danger type={props.user && comment.dislikes.filter(x => x === props.user.id).length > 0 ? "primary" : "ghost"} size="small" icon={<DislikeOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onDislike(comment.id)}> {comment.dislikes.length}</Button>
                                 </Tooltip>,
-                                props.user && props.user.id === comment.user.id ? (
+                                props.user ? (
                                 <>
+                                    { props.user.id === comment.user.id ? (
                                     <Tooltip key="comment-basic-dislike" title="Засах">  
-                                        <Button type="ghost" size="small" icon={<EditOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onEdit(comment.id)}> 
+                                        <Button type="primary" size="small" icon={<EditOutlined />} style={{ border: 0, marginRight: '4px' }} onClick={() => onEdit(comment.id)}> 
                                         {edit && edit === comment.id ? 'Болих' : 'Засах'}
                                         </Button>
-                                    </Tooltip>,                                    
+                                    </Tooltip>
+                                    ) : <></>}          
+                                    { props.user.id === comment.user.id || props.user.profile.role < 3 ? (
                                     <Popconfirm title="Устгах уу?" onConfirm={() => onDelete(comment.id)}>                                    
-                                        <Button danger type="ghost" size="small" icon={<DeleteOutlined />} style={{ border: 0, marginRight: '4px' }}> Устгах</Button>                                    
-                                    </Popconfirm>                                    
+                                        <Button danger type="primary" size="small" icon={<DeleteOutlined />} style={{ border: 0, marginRight: '4px' }}> Устгах</Button>                                    
+                                    </Popconfirm>                    
+                                    ) : <></>}                                          
                                 </>
                                 ) : (
                                     <></>
@@ -214,10 +218,10 @@ function MovieComment (props) {
                             ]}
                             author={<Typography.Text style={{ fontWeight: 'bold' }}>{comment.user.username}</Typography.Text>}
                             avatar={
-                                comment.user.profile.avatar ? (
-                                    <Avatar src={comment.user.profile.avatar} alt={comment.user.username} />
-                                ) : (
-                                    <Avatar icon={<UserOutlined />} alt={comment.user.username} />
+                                comment.user.profile.avatar ? (                                        
+                                    <Avatar src={comment.user.profile.avatar} /> 
+                                ) : (                                         
+                                    <Avatar style={{ backgroundColor: '#8e44ad', color: '#fff', fontWeight: 'bold' }}>{comment.user.username.slice(0, 1)}</Avatar>                                      
                                 )
                             }
                             content={
@@ -230,18 +234,6 @@ function MovieComment (props) {
                                     <Typography.Paragraph style={{ margin: 0 }}>
                                         {comment.comment}
                                     </Typography.Paragraph>
-                                    // <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    //     <div>
-                                    //         <Typography.Paragraph style={{ margin: 0 }}>
-                                    //             {comment.comment}
-                                    //         </Typography.Paragraph>
-                                    //     </div>
-                                    //     <div>
-                                    //         <Avatar size={48} style={{ background: '#fadb14', color: 'black', fontWeight: 'bold', fontSize: '24px' }}>                                            
-                                    //             {comment.score}
-                                    //         </Avatar>
-                                    //     </div>
-                                    // </div>
                                 )
                             }
                             datetime={
@@ -249,10 +241,12 @@ function MovieComment (props) {
                                     <Tooltip title={moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")}>
                                         <span>- {moment(comment.created_at).fromNow()}</span>
                                     </Tooltip>
-                                    <div style={{ marginLeft: '16px' }}>
-                                        <Rate disabled allowHalf value={comment.score / 2} style={{ fontSize: '14px' }} />
-                                        <Typography.Text style={{ fontSize: '12px' }}> - {comment.score} / 10</Typography.Text>
-                                    </div>
+                                    { comment.score ? (
+                                        <div style={{ marginLeft: '16px' }}>
+                                            <Rate disabled allowHalf value={comment.score / 2} style={{ fontSize: '14px' }} />
+                                            <Typography.Text style={{ fontSize: '12px' }}> - {comment.score} / 10</Typography.Text>
+                                        </div>
+                                    ) : <></>}
                                 </div>
                             }                                                        
                         />
@@ -265,10 +259,10 @@ function MovieComment (props) {
                     <Typography.Title level={5}>Сэтгэгдэл үлдээх</Typography.Title>                    
                     <Comment
                         avatar={
-                            props.user.profile.avatar ? (
-                                <Avatar src={props.user.profile.avatar} alt={props.user.username} />
-                            ) : (
-                                <Avatar icon={<UserOutlined />} alt={props.user.username} />
+                            props.user.profile.avatar ? (                                        
+                                <Avatar src={props.user.profile.avatar} /> 
+                            ) : (                                         
+                                <Avatar style={{ backgroundColor: '#8e44ad', color: '#fff', fontWeight: 'bold' }}>{props.user.username.slice(0, 1)}</Avatar>                                      
                             )
                         }
                         content={

@@ -15,7 +15,7 @@ function Filmography (props) {
     }, [props.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
     function getMembers(id) {
-        var url = api.movies + "?member=" + id             
+        var url = api.films + "?member=" + id             
         axios({
             method: 'GET',
             url: url
@@ -28,7 +28,7 @@ function Filmography (props) {
     } 
     
     function getActors(id) {
-        var url = api.movies + "?actor=" + id             
+        var url = api.films + "?actor=" + id             
         axios({
             method: 'GET',
             url: url
@@ -64,8 +64,7 @@ function Filmography (props) {
         <div>        
             { members && members.length > 0 ? (
                 <>
-                    <Typography.Title level={4}>Кино</Typography.Title>
-                    {/* <Table bordered columns={memberColumns} dataSource={members ? members : undefined} size="middle" pagination={false} /> */}
+                    <Typography.Title level={4}>Кино</Typography.Title>                    
                     <Timeline>
                         {members.map(item => {
                             return (

@@ -98,7 +98,7 @@ function AccountDetail (props) {
                 </Row>                                                                                                                       
                 <Form.Item>                                                                  
                     <Popconfirm title="Хэрэглэгчийн мэдээллийг шинэчлэх үү？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
-                        <Button type="primary" icon={<EditOutlined />} style={{ width: '100%' }}>
+                        <Button type="primary" icon={<EditOutlined />} size="large">
                             Хадгалах
                         </Button>
                     </Popconfirm>                                                                                                            

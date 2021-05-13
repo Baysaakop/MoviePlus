@@ -6,16 +6,21 @@
 
 .detail .actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin: 8px 0;
     width: 100%;
 }
 
 .detail .actions .ant-btn {
-    width: 18%;
+    width: 25%;
+    margin-right: 8px;    
+    padding: 0;
 }
 
+.detail .actions .ant-btn.score {    
+    margin-right: 0;
+}
 
 .detail .actions .ant-btn-primary {
     background: rgba(24, 144, 255, 1);
@@ -40,7 +45,6 @@
 
 .detail .actions .ant-btn-primary.score {
     background: #fadb14;
-    color: #000;
 }
 
 .detail .actions .ant-btn-ghost.like:hover {
@@ -57,7 +61,6 @@
 
 .detail .actions .ant-btn-ghost.score:hover {
     background: #fadb14;
-    color: #000;    
 }
 
 .detail .ant-rate-star {
@@ -68,6 +71,12 @@
     border: 4px solid #0d1117;    
 }
 
-.detail .ant-progress {
+.detail .ant-progress-circle .ant-progress-text {
     font-weight: bold;
+    font-size: x-large;
+}
+
+.detail .actions .ant-btn > .anticon + span, 
+.detail .actions .ant-btn > span + .anticon {
+    margin-left: 4px;
 }

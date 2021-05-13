@@ -2,11 +2,6 @@
     position: relative;
 }
 
-.moviecard1 .poster {
-    width: 100%;
-    height: auto;
-}
-
 .moviecard1 .overlay-more {
     position: absolute;
     top: 8px;
@@ -56,8 +51,7 @@
 }
 
 .moviecard1 .actions .ant-btn-primary.check {
-    background-color: #44bd32;
-    border: 1px solid #fff;
+    background-color: #44bd32;    
 }
 
 .moviecard1 .actions .ant-btn-primary.watchlist {
@@ -66,7 +60,6 @@
 
 .moviecard1 .actions .ant-btn-primary.score {
     background-color: #fadb14;
-    color: #000;
-    border: 1px solid #000;
+    color: #000;    
     font-weight: bold;
 }

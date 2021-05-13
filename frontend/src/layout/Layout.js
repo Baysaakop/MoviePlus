@@ -4,6 +4,8 @@ import { Layout } from 'antd';
 import CustomMenu from '../components/Menu';
 import './Layout.css';
 import CustomFooter from '../components/CustomFooter';
+// import MoonIcon from '../icons/MoonIcon';
+// import SunIcon from '../icons/SunIcon';
 
 const { Header, Content, Footer } = Layout;
 

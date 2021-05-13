@@ -1,4 +1,4 @@
-import { PlusCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Breadcrumb, Grid, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker, message, Radio, Typography, Result, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ImageUpload from '../components/ImageUpload';
@@ -92,10 +92,11 @@ function MovieAdd (props) {
                 'Authorization': `Token ${props.token}`            
             }
         }).then(res => {                        
-            if (res.status === 201) {      
-                console.log(res)
+            if (res.status === 201) {                      
                 message.info("Хүсэлтийг хүлээж авлаа.")
                 form.resetFields()
+                setPoster(undefined)
+                setLandscape(undefined)
                 setLoading(false)                                               
             }             
         }).catch(err => {   
@@ -294,7 +295,7 @@ function MovieAdd (props) {
                             <Form.Item>
                                 <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                                     <Popconfirm title="Нэмэх үү？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
-                                        <Button size="large" type="primary" icon={<PlusCircleOutlined />}>
+                                        <Button type="primary" icon={<PlusOutlined />}>
                                             Нэмэх
                                         </Button>
                                     </Popconfirm>

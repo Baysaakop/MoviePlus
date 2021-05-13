@@ -7,26 +7,7 @@ import InfiniteCarousel from 'react-leaf-carousel';
 
 const { useBreakpoint } = Grid
 
-const dummy = [
-    {
-        name: '1'
-    },
-    {
-        name: '2'
-    },
-    {
-        name: '3'
-    },
-    {
-        name: '4'
-    },
-    {
-        name: '5'
-    },
-    {
-        name: '6'
-    }
-]
+const dummy = [ { name: '1' }, { name: '2' }, { name: '3' }, { name: '4' }, { name: '5' }, { name: '6' }]
 
 function MoviesRow (props) {
     const screens = useBreakpoint()
@@ -35,7 +16,7 @@ function MoviesRow (props) {
     useEffect(() => {             
         axios({
             method: 'GET',
-            url: `${api.movies}?order=${props.type}`
+            url: `${api.films}?order=${props.type}`
         }).then(res => {                         
             let data = res.data.results                                                                         
             setMovies(data)   
@@ -74,33 +55,7 @@ function MoviesRow (props) {
                 </Button>
             </div>
             { movies ? (
-                <InfiniteCarousel
-                    // breakpoints={[
-                    // {
-                    //     breakpoint: 768,
-                    //     settings: {                            
-                    //         slidesToShow: 2,                            
-                    //     },
-                    // },
-                    // {
-                    //     breakpoint: 992,
-                    //     settings: {                            
-                    //         slidesToShow: 3,                            
-                    //     },
-                    // },
-                    // {
-                    //     breakpoint: 1200,
-                    //     settings: {                            
-                    //         slidesToShow: 4,                            
-                    //     },
-                    // },
-                    // {
-                    //     breakpoint: 1600,
-                    //     settings: {                            
-                    //         slidesToShow: 5,                            
-                    //     },
-                    // },
-                    // ]}
+                <InfiniteCarousel                    
                     dots={false}
                     showSides={true}
                     sidesOpacity={.5}
@@ -111,7 +66,7 @@ function MoviesRow (props) {
                 >
                     {movies.map(item => {
                         return (
-                            <MovieCard1 movie={item} user={props.user} />
+                            <MovieCard1 item={item} user={props.user} />
                         )
                     })}
                 </InfiniteCarousel>
@@ -137,41 +92,7 @@ function MoviesRow (props) {
                         </List.Item>
                     )}
                 />
-            )}            
-            {/* <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ borderLeft: '12px solid #8e44ad' }}>                                    
-                    <Typography.Title level={4} style={{ margin: '0 0 0 8px' }}>{props.title}</Typography.Title>
-                </div>
-                <Button type="ghost" href={`/movies?order=${props.type}`}>
-                    Бүгд
-                </Button>
-            </div>                         
-            <List                        
-                grid={{
-                    gutter: 16,
-                    xs: 2,
-                    sm: 2,
-                    md: 3,
-                    lg: 4,
-                    xl: 5,
-                    xxl: 6,
-                }}                                      
-                style={{ marginTop: '16px' }}      
-                pagination={{ pageSize: getListNumber() ? getListNumber() : false, size: 'small' }}
-                dataSource={movies ? movies.slice(0, getListNumber() * 2) : dummy.slice(0, getListNumber())}
-                renderItem={item => (
-                    <List.Item>
-                        {movies ? (
-                            <MovieCard1 movie={item} user={props.user} />
-                        ) : (
-                            <>                            
-                                <Skeleton.Button active size={180} />
-                                <Skeleton paragraph={{ rows: 1 }} active />
-                            </>
-                        )}                            
-                    </List.Item>
-                )}
-            />            */}
+            )}                        
         </div>
     )
 }

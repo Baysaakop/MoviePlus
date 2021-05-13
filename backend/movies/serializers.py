@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, Member, Actor, Movie, Film, TempFilm, Series, Review, Comment, Score
+from .models import Genre, Rating, Production, Occupation, Artist, TempArtist, Member, Actor, Movie, Film, TempFilm, Series, Review, Comment, Score
 # from users.models import User, Profile
 from users.serializers import UserSerializer
 
@@ -49,7 +49,16 @@ class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 
-        'views', 'likes', 'follows', 'created_by', 'created_at', 'updated_by', 'updated_at')  
+        'views', 'likes', 'follows', 'created_by', 'created_at', 'updated_by', 'updated_at')
+
+class TempArtistSerializer(serializers.ModelSerializer):
+    occupation = OccupationSerializer(read_only=True, many=True)
+    created_by = UserSerializer(read_only=True)
+    updated_by = UserSerializer(read_only=True)
+    class Meta:
+        model = TempArtist
+        fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 
+        'created_by', 'created_at', 'updated_by', 'updated_at', 'artistid')  
 
 class MemberSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)

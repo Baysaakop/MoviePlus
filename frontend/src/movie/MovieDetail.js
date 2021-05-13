@@ -2,7 +2,7 @@ import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Rate,
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { CaretRightOutlined, CheckCircleOutlined, CheckOutlined, HeartOutlined, LoadingOutlined, PlusCircleOutlined, PlusOutlined, StarOutlined, ToolOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CheckOutlined, HeartOutlined, LoadingOutlined, PlayCircleOutlined, PlusCircleOutlined, PlusOutlined, StarOutlined, ToolOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import { connect } from "react-redux";
 import MovieMembers from './MovieMembers';
@@ -50,7 +50,7 @@ function MovieDetail (props) {
 
     function getMovie() {        
         const id = props.match.params.movieID;
-        const url = api.movies + "/" + id + "/";  
+        const url = api.films + "/" + id + "/";  
         axios({
             method: 'GET',
             url: url,
@@ -72,7 +72,7 @@ function MovieDetail (props) {
         if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${filmId}/`,
+                url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     like: true
@@ -87,13 +87,13 @@ function MovieDetail (props) {
                     notification.open({
                         message: 'Жагсаалтаас хасагдлаа',
                         description: `${movie.name} кино таны таалагдсан киноны жагсаалтаас хасагдлаа.`,
-                        icon: <HeartOutlined style={{ color: '#c0392b' }} />,
+                        icon: <HeartOutlined style={{ color: '#c0392b' }} />,                        
                     })                                    
                 } else {                    
                     notification.open({
                         message: 'Жагсаалтад нэмэгдлээ',
                         description: `${movie.name} кино таны таалагдсан киноны жагсаалтад нэмэгдлээ.`,
-                        icon: <HeartOutlined style={{ color: '#c0392b' }} />,
+                        icon: <HeartOutlined style={{ color: '#c0392b' }} />,                        
                     })                          
                 }
                 getMovie()
@@ -111,7 +111,7 @@ function MovieDetail (props) {
         if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${filmId}/`,
+                url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     check: true
@@ -150,7 +150,7 @@ function MovieDetail (props) {
         if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${filmId}/`,
+                url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     watchlist: true
@@ -189,7 +189,7 @@ function MovieDetail (props) {
         if (props.token && filmId) {
             axios({
                 method: 'PUT',
-                url: `${api.movies}/${filmId}/`,
+                url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
                     score: value
@@ -226,9 +226,9 @@ function MovieDetail (props) {
         
     function formatCount(count) {
         if (count >= 1000000) {
-            return (count / 1000000).toFixed(1).toString() + "M";
+            return (count / 1000000).toFixed(0).toString() + "M";
         } else if (count >= 1000) {
-            return (count / 1000).toFixed(1).toString() + "K";
+            return (count / 1000).toFixed(0).toString() + "K";
         } else {
             return count.toString();
         }
@@ -261,10 +261,10 @@ function MovieDetail (props) {
     }
 
     return (
-        <div className="moviedetail" style={{ marginTop: '80px', minHeight: '80vh' }}>
+        <div className="moviedetail" style={{ minHeight: '80vh' }}>
             { movie ? (
                 <div>
-                    <div style={{ height: `${window.screen.availHeight * 0.55}px` }}>
+                    <div style={{ height: `${window.screen.availHeight * 0.6}px` }}>
                         {movie.landscape ? (
                             // <img src={movie.landscape} alt="landscape" style={{ width: '100%', height: '100%', objectFit: 'fill', backgroundColor: '#000', background: 'rgba(0, 0, 0, 0.5)', filter: 'blur(1px)' }} />                        
                             <div
@@ -286,27 +286,31 @@ function MovieDetail (props) {
                         <Row gutter={[16, 16]} style={{ marginTop: '-25%', marginBottom: '40px' }}>
                             <Col xs={24} sm={8} md={8} lg={8} xl={6} style={ screens.xs ? { padding: '0 8px' } : { padding: '0 32px 0 0'}}>
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />                                
-                                {/* <Button size="large" block type="primary" icon={<PlayCircleOutlined />} style={{ marginTop: '8px' }}>Үзэх</Button> 
-                                <Button size="large" block type="primary" icon={<CreditCardOutlined />} style={{ marginTop: '8px' }}>Тасалбар захиалах</Button>  */}
-                                <div className="actions">                                        
-                                    <Tooltip title="Трэйлэр үзэх">
-                                        <Button size="large" type="ghost" icon={<CaretRightOutlined style={{ marginLeft: '2px' }} />} onClick={() => setTrailer(true)} />
-                                    </Tooltip>
-                                    {trailer ? <Trailer title={movie.title} trailer={movie.trailer} hide={() => setTrailer(false)} /> : <></>}
+                                <div className="actions">                                                                            
                                     <Tooltip title="Таалагдсан">
-                                        <Button className="like" size="large" type={user && movie.likes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<HeartOutlined />} onClick={() => onLike(user && movie.likes.filter(x => x === user.id).length > 0)}></Button>
+                                        <Button className="like" size="large" type={user && movie.likes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<HeartOutlined />} onClick={() => onLike(user && movie.likes.filter(x => x === user.id).length > 0)}>                                            
+                                            <Typography.Text>{formatCount(movie.likes.length)}</Typography.Text>                                        
+                                        </Button>
                                     </Tooltip>
                                     <Tooltip title="Үзсэн">
-                                        <Button className="check" size="large" type={user && movie.checks.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<CheckOutlined />} onClick={() => onCheck(user && movie.checks.filter(x => x === user.id).length > 0)}></Button>
+                                        <Button className="check" size="large" type={user && movie.checks.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<CheckOutlined />} onClick={() => onCheck(user && movie.checks.filter(x => x === user.id).length > 0)}>
+                                            <Typography.Text>{formatCount(movie.checks.length)}</Typography.Text>
+                                        </Button>
                                     </Tooltip>
                                     <Tooltip title="Дараа үзэх">
-                                        <Button className="watchlist" size="large" type={user && movie.watchlists.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<PlusOutlined />} onClick={() => onWatchlist(user && movie.watchlists.filter(x => x === user.id).length > 0)}></Button>
+                                        <Button className="watchlist" size="large" type={user && movie.watchlists.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<PlusOutlined />} onClick={() => onWatchlist(user && movie.watchlists.filter(x => x === user.id).length > 0)}>
+                                            <Typography.Text>{formatCount(movie.watchlists.length)}</Typography.Text>
+                                        </Button>
                                     </Tooltip> 
                                     <Tooltip title="Үнэлгээ өгөх">
                                     {user && movie.scores.filter(x => x.user === user.id).length > 0 ? (
-                                        <Button className="score" size="large" type="primary" onClick={() => setRateVisible(!rateVisible)}>{user && movie.scores.filter(x => x.user === user.id)[0].score}</Button>
+                                        <Button className="score" size="large" type="primary" icon={<StarOutlined style={{ color: 'black' }} />} onClick={() => setRateVisible(!rateVisible)}>
+                                            <Typography.Text style={{ color: 'black' }}>{user && movie.scores.filter(x => x.user === user.id)[0].score}</Typography.Text>
+                                        </Button>
                                     ) : (
-                                        <Button className="score" size="large" type="ghost" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                        <Button className="score" size="large" type="ghost" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)}>
+                                            <Typography.Text>{formatCount(movie.scores.length)}</Typography.Text>
+                                        </Button>
                                     )}                                                                               
                                     </Tooltip>                                         
                                 </div>
@@ -315,9 +319,15 @@ function MovieDetail (props) {
                                     <Typography.Title level={5} style={{ marginBottom: 0 }}>Таны үнэлгээ: {user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : ''}</Typography.Title>                                        
                                     <Rate style={{ fontSize: '18px' }} tooltips={scoreValues} value={user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : 0} count={10} onChange={onScore} />
                                 </div>
-                                ) : (<></>)}                 
+                                ) : (<></>)}      
+                                <Button size="large" block type="primary" icon={<PlayCircleOutlined />} onClick={() => setTrailer(true)}>
+                                    Трейлер үзэх
+                                </Button>
+                                {trailer ? <Trailer title={movie.title} trailer={movie.trailer} hide={() => setTrailer(false)} /> : <></>}           
                                 <Link to={`/updatemovie/${filmId}`}>
-                                    <Button size="large" block type="ghost" icon={<ToolOutlined />}>Мэдээлэл засах</Button> 
+                                    <Button size="large" block type="ghost" icon={<ToolOutlined />} style={{ marginTop: '64px' }}>
+                                        Мэдээлэл засах
+                                    </Button> 
                                 </Link>                
                             </Col>
                             <Col xs={24} sm={16} md={16} lg={16} xl={18}>
@@ -331,32 +341,10 @@ function MovieDetail (props) {
                                         })}
                                     </div>                                    
                                     <div className="info" style={{ marginTop: '24px', fontSize: '16px' }}>
-                                        <Row gutter={[8, 8]}>
-                                            <Col span={16}>
-                                                <Typography.Text>Найруулагч: {getDirector(movie.members)}</Typography.Text>
-                                            </Col>
-                                            <Col span={8}>
-                                                <Typography.Text>Сонирхсон: {formatCount(movie.views)}</Typography.Text>
-                                            </Col>
-                                            <Col span={16}>
-                                                <Typography.Text>Нээлт: {movie.releasedate}</Typography.Text>
-                                            </Col>
-                                            <Col span={8}>
-                                                <Typography.Text>Таалагдсан: {formatCount(movie.likes.length)}</Typography.Text>
-                                            </Col>
-                                            <Col span={16}>
-                                                <Typography.Text>Үргэлжлэх хугацаа: {movie.duration} мин</Typography.Text>
-                                            </Col>
-                                            <Col span={8}>
-                                                <Typography.Text>Үзсэн: {formatCount(movie.checks.length)}</Typography.Text>
-                                            </Col>
-                                            <Col span={16}>
-                                                <Typography.Text>Насны ангилал: 13+</Typography.Text>
-                                            </Col>
-                                            <Col span={8}>
-                                                <Typography.Text>Дараа үзэх: {formatCount(movie.watchlists.length)}</Typography.Text>
-                                            </Col>
-                                        </Row>
+                                        <Typography.Text style={{ display: 'block' }}>Найруулагч: {getDirector(movie.members)}</Typography.Text>                                        
+                                        <Typography.Text style={{ display: 'block' }}>Нээлтийн он сар өдөр: {movie.releasedate}</Typography.Text>
+                                        <Typography.Text style={{ display: 'block' }}>Үргэлжлэх хугацаа: {movie.duration} минут</Typography.Text>
+                                        <Typography.Text style={{ display: 'block' }}>Насны ангилал: Тодорхойлоогүй</Typography.Text>                                        
                                     </div>                                    
                                     <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '16px' }}>
                                         <div>
