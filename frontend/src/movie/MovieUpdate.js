@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import MovieUpdateInfo from './MovieUpdateInfo';
 import MovieUpdateCast from './MovieUpdateCast';
+import MovieUpdateCrew from './MovieUpdateCrew';
 
 const { useBreakpoint } = Grid;
 
@@ -49,7 +50,7 @@ function MovieUpdate (props) {
                             <MovieUpdateInfo movieID={props.match.params.movieID} token={props.token} />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Бүрэлдэхүүн" key="2">
-
+                            <MovieUpdateCrew movieID={props.match.params.movieID} token={props.token} />
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Жүжигчид" key="3">
                             <MovieUpdateCast movieID={props.match.params.movieID} token={props.token} />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Home from './containers/Home';
+import About from './containers/About';
 import Login from './account/Login';
 import Profile from './account/Profile';
 // import Signup from './account/Signup';
@@ -31,7 +32,7 @@ function BaseRouter () {
         <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/add" component={Add} />
-            {/* <Route exact path="/about" component={About} /> */}
+            <Route exact path="/about" component={About} />
             {/* Movie urls */}
             <Route exact path="/movies" component={MovieList} />
             <Route exact path="/movies/:movieID" component={MovieDetail} />

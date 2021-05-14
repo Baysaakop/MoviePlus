@@ -12,8 +12,8 @@ const { useBreakpoint } = Grid
 function HomeCarousel (props) {
 
     const screens = useBreakpoint()
+    const [movie, setMovie] = useState()
     const [movies, setMovies] = useState()
-    const [trailer, setTrailer] = useState()
 
     useEffect(() => {     
         axios({
@@ -37,16 +37,17 @@ function HomeCarousel (props) {
         return result.slice(0, result.length - 2)
     }
 
-    function showTrailer (url) {               
-        setTrailer(url)
+    function showTrailer (movie) {               
+        setMovie(movie)
     }
 
     function hideTrailer (id) {
-        setTrailer(undefined)
+        setMovie(undefined)
     }
 
     return (
         <div>
+            {movie ? <Trailer title={movie.name} trailer={movie.trailer} hide={() => hideTrailer()} /> : <></>}
             <Carousel autoplay autoplaySpeed={5000} className="carousel" effect="fade" style={{ zIndex: '1' }}>
                     {movies ? movies.map(movie => {
                             return (
@@ -74,8 +75,7 @@ function HomeCarousel (props) {
                                             <Typography.Text style={{ fontSize: '16px', display: 'block' }}>Продюсер: {getDirector(movie.movie.members)}</Typography.Text>
                                             <Typography.Text style={{ fontSize: '16px', display: 'block' }}>Нээлт: {moment(movie.movie.releasedate).format("YYYY-MM-DD")}</Typography.Text>
                                             <Typography.Text style={{ fontSize: '16px', display: 'block' }}>Хугацаа: {movie.movie.duration} мин</Typography.Text>
-                                            <Button type="ghost" icon={<PlayCircleOutlined />} style={{ marginTop: '8px', marginRight: '8px' }} onClick={() => showTrailer(movie.movie.trailer)}>Трейлер үзэх</Button>
-                                            {trailer ? <Trailer title={movie.movie.name} trailer={trailer} hide={() => hideTrailer()} /> : <></>}
+                                            <Button type="ghost" icon={<PlayCircleOutlined />} style={{ marginTop: '8px', marginRight: '8px' }} onClick={() => showTrailer(movie.movie)}>Трейлер үзэх</Button>                                            
                                             <Link to={`/movies/${movie.id}`}>
                                                 <Button type="ghost" icon={<InfoCircleOutlined />} style={{ marginTop: '8px' }}>Дэлгэрэнгүй</Button>
                                             </Link>

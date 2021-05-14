@@ -235,26 +235,34 @@ def updateMovie(movie, request):
         genres = request.data['genre'].split(",")
         for item in genres:
             movie.genre.add(int(item))        
-    # if 'artist' in request.data:
-    #     artist = Artist.objects.get(id=int(request.data['artist']))
-    #     if 'role' in request.data:                
-    #         role = int(request.data['role'])
-    #         member = Member.objects.filter(artist=artist, role__id=role).first()                 
-    #         if member is None:
-    #             member = Member.objects.create(
-    #                 artist=artist,
-    #                 role=Occupation.objects.get(id=role)
-    #             )
-    #         if member not in movie.members.all():                                        
-    #             movie.members.add(member)                
-    #     if 'role_name' in request.data:
-    #         actor = movie.actors.filter(artist=artist).first()
-    #         if actor is None:
-    #             actor, created = Actor.objects.get_or_create(artist=artist, role_name=request.data['role_name'])
-    #             movie.actors.add(actor)
-    #         else:
-    #             actor.role_name=request.data['role_name']       
-    #             actor.save()                 
+    if 'cast' in request.data:        
+        movie.actors.clear()
+        actors = request.data['cast']
+        for actor in actors:
+            artist = actor['artist'] 
+            role_name = actor['role_name']
+            artist_obj = Artist.objects.get(pk=int(artist['id']))
+            actor_obj, created = Actor.objects.get_or_create(artist=artist_obj, role_name=role_name)
+            movie.actors.add(actor_obj)
+    if 'crew' in request.data:        
+        movie.members.clear()
+        members = request.data['crew']
+        for member in members:
+            artist = member['artist'] 
+            roles = member['role']
+            artist_obj = Artist.objects.get(pk=int(artist['id']))
+            artist_members = Member.objects.filter(artist=artist_obj)
+            target = None
+            if (artist_members.count() > 0):
+                for m in artist_members:               
+                    if (compareRoles(m.role, roles)) == True:
+                        target = m                
+            if target is None:
+                target = Member.objects.create(artist=artist_obj)
+                for role in roles:
+                    occupation = Occupation.objects.get(pk=role['id'])
+                    target.role.add(occupation)
+            movie.members.add(target)
     movie.save()
     return movie
 
@@ -276,5 +284,39 @@ def copyMovie(movie, temp):
     movie.production.clear()
     for p in temp.production.all():
         movie.production.add(p)
+    movie.actors.clear()
+    for a in temp.actors.all():
+        movie.actors.add(a)
+    movie.members.clear()
+    for m in temp.members.all():
+        movie.members.add(m)
     movie.save()
     return movie
+
+def sortRoles(roles):
+    list = roles.order_by('id')
+    return list
+
+def getRoles(roles):
+    data = []
+    for r in roles:                
+        data.append(r['id'])
+    queryset = Occupation.objects.filter(id__in=data)
+    return queryset
+
+def compareRoles(roles1, roles2):
+    roles2 = getRoles(roles2)
+    if (roles1.count() != roles2.count()):
+        return False
+    else:
+        roles1 = sortRoles(roles1)
+        roles2 = sortRoles(roles2)
+        count = 0
+        for i in range(roles1.count()):
+            if (roles1[i].id == roles2[i].id):
+                count=count+1
+        if count == roles1.count():
+            print("True")
+            return True
+        print("False")
+        return False

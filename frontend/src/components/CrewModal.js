@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import api from '../api'
-import { Form, Input, Modal, Select, message } from 'antd'
+import { Form, Modal, Select, message } from 'antd'
 
-function CastModal (props) {
+function CrewModal (props) {
     const [form] = Form.useForm()
     const [artists, setArtists] = useState()
+    const [occupations, setOccupations] = useState()
 
     useEffect(() => {                      
         if (props.item) {
             let results = []
             results.push(props.item.artist)                        
             setArtists(results)      
-        }        
+        }       
+        axios({
+            method: 'GET',
+            url: api.occupations,
+            headers: {
+                'Content-Type': 'application/json'                
+            }
+        })
+        .then(res => {                                    
+            setOccupations(res.data.results.filter(x => x.id !== 1))            
+        })
+        .catch(err => {
+            message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
+        }) 
     }, [props.item]) // eslint-disable-line react-hooks/exhaustive-deps
 
     function onSearch (value) {
@@ -35,11 +49,17 @@ function CastModal (props) {
 
     function onFinish (values) {        
         let artist = artists.find(x => x.id === parseInt(values.actor))
+        let role = []
+        values.role.forEach(element => {
+            let occupation = occupations.find(x => x.id.toString() === element)
+            role.push(occupation)
+        });        
         let data = {
             id: props.item ? props.item.id : 0,
             artist: artist,
-            role_name: values.role_name ? values.role_name : ""
+            role: role
         }            
+        console.log(data)
         props.return(data)
         form.resetFields()
     }
@@ -52,7 +72,7 @@ function CastModal (props) {
     return (
         <div>
             <Modal 
-                title={ props.item ? "Жүжигчин өөрчлөх" : "Жүжигчин нэмэх" }
+                title={ props.item ? "Уран бүтээлч өөрчлөх" : "Уран бүтээлч нэмэх" }
                 visible={true} 
                 onOk={() => form.submit()}
                 onCancel={onClose}
@@ -60,11 +80,11 @@ function CastModal (props) {
                 cancelText="Болих"
             >
                 <Form form={form} layout="vertical" onFinish={onFinish} initialValues={ props.item ? { actor: props.item.artist.id.toString(), role_name: props.item.role_name } : undefined}>
-                    <Form.Item name="actor" label="Жүжигчин" rules={[{ required: true, message: 'Жүжигчин сонгоно уу!' }]}>
+                    <Form.Item name="actor" label="Уран бүтээлч" rules={[{ required: true, message: 'Уран бүтээлч сонгоно уу!' }]}>
                         <Select                                  
                             showSearch                                
                             onSearch={onSearch}
-                            placeholder="Жүжигчин сонгоно уу"                                                
+                            placeholder="Уран бүтээлч сонгоно уу"                                                
                             optionFilterProp="children"       
                             style={{ width: '100%' }}                         
                         >
@@ -81,8 +101,26 @@ function CastModal (props) {
                             )}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="role_name" label="Дүр">
-                        <Input style={{ width: '100%' }} />
+                    <Form.Item name="role" label="Үүрэг" rules={[{ required: true, message: 'Үүрэг сонгоно уу!' }]}>
+                        <Select                                  
+                            showSearch                                                            
+                            mode="multiple"
+                            placeholder="Үүрэг сонгоно уу"                                                
+                            optionFilterProp="children"       
+                            style={{ width: '100%' }}                         
+                        >
+                            { occupations ? (
+                                <>
+                                    {occupations.map(o => {
+                                        return (
+                                            <Select.Option key={o.id.toString()}>{o.name}</Select.Option>
+                                        )
+                                    })}
+                                </>
+                            ) : (
+                                <></>
+                            )}
+                        </Select>
                     </Form.Item>
                 </Form>
             </Modal>
@@ -90,4 +128,4 @@ function CastModal (props) {
     )
 }
 
-export default CastModal
+export default CrewModal

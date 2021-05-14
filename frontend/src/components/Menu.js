@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, Avatar, Typography, Dropdown, Menu, Tooltip } from 'antd';
+import { Button, Grid, Avatar, Typography, Tooltip } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
-import { BellFilled, MenuOutlined, PlusCircleOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { MenuOutlined, PlusCircleOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions/auth';
 import axios from 'axios';
@@ -159,7 +159,7 @@ function CustomMenu (props) {
                                     </Link>
                                 </Tooltip>
                                 <Tooltip title="Тусламж">
-                                    <Link to="/help">
+                                    <Link to="/about">
                                         <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<QuestionCircleOutlined />}></Button>
                                     </Link>
                                 </Tooltip>
@@ -229,31 +229,19 @@ function CustomMenu (props) {
                             </Link>
                             { user ? (
                                 <div style={styleMenuItemMobile}>
-                                    <div>
-                                        <Dropdown 
-                                            trigger={['click']}
-                                            overlay={
-                                                <Menu>
-                                                    <Menu.Item key="1">
-                                                        <Link to="/newmovie" onClick={handleMenuCollapsed}>Кино нэмэх</Link>
-                                                    </Menu.Item>
-                                                    <Menu.Item key="2">
-                                                        <Link to="/newseries" onClick={handleMenuCollapsed}>ТВ Цуврал нэмэх</Link>
-                                                    </Menu.Item>
-                                                    <Menu.Item key="3">
-                                                        <Link to="/newartist" onClick={handleMenuCollapsed}>Уран бүтээлч нэмэх</Link>
-                                                    </Menu.Item>
-                                                    <Menu.Item key="4">
-                                                        <Link to="/newreview" onClick={handleMenuCollapsed}>Нийтлэл бичих</Link>
-                                                    </Menu.Item>
-                                                </Menu>
-                                            }
-                                        >
-                                            <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<PlusCircleOutlined />}></Button>
-                                        </Dropdown>
+                                    <div>                                        
+                                        <Tooltip title="Нэмэх">
+                                            <Link to="/add">
+                                                <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<PlusCircleOutlined />} onClick={handleMenuCollapsed}></Button>
+                                            </Link>
+                                        </Tooltip>
                                     </div>
                                     <div>
-                                        <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<BellFilled />}></Button>
+                                        <Tooltip title="Тусламж">
+                                            <Link to="/about">
+                                                <Button size="large" type="ghost" style={{ border: 0, marginRight: '16px' }} icon={<QuestionCircleOutlined />} onClick={handleMenuCollapsed}></Button>
+                                            </Link>
+                                        </Tooltip>
                                     </div>
                                     <div>
                                         <Link to="/profile" onClick={handleMenuCollapsed}>                                    

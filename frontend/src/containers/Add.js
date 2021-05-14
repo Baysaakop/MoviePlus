@@ -34,7 +34,7 @@ function Add () {
                     Нэмэх
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', marginTop: '24px' }}>
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={24} md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '32px' }}>
                         <Link to="/newmovie">

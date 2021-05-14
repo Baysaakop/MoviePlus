@@ -101,10 +101,10 @@ class TempArtist(models.Model):
 
 class Member(models.Model):    
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
-    role = models.ForeignKey(Occupation, on_delete=models.CASCADE, null=True)        
+    role = models.ManyToManyField(Occupation, null=True)        
 
     def __str__(self):
-        return self.artist.name + " - " + self.role.name
+        return self.artist.name
 
 class Actor(models.Model):    
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    

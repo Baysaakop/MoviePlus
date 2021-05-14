@@ -20,7 +20,8 @@ function Filmography (props) {
             method: 'GET',
             url: url
         }).then(res => {                                   
-            let data = res.data.results                                          
+            let data = res.data.results                    
+            console.log(data)                      
             setMembers(data.sort((a, b) => parseInt(a.movie.releasedate.slice(0, 4)) - parseInt(b.movie.releasedate.slice(0, 4))))
         }).catch(err => {
             console.log(err.message)
@@ -43,8 +44,10 @@ function Filmography (props) {
     function getRole(data) {      
         const roles = []
         data.forEach(member => {
-            if (member.artist.id === props.id) {
-                roles.push(member.role.name)
+            if (member.artist.id === props.id) {                
+                member.role.forEach(role => {   
+                    roles.push(role.name)
+                })
             }            
         })
         return roles.toString()

@@ -1,5 +1,5 @@
 import { CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Grid, List, Spin, Typography, message, Button, Row, Col, Pagination, Result } from "antd";
+import { Grid, List, Spin, Typography, message, Button, Row, Col, Pagination, Result, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';  
 import api from '../api';
@@ -18,6 +18,7 @@ function MovieUpdateRequests (props) {
     const [page, setPage] = useState(1)
     const [total, setTotal] = useState()
     const [trailer, setTrailer] = useState()
+
     useEffect(() => {
         if (!user) {
             getUser()
@@ -147,6 +148,14 @@ function MovieUpdateRequests (props) {
         }) 
     }
 
+    function getRoles(role) {
+        let result = []
+        role.forEach(element => {
+            result.push(element.name)    
+        });
+        return result.toString()
+    }
+
     return (
         <div style={{ marginTop: '80px', minHeight: '80vh' }}>
             <div style={{ padding: getPadding() }}>              
@@ -233,6 +242,32 @@ function MovieUpdateRequests (props) {
                                     <Typography.Paragraph>
                                         {item.movie.plot}
                                     </Typography.Paragraph>
+                                    <Typography.Text>Жүжигчид:</Typography.Text>
+                                    <Row gutter={[8, 8]} style={{ marginBottom: '16px' }}>
+                                        {item.movie.actors.map(actor => {
+                                            return (
+                                                <Col xs={8} sm={8} md={6} lg={4} xl={4} xxl={3}>
+                                                    <Avatar size={80} shape="square" src={actor.artist.avatar} />
+                                                    <Typography.Text style={{ display: 'block' }}>{actor.artist.name}</Typography.Text>
+                                                    <Typography.Text style={{ display: 'block' }}>Дүр: {actor.role_name}</Typography.Text>
+                                                </Col>
+                                            )
+                                        })}
+                                    </Row>
+                                    <Typography.Text>Уран бүтээлчид:</Typography.Text>
+                                    <Row gutter={[8, 8]} style={{ marginBottom: '16px' }}>
+                                        {item.movie.members.map(member => {
+                                            return (
+                                                <Col xs={8} sm={8} md={6} lg={4} xl={4} xxl={3}>
+                                                    <Avatar size={80} shape="square" src={member.artist.avatar} />
+                                                    <Typography.Text style={{ display: 'block' }}>{member.artist.name}</Typography.Text>
+                                                    <Typography.Text>
+                                                        {getRoles(member.role)}
+                                                    </Typography.Text> 
+                                                </Col>
+                                            )
+                                        })}
+                                    </Row>
                                     <Row gutter={[16, 16]}>
                                         <Col xs={24} sm={24} md={24} lg={12}>
                                             <Button type="primary" icon={<CheckCircleOutlined />} style={{ marginRight: '8px' }} onClick={() => onAccept(item.id)}>Зөвшөөрөх</Button>

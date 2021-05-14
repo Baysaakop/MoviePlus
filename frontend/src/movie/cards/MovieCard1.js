@@ -1,4 +1,4 @@
-import { Button, Card, Progress, Tooltip, Typography, message, Rate } from 'antd'
+import { Button, Card, Progress, Tooltip, Typography, message } from 'antd'
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
@@ -8,6 +8,7 @@ import axios from 'axios';
 import api from '../../api';
 import { connect } from 'react-redux'
 import blank from './blank.jpg'
+import MovieScoreModal from './MovieScoreModal'
 
 function MovieCard1 (props) {
     const [visible, setVisible] = useState(false)
@@ -144,7 +145,7 @@ function MovieCard1 (props) {
                 url: `${api.films}/${filmId}/`,
                 data: {                    
                     token: props.token,
-                    score: value * 2
+                    score: value
                 },
                 headers: {
                     'Content-Type': 'application/json',
@@ -198,28 +199,20 @@ function MovieCard1 (props) {
                                     </Tooltip>
                                     <Tooltip title="Үнэлгээ өгөх">
                                     {value ? (
-                                        <Button className="score" type="primary" shape="circle" onClick={() => setRateVisible(!rateVisible)}>{value}</Button>
+                                        <Button className="score" type="primary" shape="circle" onClick={() => setRateVisible(true)}>{value}</Button>
                                     ) : (
-                                        <Button className="score" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                        <Button className="score" type="ghost" shape="circle" icon={<StarOutlined />} onClick={() => setRateVisible(true)} />
                                     )}                                       
                                     </Tooltip>
+                                    {rateVisible ? <MovieScoreModal movie={movie} value={value} score={(val) => onScore(val)} hide={() => setRateVisible(false)} /> : <></>}
                                 </div>
                             : 
                                 <></>
                             }
                         </div>
-                        {rateVisible ? (
-                        <div className="overlay-rate">
-                            <div style={{ background: '#0d1117', padding: '4px' }}>                                
-                                <Rate allowHalf style={{ fontSize: '18px' }} value={value ? value / 2 : undefined} onChange={onScore} />                                
-                            </div>
-                        </div>
-                        ) : (
-                            <></>
-                        )}
                         <div className="overlay-score">
                             <Progress type="circle" percent={rating} width={44} strokeColor="#fadb14" trailColor="#1b262c" strokeWidth={4} />
-                        </div>
+                        </div>                        
                     </div>
                 } 
                 style={{ border: 0 }} 

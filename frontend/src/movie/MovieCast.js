@@ -7,19 +7,19 @@ function MovieCast (props) {
             <List                                                                                                        
                 grid={{
                     gutter: 16,
-                    xs: 2,
+                    xs: 3,
                     sm: 3,
                     md: 4,
-                    lg: 4,
-                    xl: 5,
-                    xxl: 6,
+                    lg: 5,
+                    xl: 6,
+                    xxl: 8,
                 }}                              
                 dataSource={props.actors}
                 renderItem={item => (
                 <List.Item>                                                        
                     <div style={{ textAlign: 'center' }}>
                         <Link to={`/artists/${item.artist.id}`}>
-                            <Avatar size={100} src={item.artist.avatar} />
+                            <Avatar shape="square" size={80} src={item.artist.avatar} />
                             <Typography.Text style={{ fontWeight: 'bold', display: 'block' }}>{item.artist.name}</Typography.Text>
                             <Typography.Text style={{ display: 'block' }}>- {item.role_name}</Typography.Text>
                         </Link>

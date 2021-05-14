@@ -3,19 +3,19 @@ import axios from 'axios';
 import api from '../api';
 import { message, Spin, Typography, Avatar, Row, Col, Button, Tooltip, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
-import CastModal from "../components/CastModal";
+import CrewModal from "../components/CrewModal";
 
 const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-function MovieUpdateCast (props) {
-    const [cast, setCast] = useState()
+function MovieUpdateCrew (props) {
+    const [crew, setCrew] = useState()
     const [loading, setLoading] = useState()
     const [modal, setModal] = useState()
-    const [actor, setActor] = useState()
+    const [member, setMember] = useState()
     const [tempid, setTempid] = useState(-1)
 
     useEffect(() => {       
-        getMovie()        
+        getMovie()     
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     function getMovie() {        
@@ -31,7 +31,7 @@ function MovieUpdateCast (props) {
         })
         .then(res => {
             let target = res.data              
-            setCast(target.movie.actors)            
+            setCrew(target.movie.members)            
             setLoading(false)
         })
         .catch(err => {
@@ -40,24 +40,24 @@ function MovieUpdateCast (props) {
     } 
 
     function onAdd() {
-        setActor(undefined)
+        setMember(undefined)
         setModal(true)
     }
 
     function onEdit (id) {
-        let data = cast.find(x => x.id === id)
-        setActor(data)
+        let data = crew.find(x => x.id === id)
+        setMember(data)
         setModal(true)
     }
 
     function onDelete (id) {                
-        let arr = cast.filter(x => x.id !== id)        
-        setCast(arr)
+        let arr = crew.filter(x => x.id !== id)        
+        setCrew(arr)
     }
 
     function onReturn (values) {        
         setLoading(true)        
-        let arr = cast
+        let arr = crew
         if (values.id === 0) {
             values.id = tempid
             setTempid(tempid - 1)
@@ -66,21 +66,22 @@ function MovieUpdateCast (props) {
             arr.forEach(data => {
                 if (data.id === parseInt(values.id)) {
                     data.artist = values.artist
-                    data.role_name = values.role_name
+                    data.role = values.role
                 }
             })                        
         }
-        setCast(arr)
+        setCrew(arr)
         setModal(false)
         setLoading(false)        
     }
 
     function onSave () {
+        console.log(crew)
         let data = {
-            'cast': cast,
+            'crew': crew,
             'token': props.token,
             'filmid': props.movieID
-        }         
+        }            
         axios({
             method: 'POST',
             url: `${api.tempfilms}/`,
@@ -101,38 +102,50 @@ function MovieUpdateCast (props) {
         })                    
     }
 
+    function getRoles(role) {
+        let result = []
+        role.forEach(element => {
+            result.push(element.name)    
+        });
+        return result.toString()
+    }
+
     return (
         <div>            
             { loading ? (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
                     <Spin indicator={loadingIcon} tip="Уншиж байна..." />
                 </div>
-            ) : cast ? (
+            ) : crew ? (
                 <>
-                    <Button type="primary" icon={<PlusOutlined />} style={{ marginBottom: '16px' }} onClick={() => onAdd()}>Жүжигчин нэмэх</Button>
-                    { modal ? <CastModal item={actor ? actor : undefined} hide={() => setModal(false)} return={(values) => onReturn(values)} /> : <></> }
+                    <Button type="primary" icon={<PlusOutlined />} style={{ marginBottom: '16px' }} onClick={() => onAdd()}>Уран бүтээлч нэмэх</Button>
+                    { modal ? <CrewModal item={member ? member : undefined} hide={() => setModal(false)} return={(values) => onReturn(values)} /> : <></> }
                     <Row gutter={[8, 8]} style={{ marginBottom: '16px' }}>
                         <Col span={6}>
-                            <Typography.Title level={5}>Жүжигчин</Typography.Title>
+                            <Typography.Title level={5}>Уран бүтээлч</Typography.Title>
                         </Col>
                         <Col span={6}>
-                            <Typography.Title level={5}>Дүр</Typography.Title>
+                            <Typography.Title level={5}>Үүрэг</Typography.Title>
                         </Col>
                         <Col span={6}>
-                            <Typography.Title level={5}>Жүжигчин</Typography.Title>
+                            <Typography.Title level={5}>Уран бүтээлч</Typography.Title>
                         </Col>
                         <Col span={6}>
-                            <Typography.Title level={5}>Дүр</Typography.Title>
+                            <Typography.Title level={5}>Үүрэг</Typography.Title>
                         </Col>                        
-                        {cast.map(item => {
+                        {crew.map(item => {
                             return (
                                 <>
-                                    <Col span={6} style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>                                        
+                                    <Col span={6} style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
                                         <Avatar src={item.artist.avatar} size={64} shape="square" style={{ marginRight: '16px' }} />
                                         <Typography.Text style={{ fontSize: '16px' }}>{item.artist.name}</Typography.Text>
                                     </Col>    
-                                    <Col span={4} style={{ display: 'flex', alignItems: 'center' }}>
-                                        <Typography.Text style={{ fontSize: '16px' }}>{item.role_name}</Typography.Text>
+                                    <Col span={4} style={{ display: 'flex', alignItems: 'center' }}>       
+                                        <div style={{ textAlign: 'center' }}>
+                                            <Typography.Text>
+                                                {getRoles(item.role)}
+                                            </Typography.Text>                                        
+                                        </div>                                 
                                     </Col>
                                     <Col span={2} style={{ display: 'flex', alignItems: 'center' }}>
                                         <Tooltip title="Засах">
@@ -148,7 +161,7 @@ function MovieUpdateCast (props) {
                     </Row> 
                     <Popconfirm title="Хадгалах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={onSave}>
                         <Button type="primary" icon={<SaveOutlined />} style={{ marginTop: '16px' }}>Хадгалах</Button>    
-                    </Popconfirm>                                                               
+                    </Popconfirm>                                 
                 </>
             ) : (
                 <></>
@@ -157,4 +170,4 @@ function MovieUpdateCast (props) {
     )
 }
 
-export default MovieUpdateCast
+export default MovieUpdateCrew

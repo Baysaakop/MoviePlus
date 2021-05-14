@@ -1,4 +1,4 @@
-import { ToolOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, SaveOutlined } from '@ant-design/icons';
 import { Grid, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker, message, Spin, Radio } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ImageUpload from '../components/ImageUpload';
@@ -313,9 +313,9 @@ function MovieUpdateInfo (props) {
                         </Col>
                     </Row>                                                                                                                                                 
                     <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <Popconfirm title="Засах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
-                            <Button type="primary" icon={<ToolOutlined />} style={{ marginRight: '8px' }}>
-                                Засах   
+                        <Popconfirm title="Хадгалах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={form.submit}>
+                            <Button type="primary" icon={<SaveOutlined />} style={{ marginRight: '8px' }}>
+                                Хадгалах   
                             </Button>
                         </Popconfirm>                                    
                     </div>                            

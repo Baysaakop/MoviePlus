@@ -20,7 +20,7 @@
 
 .moviecard1 .overlay-score {
     position: absolute;
-    bottom: 8px;
+    top: 8px;
     left: 8px;
 }
 
