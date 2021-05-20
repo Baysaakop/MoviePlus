@@ -12,7 +12,7 @@ function MovieMembers (props) {
     }, [props.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
     function getMembers() {
-        var url = api.members + "?movie=" + props.id             
+        var url = api.members + "?film=" + props.id             
         axios({
             method: 'GET',
             url: url

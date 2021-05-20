@@ -10,7 +10,7 @@ import ArtistCastModal from './ArtistCastModal';
 const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function ArtistUpdateCast (props) {    
-    const [actors, setActors] = useState([])
+    const [actors, setActors] = useState()
     const [cast, setCast] = useState()
     const [loading, setLoading] = useState(false)    
     const [modal, setModal] = useState()
@@ -29,7 +29,8 @@ function ArtistUpdateCast (props) {
         }).then(res => {                      
             let data = res.data.results                                     
             setCast(data)       
-            setActors({...data})     
+            let clone = JSON.parse(JSON.stringify(data))
+            setActors(clone)
             setLoading(false)
         }).catch(err => {
             console.log(err.message)
@@ -73,28 +74,29 @@ function ArtistUpdateCast (props) {
 
     function onSave () {
         setLoading(true) 
-        console.log(actors)
-        console.log(cast)
-        // cast.forEach(item => {
-        //     let data = {
-        //         'artist': props.artistID,
-        //         'film': item.film.id,
-        //         'role_name': item.role_name
-        //     }
-        //     axios({
-        //         method: 'POST',
-        //         url: `${api.tempactors}/`,
-        //         data: data,
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'Authorization': `Token ${props.token}`
-        //         }
-        //     }).then(res => {
-        //         console.log(res)
-        //     }).catch(err => {
-        //         console.log(err)
-        //     })
-        // })    
+        cast.forEach(item => {
+            let hit = actors.find(x => x.film.id === item.film.id && x.role_name === item.role_name)
+            if (hit === undefined) {
+                let data = {
+                    'artist': props.artistID,
+                    'film': item.film.id,
+                    'role_name': item.role_name
+                }
+                axios({
+                    method: 'POST',
+                    url: `${api.tempactors}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                }).then(res => {
+                    console.log(res)
+                }).catch(err => {
+                    console.log(err)
+                })
+            }            
+        })    
         message.info("Хүсэлтийг хүлээж авлаа.")              
         setLoading(false)        
     }
