@@ -237,16 +237,23 @@ function MovieComment (props) {
                                 )
                             }
                             datetime={
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>                                                                                                                 
-                                    <Tooltip title={moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")}>
-                                        <span>- {moment(comment.created_at).fromNow()}</span>
-                                    </Tooltip>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>     
+                                    <div>                                                                                                                                                
                                     { comment.score ? (
-                                        <div style={{ marginLeft: '16px' }}>
+                                        <>                                        
                                             <Rate disabled allowHalf value={comment.score / 2} style={{ fontSize: '14px' }} />
                                             <Typography.Text style={{ fontSize: '12px' }}> - {comment.score} / 10</Typography.Text>
-                                        </div>
-                                    ) : <></>}
+                                            {/* <StarFilled style={{ color: '#fadb14' }}></StarFilled>
+                                            <Typography.Text style={{ fontSize: '14px' }}> {comment.score} / 10</Typography.Text> */}
+                                        </>                       
+                                    ) : <>
+                                            <Typography.Text>- - - Үнэлгээ өгөөгүй - - -</Typography.Text>
+                                        </>
+                                    }
+                                    </div>
+                                    <Tooltip title={moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss")}>
+                                        <span style={{ marginLeft: '16px' }}>- {moment(comment.created_at).fromNow()}</span>
+                                    </Tooltip>
                                 </div>
                             }                                                        
                         />

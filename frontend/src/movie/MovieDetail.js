@@ -1,18 +1,17 @@
-import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, Rate, notification, Progress } from 'antd';
+import { Grid, Button, Col, message, Row, Spin, Tabs, Tooltip, Typography, notification, Progress } from 'antd';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import api from '../api';
 import { CheckCircleOutlined, CheckOutlined, HeartOutlined, LoadingOutlined, PlayCircleOutlined, PlusCircleOutlined, PlusOutlined, StarOutlined, ToolOutlined } from '@ant-design/icons';
 import './MovieDetail.css';
 import { connect } from "react-redux";
-import MovieMembers from './MovieMembers';
+import MovieCrew from './MovieCrew';
 import MovieCast from './MovieCast';
 import MovieComment from './MovieComment';
 import moment from 'moment';
 import Trailer from '../components/Trailer';
 import { Link } from 'react-router-dom';
-
-const scoreValues = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+import MovieScoreModal from './cards/MovieScoreModal';
 
 const { useBreakpoint } = Grid;
 const spinIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -22,8 +21,9 @@ function MovieDetail (props) {
     const [user, setUser] = useState()
     const [filmId, setFilmId] = useState()
     const [movie, setMovie] = useState()
-    const [trailer, setTrailer] = useState(false)
+    const [trailer, setTrailer] = useState(false)    
     const [rateVisible, setRateVisible] = useState(false)
+    const [scoreLoading, setScoreLoading] = useState(false)
 
     useEffect(() => {               
         getUser()
@@ -66,6 +66,17 @@ function MovieDetail (props) {
         .catch(err => {
             message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
         })
+    }
+
+    function getValue(user, scores) {
+        if (user && scores) {
+            let data = scores.filter(x => x.user === user.id)
+            if (data.length > 0) {
+                // setValue(data[0].score)
+                return data[0].score
+            }            
+        }        
+        return 0
     }
 
     function onLike (type) {                
@@ -187,6 +198,7 @@ function MovieDetail (props) {
 
     function onScore (value) {                  
         if (props.token && filmId) {
+            setScoreLoading(true)
             axios({
                 method: 'PUT',
                 url: `${api.films}/${filmId}/`,
@@ -214,10 +226,12 @@ function MovieDetail (props) {
                     })        
                 }
                 getMovie()
+                setScoreLoading(false)
             })
             .catch(err => {
                 console.log(err)
                 message.error("Дахин оролдоно уу.")
+                setScoreLoading(false)
             })
         } else {
             props.history.push('/login')          
@@ -226,9 +240,9 @@ function MovieDetail (props) {
         
     function formatCount(count) {
         if (count >= 1000000) {
-            return (count / 1000000).toFixed(0).toString() + "M";
+            return (count / 1000000).toFixed(1).toString() + "M";
         } else if (count >= 1000) {
-            return (count / 1000).toFixed(0).toString() + "K";
+            return (count / 1000).toFixed(1).toString() + "K";
         } else {
             return count.toString();
         }
@@ -248,16 +262,6 @@ function MovieDetail (props) {
         } else if (screens.xs) {
             return '16px 5%'
         }
-    }
-
-    function getDirector(members) {
-        let result = ""
-        members.forEach(member => {
-            if (member.role.id === 2) {
-                result = result + member.artist.name + ", "
-            }
-        })
-        return result.slice(0, result.length - 2)
     }
 
     return (
@@ -284,42 +288,41 @@ function MovieDetail (props) {
                     </div>
                     <div style={{ padding: getPadding() }} className="detail">
                         <Row gutter={[16, 16]} style={{ marginTop: '-25%', marginBottom: '40px' }}>
-                            <Col xs={24} sm={8} md={8} lg={8} xl={6} style={ screens.xs ? { padding: '0 8px' } : { padding: '0 32px 0 0'}}>
+                            <Col xs={24} sm={8} md={8} lg={8} xl={6} style={ screens.xs ? { padding: '0 8px' } : { padding: '8px 32px 0 8px'}}>
                                 <img src={movie.poster} alt="poster" style={{ width: '100%', height: 'auto', borderRadius: '5px', boxShadow: '0 6px 16px -8px rgb(0 0 0 / 32%), 0 9px 28px 0 rgb(0 0 0 / 20%), 0 12px 48px 16px rgb(0 0 0 / 12%)' }} />                                
                                 <div className="actions">                                                                            
                                     <Tooltip title="Таалагдсан">
-                                        <Button className="like" size="large" type={user && movie.likes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<HeartOutlined />} onClick={() => onLike(user && movie.likes.filter(x => x === user.id).length > 0)}>                                            
-                                            <Typography.Text>{formatCount(movie.likes.length)}</Typography.Text>                                        
-                                        </Button>
+                                        <div style={{ width: '25%', marginRight: '8px', textAlign: 'center' }}>
+                                            <Button className="like" size="large" type={user && movie.likes.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<HeartOutlined />} onClick={() => onLike(user && movie.likes.filter(x => x === user.id).length > 0)} />                                                                                                                                                                          
+                                            <Typography.Text>{formatCount(movie.likes.length)}</Typography.Text>                
+                                        </div>
                                     </Tooltip>
                                     <Tooltip title="Үзсэн">
-                                        <Button className="check" size="large" type={user && movie.checks.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<CheckOutlined />} onClick={() => onCheck(user && movie.checks.filter(x => x === user.id).length > 0)}>
-                                            <Typography.Text>{formatCount(movie.checks.length)}</Typography.Text>
-                                        </Button>
+                                        <div style={{ width: '25%', marginRight: '8px', textAlign: 'center' }}>
+                                            <Button className="check" size="large" type={user && movie.checks.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<CheckOutlined />} onClick={() => onCheck(user && movie.checks.filter(x => x === user.id).length > 0)} />                                                
+                                            <Typography.Text>{formatCount(movie.checks.length)}</Typography.Text>        
+                                        </div>
                                     </Tooltip>
                                     <Tooltip title="Дараа үзэх">
-                                        <Button className="watchlist" size="large" type={user && movie.watchlists.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<PlusOutlined />} onClick={() => onWatchlist(user && movie.watchlists.filter(x => x === user.id).length > 0)}>
+                                        <div style={{ width: '25%', marginRight: '8px', textAlign: 'center' }}>
+                                            <Button className="watchlist" size="large" type={user && movie.watchlists.filter(x => x === user.id).length > 0 ? "primary" : "ghost"} icon={<PlusOutlined />} onClick={() => onWatchlist(user && movie.watchlists.filter(x => x === user.id).length > 0)} />
                                             <Typography.Text>{formatCount(movie.watchlists.length)}</Typography.Text>
-                                        </Button>
+                                        </div>
                                     </Tooltip> 
                                     <Tooltip title="Үнэлгээ өгөх">
-                                    {user && movie.scores.filter(x => x.user === user.id).length > 0 ? (
-                                        <Button className="score" size="large" type="primary" icon={<StarOutlined style={{ color: 'black' }} />} onClick={() => setRateVisible(!rateVisible)}>
-                                            <Typography.Text style={{ color: 'black' }}>{user && movie.scores.filter(x => x.user === user.id)[0].score}</Typography.Text>
-                                        </Button>
-                                    ) : (
-                                        <Button className="score" size="large" type="ghost" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)}>
+                                        <div style={{ width: '25%', marginRight: '8px', textAlign: 'center' }}>
+                                            {user && getValue(user, movie.scores) > 0 ? (
+                                                <Button className="score" size="large" type="primary" onClick={() => setRateVisible(!rateVisible)}>
+                                                    <Typography.Text>{getValue(user, movie.scores)}</Typography.Text>
+                                                </Button>
+                                            ) : (
+                                                <Button className="score" size="large" type="ghost" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
+                                            )}
                                             <Typography.Text>{formatCount(movie.scores.length)}</Typography.Text>
-                                        </Button>
-                                    )}                                                                               
-                                    </Tooltip>                                         
+                                        </div>
+                                    </Tooltip>        
+                                    {rateVisible ? <MovieScoreModal movie={movie} value={getValue(user, movie.scores)} score={(val) => onScore(val)} hide={() => setRateVisible(false)} /> : <></>}                                
                                 </div>
-                                {rateVisible ? (
-                                <div style={{ marginTop: '16px', textAlign: 'center' }}>
-                                    <Typography.Title level={5} style={{ marginBottom: 0 }}>Таны үнэлгээ: {user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : ''}</Typography.Title>                                        
-                                    <Rate style={{ fontSize: '18px' }} tooltips={scoreValues} value={user && movie.scores.filter(x => x.user === user.id).length > 0 ? movie.scores.filter(x => x.user === user.id)[0].score : 0} count={10} onChange={onScore} />
-                                </div>
-                                ) : (<></>)}      
                                 <Button size="large" block type="primary" icon={<PlayCircleOutlined />} onClick={() => setTrailer(true)}>
                                     Трейлер үзэх
                                 </Button>
@@ -340,15 +343,29 @@ function MovieDetail (props) {
                                             )                                            
                                         })}
                                     </div>                                    
-                                    <div className="info" style={{ marginTop: '24px', fontSize: '16px' }}>
-                                        <Typography.Text style={{ display: 'block' }}>Найруулагч: {getDirector(movie.members)}</Typography.Text>                                        
+                                    <div className="info" style={{ marginTop: '24px', fontSize: '16px' }}>                                                                      
                                         <Typography.Text style={{ display: 'block' }}>Нээлтийн он сар өдөр: {movie.releasedate}</Typography.Text>
                                         <Typography.Text style={{ display: 'block' }}>Үргэлжлэх хугацаа: {movie.duration} минут</Typography.Text>
                                         <Typography.Text style={{ display: 'block' }}>Насны ангилал: Тодорхойлоогүй</Typography.Text>                                        
                                     </div>                                    
                                     <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '16px' }}>
-                                        <div>
-                                            <Progress type="circle" percent={movie.score} width={96} strokeColor="#fadb14" trailColor="#1b262c" strokeWidth={6} />
+                                        <div>                                                                                        
+                                            {scoreLoading ? (
+                                                <div style={{ width: '96px', height: '96px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Spin indicator={spinIcon} />
+                                                </div>                                
+                                            ) : (
+                                                <Progress 
+                                                    type="circle" 
+                                                    percent={movie.score}
+                                                    width={96} 
+                                                    strokeColor="#fadb14" 
+                                                    trailColor="#1b262c" 
+                                                    strokeWidth={6} 
+                                                    format={p => <span style={{ fontSize: '24px', fontWeight: 'bold' }}>{`${p}%`}</span> } 
+                                                    // format={p => <span style={{ fontSize: '28px' }}>{`${p / 10}`}</span> } 
+                                                />
+                                            )}               
                                         </div>
                                         <div style={{ marginLeft: '8px', padding: '8px', background: '#161b22', borderRadius: '4px' }}>
                                             <Typography.Text style={{ fontSize: '22px', fontWeight: 'bold' }}>
@@ -371,11 +388,11 @@ function MovieDetail (props) {
                                         </Tabs.TabPane>
                                         <Tabs.TabPane tab="Бүрэлдэхүүн" key="2">
                                             <Typography.Title level={5}>Баг бүрэлдэхүүн</Typography.Title>
-                                            <MovieMembers members={movie.members} />
+                                            <MovieCrew id={movie.id} />
                                         </Tabs.TabPane>
                                         <Tabs.TabPane tab="Жүжигчид" key="3">
                                             <Typography.Title level={5}>Жүжигчид</Typography.Title>
-                                            <MovieCast actors={movie.actors} />                                                
+                                            <MovieCast id={filmId} />                                                
                                         </Tabs.TabPane>
                                         <Tabs.TabPane tab="Сэтгэгдэл" key="4">
                                             <Typography.Title level={5}>Сэтгэгдэл</Typography.Title>

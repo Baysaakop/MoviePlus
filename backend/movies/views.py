@@ -117,14 +117,6 @@ class MemberViewSet(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
     queryset = Member.objects.all().order_by('artist__id')  
 
-class ActorViewSet(viewsets.ModelViewSet):
-    serializer_class = ActorSerializer
-    queryset = Actor.objects.all().order_by('artist__id') 
-
-class MovieViewSet(viewsets.ModelViewSet):
-    serializer_class = MovieSerializer
-    queryset = Movie.objects.all().order_by('-created_at')
-
 class SeriesViewSet(viewsets.ModelViewSet):
     serializer_class = SeriesSerializer
     queryset = Series.objects.all()

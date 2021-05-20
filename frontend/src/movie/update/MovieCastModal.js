@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import api from '../api'
+import api from '../../api'
 import { Form, Input, Modal, Select, message } from 'antd'
 
-function CastModal (props) {
+function MovieCastModal (props) {
     const [form] = Form.useForm()
     const [artists, setArtists] = useState()
 
@@ -90,4 +90,4 @@ function CastModal (props) {
     )
 }
 
-export default CastModal
+export default MovieCastModal

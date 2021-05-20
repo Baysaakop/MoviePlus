@@ -200,4 +200,12 @@ body {
     background-color: rgba(0, 0, 0, 0);
 }
 
+span.ant-comment-content-author-time {
+    width: 100%;
+}
+
+.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+    background: rgba(0, 0, 0, 0);
+}
+
 

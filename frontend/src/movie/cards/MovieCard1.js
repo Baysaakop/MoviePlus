@@ -1,14 +1,16 @@
-import { Button, Card, Progress, Tooltip, Typography, message } from 'antd'
+import { Button, Card, Progress, Tooltip, Typography, message, Spin } from 'antd'
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import './MovieCard1.css'
-import { CheckOutlined, HeartOutlined, MoreOutlined, PlusOutlined, StarOutlined } from '@ant-design/icons'
+import { CheckOutlined, HeartOutlined, MoreOutlined, PlusOutlined,  StarOutlined, LoadingOutlined } from '@ant-design/icons'
 import axios from 'axios';  
 import api from '../../api';
 import { connect } from 'react-redux'
 import blank from './blank.jpg'
 import MovieScoreModal from './MovieScoreModal'
+
+const indicator = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function MovieCard1 (props) {
     const [visible, setVisible] = useState(false)
@@ -20,6 +22,7 @@ function MovieCard1 (props) {
     const [rating, setRating] = useState()
     const [value, setValue] = useState()
     const [rateVisible, setRateVisible] = useState(false)
+    const [scoreLoading, setScoreLoading] = useState(false)
 
     useEffect(() => {              
         setFilmId(props.item.id)
@@ -140,6 +143,7 @@ function MovieCard1 (props) {
 
     function onScore (value) {                  
         if (props.token && filmId) {
+            setScoreLoading(true)
             axios({
                 method: 'PUT',
                 url: `${api.films}/${filmId}/`,
@@ -156,11 +160,13 @@ function MovieCard1 (props) {
                 if (res.status === 200) {                    
                     setRating(res.data.movie.score)                 
                     getValue(res.data.movie.scores)
+                    setScoreLoading(false)
                 }
             })
             .catch(err => {
                 console.log(err)
                 message.error("Дахин оролдоно уу.")
+                setScoreLoading(false)
             })
         } else {
             props.history.push('/login')  
@@ -211,7 +217,21 @@ function MovieCard1 (props) {
                             }
                         </div>
                         <div className="overlay-score">
-                            <Progress type="circle" percent={rating} width={44} strokeColor="#fadb14" trailColor="#1b262c" strokeWidth={4} />
+                            {scoreLoading ? (
+                                <div style={{ width: '44px', height: '44px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <Spin indicator={indicator} />
+                                </div>                                
+                            ) : (
+                                <Progress 
+                                    type="circle" 
+                                    percent={rating} 
+                                    width={44} 
+                                    strokeColor="#fadb14" 
+                                    trailColor="#1b262c" 
+                                    strokeWidth={4} 
+                                    //format={p => <span style={{ fontSize: '16px' }}>{`${p / 10}`}</span> } 
+                                />
+                            )}                            
                         </div>                        
                     </div>
                 } 
@@ -220,6 +240,7 @@ function MovieCard1 (props) {
             >                            
                 <Link to={`/movies/${filmId}`}>                                        
                     <Card.Meta 
+                        style={{ paddingTop: '8px' }}
                         title={
                             <Tooltip title={movie.name}>
                                 {`${movie.name} /${moment(movie.releasedate).format("YYYY")}/`} 

@@ -2,7 +2,7 @@ from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Artist, TempArtist
+from .models import Actor, Artist, Film, TempArtist
 from .serializers import ArtistSerializer, TempArtistSerializer
 from rest_framework import viewsets
 
@@ -123,7 +123,15 @@ def updateArtist(artist, request):
         artist.occupation.clear()
         arr = str(request.data['occupation']).split(',')
         for item in arr:
-            artist.occupation.add(int(item))        
+            artist.occupation.add(int(item))     
+    if 'cast' in request.data:
+        cast = request.data['cast']   
+        for work in cast:
+            film = work['film']
+            role_name = work['role_name']
+            film_obj = Film.objects.get(pk=int(film['id']))
+            actor = Actor.objects.create(artist=artist, role_name=role_name)
+            film_obj.movie.actors.add(actor)
     artist.save()            
     return artist
 

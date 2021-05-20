@@ -20,8 +20,9 @@
 
 .moviecard1 .overlay-score {
     position: absolute;
-    top: 8px;
+    bottom: -20px;
     left: 8px;
+    /* transform: translate(-50%, 0); */
 }
 
 .moviecard1 .overlay-more .ant-btn-ghost {

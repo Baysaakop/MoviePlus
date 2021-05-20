@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import api from '../api'
+import api from '../../api'
 import { Form, Modal, Select, message } from 'antd'
 
-function CrewModal (props) {
+function MovieCrewModal (props) {
     const [form] = Form.useForm()
     const [artists, setArtists] = useState()
     const [occupations, setOccupations] = useState()
@@ -128,4 +128,4 @@ function CrewModal (props) {
     )
 }
 
-export default CrewModal
+export default MovieCrewModal

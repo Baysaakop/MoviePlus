@@ -1,7 +1,29 @@
 import { List, Typography, Avatar } from "antd";
+import { useEffect, useState } from "react";
+import axios from 'axios';
+import api from '../api';
 import { Link } from "react-router-dom";
 
 function MovieCast (props) {    
+    const [actors, setActors] = useState();
+
+    useEffect(() => {
+        getActors()
+    }, [props.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    function getActors() {
+        var url = api.actors + "?film=" + props.id             
+        axios({
+            method: 'GET',
+            url: url
+        }).then(res => {                                        
+            let data = res.data.results                 
+            setActors(data)
+        }).catch(err => {
+            console.log(err.message)
+        });        
+    } 
+
     return (
         <div>
             <List                                                                                                        
@@ -14,12 +36,12 @@ function MovieCast (props) {
                     xl: 6,
                     xxl: 8,
                 }}                              
-                dataSource={props.actors}
+                dataSource={actors ? actors : undefined}
                 renderItem={item => (
                 <List.Item>                                                        
                     <div style={{ textAlign: 'center' }}>
                         <Link to={`/artists/${item.artist.id}`}>
-                            <Avatar shape="square" size={80} src={item.artist.avatar} />
+                            <Avatar shape="circle" size={88} src={item.artist.avatar} />
                             <Typography.Text style={{ fontWeight: 'bold', display: 'block' }}>{item.artist.name}</Typography.Text>
                             <Typography.Text style={{ display: 'block' }}>- {item.role_name}</Typography.Text>
                         </Link>

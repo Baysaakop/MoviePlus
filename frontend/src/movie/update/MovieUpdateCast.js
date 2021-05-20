@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import api from '../api';
+import api from '../../api';
 import { message, Spin, Typography, Avatar, Row, Col, Button, Tooltip, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
-import CastModal from "../components/CastModal";
+import MovieCastModal from "./MovieCastModal";
 
 const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -110,7 +110,7 @@ function MovieUpdateCast (props) {
             ) : cast ? (
                 <>
                     <Button type="primary" icon={<PlusOutlined />} style={{ marginBottom: '16px' }} onClick={() => onAdd()}>Жүжигчин нэмэх</Button>
-                    { modal ? <CastModal item={actor ? actor : undefined} hide={() => setModal(false)} return={(values) => onReturn(values)} /> : <></> }
+                    { modal ? <MovieCastModal item={actor ? actor : undefined} hide={() => setModal(false)} return={(values) => onReturn(values)} /> : <></> }
                     <Row gutter={[8, 8]} style={{ marginBottom: '16px' }}>
                         <Col span={6}>
                             <Typography.Title level={5}>Жүжигчин</Typography.Title>

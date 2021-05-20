@@ -99,20 +99,6 @@ class TempArtist(models.Model):
     def __str__(self):
         return self.name
 
-class Member(models.Model):    
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
-    role = models.ManyToManyField(Occupation, null=True)        
-
-    def __str__(self):
-        return self.artist.name
-
-class Actor(models.Model):    
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
-    role_name = models.CharField(max_length=100, null=True, blank=True)
-
-    def __str__(self):
-        return self.artist.name + " - " + self.role_name
-
 class Movie(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)    
@@ -128,8 +114,8 @@ class Movie(models.Model):
     watchlists = models.ManyToManyField(User, null=True, blank=True, related_name="movie_watchlists")
     scores = models.ManyToManyField(Score, null=True, blank=True, related_name="movie_scores")
     comments = models.ManyToManyField(Comment, null=True, blank=True, related_name="movie_comments")    
-    members = models.ManyToManyField(Member, null=True, blank=True, related_name="movie_members")
-    actors = models.ManyToManyField(Actor, null=True, blank=True, related_name="movie_actors")
+    # members = models.ManyToManyField(Member, null=True, blank=True, related_name="movie_members")
+    # actors = models.ManyToManyField(Actor, null=True, blank=True, related_name="movie_actors")
     score = models.IntegerField(default=0)
     poster = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
     landscape = models.ImageField(upload_to='movies/%Y/%m/%d', null=True, blank=True)
@@ -145,7 +131,7 @@ class Movie(models.Model):
         return self.name
 
 class Film(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.DO_NOTHING, null=True, blank=True)       
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True, blank=True)       
 
     def __str__(self):
         return self.movie.name
@@ -158,11 +144,69 @@ class TempFilm(models.Model):
         return self.movie.name
 
 class Series(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.DO_NOTHING, null=True, blank=True)       
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True, blank=True)       
     season_count = models.IntegerField(default=1)
     episode_count = models.IntegerField(default=1)
     is_finished = models.BooleanField(default=True)
 
     def __str__(self):
         return self.movie.name
+
+class TempSeries(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.DO_NOTHING, null=True, blank=True)       
+    seriesid = models.IntegerField(default=0) # 0. Create 1. Update /seriesID/
+    season_count = models.IntegerField(default=1)
+    episode_count = models.IntegerField(default=1)
+    is_finished = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.movie.name
+
+class Actor(models.Model):    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
+    film = models.ForeignKey(Film, on_delete=models.CASCADE, null=True, blank=True)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
+    role_name = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        if self.film is not None:
+            return self.artist.name + " - " + self.film.movie.name
+        else:
+            return self.artist.name + " - " + self.series.movie.name
+
+class TempActor(models.Model):    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
+    film = models.ForeignKey(Film, on_delete=models.CASCADE, null=True, blank=True)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
+    role_name = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        if self.film is not None:
+            return self.artist.name + " - " + self.film.movie.name
+        else:
+            return self.artist.name + " - " + self.series.movie.name
+
+class Member(models.Model):    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
+    film = models.ForeignKey(Film, on_delete=models.CASCADE, null=True, blank=True)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
+    role = models.ManyToManyField(Occupation, null=True)        
+
+    def __str__(self):
+        if self.film is not None:
+            return self.artist.name + " - " + self.film.movie.name
+        else:
+            return self.artist.name + " - " + self.series.movie.name
+
+class TempMember(models.Model):    
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)    
+    film = models.ForeignKey(Film, on_delete=models.CASCADE, null=True, blank=True)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
+    role = models.ManyToManyField(Occupation, null=True)        
+
+    def __str__(self):
+        if self.film is not None:
+            return self.artist.name + " - " + self.film.movie.name
+        else:
+            return self.artist.name + " - " + self.series.movie.name
 

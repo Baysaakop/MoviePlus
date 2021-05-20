@@ -4,10 +4,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .models import Genre, Rating, Production, Occupation, Score, Comment, Review, Artist, Member, Actor, Movie, Film, TempFilm, Series
-from .serializers import FilmSerializer, TempFilmSerializer
+from .serializers import FilmSerializer, MovieSerializer, TempFilmSerializer
 from rest_framework import viewsets
 
-def filter(queryset, name, genre, yearfrom, yearto, member, actor, user, state, order):
+def filter(queryset, name, genre, yearfrom, yearto, member, actor, user, state, order, movie):
     if name is not None:
         queryset = queryset.filter(movie__name__icontains=name).distinct()
     if genre is not None:
@@ -29,6 +29,8 @@ def filter(queryset, name, genre, yearfrom, yearto, member, actor, user, state, 
             queryset = queryset.filter(movie__watchlists__id=user).distinct()  
         elif state == 'score':                    
             queryset = queryset.filter(movie__scores__user__id=user).distinct()  
+    if movie is not None:
+        queryset = queryset.filter(movie__id=movie).distinct()
     if order is not None:
         if (order == 'created_at'):
             queryset = queryset.order_by('-movie__created_at')
@@ -96,6 +98,17 @@ def action(movie, request):
     movie.save()
     return movie
 
+class MovieViewSet(viewsets.ModelViewSet):
+    serializer_class = MovieSerializer
+    queryset = Movie.objects.all().order_by('-created_at')
+
+    def get_queryset(self):
+        queryset = Movie.objects.all().order_by('-created_at')
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name).distinct()
+        return queryset
+
 class FilmViewSet(viewsets.ModelViewSet):
     serializer_class = FilmSerializer
     queryset = Film.objects.all()
@@ -111,7 +124,8 @@ class FilmViewSet(viewsets.ModelViewSet):
         user = self.request.query_params.get('user', None)                
         state = self.request.query_params.get('state', None)
         order = self.request.query_params.get('order', None)
-        queryset = filter(queryset, name, genre, yearfrom, yearto, member, actor, user, state, order)
+        movie = self.request.query_params.get('movie', None)
+        queryset = filter(queryset, name, genre, yearfrom, yearto, member, actor, user, state, order, movie)
         return queryset
 
     def retrieve(self, request, *args, **kwargs):
@@ -235,34 +249,6 @@ def updateMovie(movie, request):
         genres = request.data['genre'].split(",")
         for item in genres:
             movie.genre.add(int(item))        
-    if 'cast' in request.data:        
-        movie.actors.clear()
-        actors = request.data['cast']
-        for actor in actors:
-            artist = actor['artist'] 
-            role_name = actor['role_name']
-            artist_obj = Artist.objects.get(pk=int(artist['id']))
-            actor_obj, created = Actor.objects.get_or_create(artist=artist_obj, role_name=role_name)
-            movie.actors.add(actor_obj)
-    if 'crew' in request.data:        
-        movie.members.clear()
-        members = request.data['crew']
-        for member in members:
-            artist = member['artist'] 
-            roles = member['role']
-            artist_obj = Artist.objects.get(pk=int(artist['id']))
-            artist_members = Member.objects.filter(artist=artist_obj)
-            target = None
-            if (artist_members.count() > 0):
-                for m in artist_members:               
-                    if (compareRoles(m.role, roles)) == True:
-                        target = m                
-            if target is None:
-                target = Member.objects.create(artist=artist_obj)
-                for role in roles:
-                    occupation = Occupation.objects.get(pk=role['id'])
-                    target.role.add(occupation)
-            movie.members.add(target)
     movie.save()
     return movie
 
@@ -284,39 +270,5 @@ def copyMovie(movie, temp):
     movie.production.clear()
     for p in temp.production.all():
         movie.production.add(p)
-    movie.actors.clear()
-    for a in temp.actors.all():
-        movie.actors.add(a)
-    movie.members.clear()
-    for m in temp.members.all():
-        movie.members.add(m)
     movie.save()
     return movie
-
-def sortRoles(roles):
-    list = roles.order_by('id')
-    return list
-
-def getRoles(roles):
-    data = []
-    for r in roles:                
-        data.append(r['id'])
-    queryset = Occupation.objects.filter(id__in=data)
-    return queryset
-
-def compareRoles(roles1, roles2):
-    roles2 = getRoles(roles2)
-    if (roles1.count() != roles2.count()):
-        return False
-    else:
-        roles1 = sortRoles(roles1)
-        roles2 = sortRoles(roles2)
-        count = 0
-        for i in range(roles1.count()):
-            if (roles1[i].id == roles2[i].id):
-                count=count+1
-        if count == roles1.count():
-            print("True")
-            return True
-        print("False")
-        return False

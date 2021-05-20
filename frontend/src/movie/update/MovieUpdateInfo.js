@@ -1,9 +1,9 @@
 import { LoadingOutlined, SaveOutlined } from '@ant-design/icons';
 import { Grid, Form, Row, Col, Input, InputNumber, Select, Button, Popconfirm, DatePicker, message, Spin, Radio } from 'antd';
 import React, { useState, useEffect } from 'react';
-import ImageUpload from '../components/ImageUpload';
+import ImageUpload from '../../components/ImageUpload';
 import axios from 'axios';
-import api from '../api';
+import api from '../../api';
 import moment from 'moment';
 
 const { useBreakpoint } = Grid;

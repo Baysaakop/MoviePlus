@@ -1,6 +1,8 @@
 import { Modal, Rate, Typography } from "antd"
 import { useEffect, useState } from "react"
 
+const tooltips = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+
 function MovieScoreModal (props) {
 
     const [value, setValue] = useState()
@@ -33,7 +35,7 @@ function MovieScoreModal (props) {
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <div style={{ textAlign: 'center' }}>
                         <Typography.Title level={5}>Таны үнэлгээ {value}</Typography.Title>
-                        <Rate count={10} value={value} onChange={onScore} />      
+                        <Rate count={10} tooltips={tooltips} value={value} onChange={onScore} />      
                     </div>
                 </div>              
             </Modal>

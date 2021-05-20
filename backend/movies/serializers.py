@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from .models import Genre, Rating, Production, Occupation, Artist, TempArtist, Member, Actor, Movie, Film, TempFilm, Series, Review, Comment, Score
+from .models import Genre, Rating, Production, Occupation, Artist, TempArtist, Member, Actor, TempActor, Movie, Film, TempFilm, Series, Review, Comment, Score, TempMember
 # from users.models import User, Profile
 from users.serializers import UserSerializer
 
@@ -60,33 +60,18 @@ class TempArtistSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'firstname', 'lastname', 'biography', 'birthday', 'gender', 'avatar', 'occupation', 
         'created_by', 'created_at', 'updated_by', 'updated_at', 'artistid')  
 
-class MemberSerializer(serializers.ModelSerializer):
-    artist = ArtistSerializer(read_only=True)
-    role = OccupationSerializer(read_only=True, many=True)
-    class Meta:
-        model = Member
-        fields = ('id', 'artist', 'role')   
-
-class ActorSerializer(serializers.ModelSerializer):
-    artist = ArtistSerializer(read_only=True)
-    class Meta:
-        model = Actor
-        fields = ('id', 'artist', 'role_name')    
-
 class MovieSerializer(serializers.ModelSerializer):
     rating = RatingSerializer(read_only=True)
     genre = GenreSerializer(read_only=True, many=True)
     production = ProductionSerializer(read_only=True, many=True)
     scores = ScoreSerializer(read_only=True, many=True)
     comments = CommentSerializer(read_only=True, many=True)
-    members = MemberSerializer(read_only=True, many=True)
-    actors = ActorSerializer(read_only=True, many=True)
     created_by = UserSerializer(read_only=True)
     updated_by = UserSerializer(read_only=True)
     class Meta:
         model = Movie
         fields = ('id', 'name', 'description', 'plot', 'duration', 'releasedate', 'rating', 'genre', 'production', 
-        'views', 'likes', 'checks', 'watchlists', 'scores', 'comments', 'members', 'actors',
+        'views', 'likes', 'checks', 'watchlists', 'scores', 'comments',
         'score', 'poster', 'landscape', 'trailer', 'is_released', 'is_playing', 'created_by', 'created_at', 'updated_by', 'updated_at')  
 
 class FilmSerializer(serializers.ModelSerializer):
@@ -106,3 +91,38 @@ class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Series
         fields = ('id', 'movie', 'season_count', 'episode_count', 'is_finished')  
+
+class ActorSerializer(serializers.ModelSerializer):
+    artist = ArtistSerializer(read_only=True)
+    film = FilmSerializer(read_only=True)
+    series = SeriesSerializer(read_only=True)
+    class Meta:
+        model = Actor
+        fields = ('id', 'artist', 'film', 'series', 'role_name')  
+
+class TempActorSerializer(serializers.ModelSerializer):
+    artist = ArtistSerializer(read_only=True)
+    film = FilmSerializer(read_only=True)
+    series = SeriesSerializer(read_only=True)
+    class Meta:
+        model = TempActor
+        fields = ('id', 'artist', 'film', 'series', 'role_name')  
+
+class MemberSerializer(serializers.ModelSerializer):
+    artist = ArtistSerializer(read_only=True)
+    film = FilmSerializer(read_only=True)
+    series = SeriesSerializer(read_only=True)
+    role = OccupationSerializer(read_only=True, many=True)
+    class Meta:
+        model = Member
+        fields = ('id', 'artist', 'film', 'series', 'role')   
+
+class TempMemberSerializer(serializers.ModelSerializer):
+    artist = ArtistSerializer(read_only=True)
+    film = FilmSerializer(read_only=True)
+    series = SeriesSerializer(read_only=True)
+    role = OccupationSerializer(read_only=True, many=True)
+    class Meta:
+        model = TempMember
+        fields = ('id', 'artist', 'film', 'series', 'role') 
+

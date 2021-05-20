@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import api from '../api';
+import api from '../../api';
 import { message, Spin, Typography, Avatar, Row, Col, Button, Tooltip, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
-import CrewModal from "../components/CrewModal";
+import MovieCrewModal from "./MovieCrewModal";
 
 const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -119,7 +119,7 @@ function MovieUpdateCrew (props) {
             ) : crew ? (
                 <>
                     <Button type="primary" icon={<PlusOutlined />} style={{ marginBottom: '16px' }} onClick={() => onAdd()}>Уран бүтээлч нэмэх</Button>
-                    { modal ? <CrewModal item={member ? member : undefined} hide={() => setModal(false)} return={(values) => onReturn(values)} /> : <></> }
+                    { modal ? <MovieCrewModal item={member ? member : undefined} hide={() => setModal(false)} return={(values) => onReturn(values)} /> : <></> }
                     <Row gutter={[8, 8]} style={{ marginBottom: '16px' }}>
                         <Col span={6}>
                             <Typography.Title level={5}>Уран бүтээлч</Typography.Title>

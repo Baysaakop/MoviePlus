@@ -1,27 +1,29 @@
 import { CheckCircleOutlined, CloseCircleOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Grid, List, Spin, Typography, message, Button, Row, Col, Pagination, Result } from "antd";
+import { Grid, List, Spin, Typography, message, Button, Row, Col, Pagination, Result, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';  
-import api from '../api';
+import api from '../../api';
 import { connect } from 'react-redux'
 import moment from 'moment'
+import Trailer from "../../components/Trailer";
 
 const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const { useBreakpoint } = Grid
 
-function ArtistUpdateRequests (props) {
+function MovieUpdateRequests (props) {
     const screens = useBreakpoint()
     const [user, setUser] = useState()
     const [loading, setLoading] = useState()
-    const [artists, setArtists] = useState()
+    const [movies, setMovies] = useState()
     const [page, setPage] = useState(1)
-    const [total, setTotal] = useState()    
+    const [total, setTotal] = useState()
+    const [trailer, setTrailer] = useState()
 
     useEffect(() => {
         if (!user) {
             getUser()
         }        
-        getArtists()
+        getMovies()
     }, [page])   // eslint-disable-line react-hooks/exhaustive-deps
 
     function getUser () {
@@ -42,14 +44,15 @@ function ArtistUpdateRequests (props) {
         }        
     }
 
-    function getArtists() {
+    function getMovies() {
         setLoading(true)
-        var url = `${api.tempartists}?artistid=1&page=${page}`          
+        var url = `${api.tempfilms}?filmid=1&page=${page}`          
         axios({
             method: 'GET',
             url: url
-        }).then(res => {                                                     
-            setArtists(res.data.results)
+        }).then(res => {                                         
+            console.log(res.data.results)
+            setMovies(res.data.results)
             setTotal(res.data.count)
             setLoading(false)
         }).catch(err => {
@@ -75,12 +78,20 @@ function ArtistUpdateRequests (props) {
         }
     }
 
-    function getOccupations (occupations) {
+    function getGenres (genres) {
         let result = ""
-        occupations.forEach(item => {
+        genres.forEach(item => {
             result = result + item.name + ", "
         })
         return result.slice(0, result.length - 2)
+    }
+
+    function showTrailer (url) {               
+        setTrailer(url)
+    }
+
+    function hideTrailer (id) {
+        setTrailer(undefined)
     }
 
     function onPageChange (pageNum, pageSize) {        
@@ -92,10 +103,9 @@ function ArtistUpdateRequests (props) {
     }
 
     function onAccept (id) {        
-        console.log(id)
         axios({
             method: 'PUT',
-            url: `${api.tempartists}/${id}/`,
+            url: `${api.tempfilms}/${id}/`,
             data: {
                 accept: true
             },
@@ -106,7 +116,7 @@ function ArtistUpdateRequests (props) {
         }).then(res => {                        
             if (res.status === 200) {                      
                 message.info("Зөвшөөрлөө.")       
-                getArtists()                                                             
+                getMovies()                                                             
             }             
         }).catch(err => {   
             message.error("Амжилтгүй боллоо.")
@@ -118,7 +128,7 @@ function ArtistUpdateRequests (props) {
     function onDecline (id) {
         axios({
             method: 'PUT',
-            url: `${api.tempartists}/${id}/`,
+            url: `${api.tempfilms}/${id}/`,
             data: {
                 decline: true
             },
@@ -129,7 +139,7 @@ function ArtistUpdateRequests (props) {
         }).then(res => {                        
             if (res.status === 200) {                      
                 message.info("Татгалзлаа.")       
-                getArtists()                                                             
+                getMovies()                                                             
             }             
         }).catch(err => {   
             message.error("Амжилтгүй боллоо.")
@@ -138,10 +148,18 @@ function ArtistUpdateRequests (props) {
         }) 
     }
 
+    function getRoles(role) {
+        let result = []
+        role.forEach(element => {
+            result.push(element.name)    
+        });
+        return result.toString()
+    }
+
     return (
         <div style={{ marginTop: '80px', minHeight: '80vh' }}>
-            <div style={{ padding: getPadding() }}>           
-                <Typography.Title level={3}>Уран бүтээлч засварын хүсэлтүүд</Typography.Title>   
+            <div style={{ padding: getPadding() }}>              
+                <Typography.Title level={3}>Кино засварын хүсэлтүүд</Typography.Title>
                 { loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
                         <Spin indicator={loadingIcon} tip="Уншиж байна..." />
@@ -151,7 +169,7 @@ function ArtistUpdateRequests (props) {
                         <List
                             itemLayout="vertical"
                             size="large"
-                            dataSource={artists ? artists : undefined}
+                            dataSource={movies ? movies : undefined}
                             footer={
                                 <Pagination
                                     current={page}
@@ -166,54 +184,99 @@ function ArtistUpdateRequests (props) {
                             renderItem={item => (
                             <List.Item
                                 key={item.id}
+                                extra={
+                                    <img
+                                        width={272}
+                                        alt="logo"
+                                        src={item.movie.landscape}
+                                    />
+                                }
+                                style={{ 
+                                    padding: '0px',
+                                    marginTop: '16px'
+                                }}
                             >
                                 <List.Item.Meta
                                     avatar={
-                                        <img alt={item.name} src={item.avatar} style={{ width: '100px' }} />
+                                        <img alt={item.movie.name} src={item.movie.poster} style={{ width: '100px' }} />
                                     }
                                     title={
                                         <Typography.Title level={5}>
-                                            {item.name}
+                                            {item.movie.name}
                                         </Typography.Title>
                                     }
                                     description={
                                         <div>
                                             <div style={ screens.xs ? { display: 'block' } : { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div>
-                                                    <Typography.Text>Овог: {item.lastname}</Typography.Text>
+                                                    <Typography.Text>Төрөл: {getGenres(item.movie.genre)}</Typography.Text>
                                                 </div>
                                                 <div>
-                                                    <Typography.Text>Нэр: {item.firstname}</Typography.Text>
+                                                    <Typography.Text>Нээлт: {moment(item.movie.releasedate).format("YYYY-MM-DD")}</Typography.Text>
                                                 </div>
                                                 <div>
-                                                    <Typography.Text>Мэргэжил: {getOccupations(item.occupation)}</Typography.Text>
+                                                    <Typography.Text>Хугацаа: {item.movie.duration} мин</Typography.Text>
                                                 </div>
                                                 <div>
-                                                    <Typography.Text>Төрсөн өдөр: {moment(item.birthday).format("YYYY-MM-DD")}</Typography.Text>
+                                                    <Typography.Text>Насны ангилал: {item.movie.rating ? item.movie.rating : '---'}</Typography.Text>
                                                 </div>
                                                 <div>
-                                                    <Typography.Text>Хүйс: {item.gender ? item.gender === 'm' ? 'Эр' : 'Эм'  : '---'}</Typography.Text>
+                                                    <Typography.Text>
+                                                        Трейлер:              
+                                                        <Button type="link" onClick={() => showTrailer(item.movie.trailer)}>Тоглуулах</Button>                                       
+                                                        {trailer ? <Trailer title={item.movie.name} trailer={trailer} hide={() => hideTrailer()} /> : <></>}
+                                                    </Typography.Text>       
                                                 </div>
                                             </div>
                                             <div style={{ marginTop: '8px' }}>                                                                                  
                                                 <Typography.Text>Дэлгэрэнгүй:</Typography.Text>
                                                 <Typography.Paragraph>
-                                                    {item.biography}
+                                                    {item.movie.description}
                                                 </Typography.Paragraph>                                            
                                             </div>
                                         </div>
                                     }
                                 />
                                 <div>
+                                    <Typography.Text>Агуулга:</Typography.Text>
+                                    <Typography.Paragraph>
+                                        {item.movie.plot}
+                                    </Typography.Paragraph>
+                                    <Typography.Text>Жүжигчид:</Typography.Text>
+                                    <Row gutter={[8, 8]} style={{ marginBottom: '16px' }}>
+                                        {item.movie.actors.map(actor => {
+                                            return (
+                                                <Col xs={8} sm={8} md={6} lg={4} xl={4} xxl={3}>
+                                                    <Avatar size={80} shape="square" src={actor.artist.avatar} />
+                                                    <Typography.Text style={{ display: 'block' }}>{actor.artist.name}</Typography.Text>
+                                                    <Typography.Text style={{ display: 'block' }}>Дүр: {actor.role_name}</Typography.Text>
+                                                </Col>
+                                            )
+                                        })}
+                                    </Row>
+                                    <Typography.Text>Уран бүтээлчид:</Typography.Text>
+                                    <Row gutter={[8, 8]} style={{ marginBottom: '16px' }}>
+                                        {item.movie.members.map(member => {
+                                            return (
+                                                <Col xs={8} sm={8} md={6} lg={4} xl={4} xxl={3}>
+                                                    <Avatar size={80} shape="square" src={member.artist.avatar} />
+                                                    <Typography.Text style={{ display: 'block' }}>{member.artist.name}</Typography.Text>
+                                                    <Typography.Text>
+                                                        {getRoles(member.role)}
+                                                    </Typography.Text> 
+                                                </Col>
+                                            )
+                                        })}
+                                    </Row>
                                     <Row gutter={[16, 16]}>
                                         <Col xs={24} sm={24} md={24} lg={12}>
                                             <Button type="primary" icon={<CheckCircleOutlined />} style={{ marginRight: '8px' }} onClick={() => onAccept(item.id)}>Зөвшөөрөх</Button>
                                             <Button danger type="primary" icon={<CloseCircleOutlined />} style={{ marginRight: '8px' }} onClick={() => onDecline(item.id)}>Татгалзах</Button>
                                         </Col>
                                         <Col xs={24} sm={24} md={24} lg={12} style={{ textAlign: 'end' }}>
-                                            <Typography.Text>Засварласан: {item.updated_by.username}</Typography.Text>
+                                            <Typography.Text>Засварласан: {item.movie.updated_by.username}</Typography.Text>
                                             <br />
-                                            <Typography.Text>Он сар өдөр: {moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")}</Typography.Text>
+                                            <Typography.Text>Он сар өдөр: {moment(item.movie.updated_at).format("YYYY-MM-DD HH:mm:ss")}</Typography.Text>
                                         </Col>
                                     </Row>                                                                    
                                 </div>
@@ -240,4 +303,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(ArtistUpdateRequests)
+export default connect(mapStateToProps)(MovieUpdateRequests)

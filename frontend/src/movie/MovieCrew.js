@@ -1,15 +1,37 @@
 import { List, Typography, Avatar } from "antd";
+import { useEffect, useState } from "react";
+import axios from 'axios';
+import api from '../api';
 import { Link } from "react-router-dom";
 
 function MovieMembers (props) {    
+    const [members, setMembers] = useState();
 
-    function getRoles(role) {
-        let result = []
-        role.forEach(element => {
-            result.push(element.name)    
-        });
-        return result.toString()
-    }
+    useEffect(() => {
+        getMembers()
+    }, [props.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    function getMembers() {
+        var url = api.members + "?movie=" + props.id             
+        axios({
+            method: 'GET',
+            url: url
+        }).then(res => {                                   
+            let data = res.data.results                    
+            console.log(data)                      
+            setMembers(data)
+        }).catch(err => {
+            console.log(err.message)
+        });        
+    } 
+
+    function getRoles (roles) {
+        let arr = []
+        roles.forEach(role => {
+            arr.push(role.name)
+        })
+        return arr.toString()
+    }   
 
     return (
         <div>
@@ -23,12 +45,12 @@ function MovieMembers (props) {
                     xl: 6,
                     xxl: 8,
                 }}                                                
-                dataSource={props.members}
+                dataSource={members ? members : undefined}
                 renderItem={item => (
                 <List.Item>                                                        
                     <div style={{ textAlign: 'center' }}>
                         <Link to={`/artists/${item.artist.id}`}>
-                            <Avatar shape="square" size={80} src={item.artist.avatar} />
+                            <Avatar shape="circle" size={88} src={item.artist.avatar} />
                             <Typography.Text style={{ fontWeight: 'bold', display: 'block' }}>{item.artist.name}</Typography.Text>
                             <Typography.Text>
                                 {getRoles(item.role)}
