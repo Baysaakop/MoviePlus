@@ -96,33 +96,41 @@ class ActorSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
     film = FilmSerializer(read_only=True)
     series = SeriesSerializer(read_only=True)
+    created_by = UserSerializer(read_only=True)
+    updated_by = UserSerializer(read_only=True)
     class Meta:
         model = Actor
-        fields = ('id', 'artist', 'film', 'series', 'role_name')  
+        fields = ('id', 'artist', 'film', 'series', 'role_name', 'created_by', 'created_at', 'updated_by', 'updated_at')  
 
 class TempActorSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
     film = FilmSerializer(read_only=True)
     series = SeriesSerializer(read_only=True)
+    created_by = UserSerializer(read_only=True)
+    updated_by = UserSerializer(read_only=True)
     class Meta:
         model = TempActor
-        fields = ('id', 'artist', 'film', 'series', 'role_name')  
+        fields = ('id', 'artist', 'film', 'series', 'role_name', 'is_delete', 'created_by', 'created_at', 'updated_by', 'updated_at')  
 
 class MemberSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
     film = FilmSerializer(read_only=True)
     series = SeriesSerializer(read_only=True)
     role = OccupationSerializer(read_only=True, many=True)
+    created_by = UserSerializer(read_only=True)
+    updated_by = UserSerializer(read_only=True)
     class Meta:
         model = Member
-        fields = ('id', 'artist', 'film', 'series', 'role')   
+        fields = ('id', 'artist', 'film', 'series', 'role', 'created_by', 'created_at', 'updated_by', 'updated_at')   
 
 class TempMemberSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
     film = FilmSerializer(read_only=True)
     series = SeriesSerializer(read_only=True)
     role = OccupationSerializer(read_only=True, many=True)
+    created_by = UserSerializer(read_only=True)
+    updated_by = UserSerializer(read_only=True)
     class Meta:
         model = TempMember
-        fields = ('id', 'artist', 'film', 'series', 'role') 
+        fields = ('id', 'artist', 'film', 'series', 'role', 'is_delete', 'created_by', 'created_at', 'updated_by', 'updated_at') 
 

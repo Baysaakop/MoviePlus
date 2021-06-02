@@ -10,6 +10,7 @@ import ArtistCrewModal from './ArtistCrewModal';
 const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function ArtistUpdateCrew (props) {
+    const [members, setMembers] = useState()
     const [crew, setCrew] = useState()
     const [loading, setLoading] = useState(false)    
     const [modal, setModal] = useState()
@@ -26,9 +27,10 @@ function ArtistUpdateCrew (props) {
             method: 'GET',
             url: url
         }).then(res => {                                                    
-            let data = res.data.results               
-            console.log(data)                               
+            let data = res.data.results                                              
             setCrew(data)
+            let clone = JSON.parse(JSON.stringify(data))
+            setMembers(clone)          
             setLoading(false)
         }).catch(err => {
             console.log(err.message)
@@ -73,30 +75,88 @@ function ArtistUpdateCrew (props) {
 
     function onSave () {        
         setLoading(true) 
-        crew.forEach(item => {
-            let data = {
-                'artist': props.artistID,
-                'film': item.film.id,
-                'role': item.role
-            }
-            axios({
-                method: 'POST',
-                url: `${api.tempmembers}/`,
-                data: data,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${props.token}`
+        members.forEach(item => {
+            let target = crew.find(x => x.film.id === item.film.id) 
+            if (target === undefined) {
+                // Delete
+                let data = {
+                    'artist': props.artistID,
+                    'film': item.film.id,
+                    'role': item.role,
+                    'delete': true,
+                    'token': props.token
                 }
-            }).then(res => {
-                console.log(res)
-            }).catch(err => {
-                console.log(err)
-            })
-        })    
+                axios({
+                    method: 'POST',
+                    url: `${api.tempmembers}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                })
+            } else if (!compareRole(target.role, item.role)) {
+                // Update
+                let data = {
+                    'artist': props.artistID,
+                    'film': item.film.id,
+                    'role': target.role,
+                    'token': props.token
+                }
+                axios({
+                    method: 'POST',
+                    url: `${api.tempmembers}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                })
+            } else {                
+                // Nothing
+            }
+        })
+        crew.forEach(item => {
+            let target = members.find(x => x.film.id === item.film.id)
+            if (target === undefined) {                
+                // Create
+                let data = {
+                    'artist': props.artistID,
+                    'film': item.film.id,
+                    'role': item.role,
+                    'token': props.token
+                }
+                axios({
+                    method: 'POST',
+                    url: `${api.tempmembers}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                })
+            }
+        })       
         message.info("Хүсэлтийг хүлээж авлаа.")              
         setLoading(false)        
     }
 
+    function compareRole (role1, role2) {
+        if (role1.length === role2.length) {
+            let count = 0
+            let i = 0
+            for (i = 0; i < role1.length; i++) {
+                if (role1[i].id === role2[i].id) {
+                    count++
+                }
+            }
+            if (count === role1.length) {
+                return true
+            }
+        }
+        return false
+    }
+ 
     function getRoles (roles) {
         let arr = []
         roles.forEach(role => {
@@ -123,7 +183,7 @@ function ArtistUpdateCrew (props) {
                             <Typography.Title level={5}>Кино</Typography.Title>
                         </Col>
                         <Col span={6}>
-                            <Typography.Title level={5}>Дүр</Typography.Title>
+                            <Typography.Title level={5}>Үүрэг</Typography.Title>
                         </Col>
                         <Col span={4}>
                             <Typography.Title level={5}>Засах / Устгах</Typography.Title>

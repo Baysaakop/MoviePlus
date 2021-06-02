@@ -1,4 +1,4 @@
-import { List, Typography, Avatar } from "antd";
+import { List, Typography } from "antd";
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import api from '../api';
@@ -50,7 +50,7 @@ function MovieMembers (props) {
                 <List.Item>                                                        
                     <div style={{ textAlign: 'center' }}>
                         <Link to={`/artists/${item.artist.id}`}>
-                            <Avatar shape="circle" size={88} src={item.artist.avatar} />
+                            <img alt={item.artist.name} src={item.artist.avatar} style={{ width: '100%', height: 'auto', objectFit: 'scale-down', borderRadius: '4px' }} />
                             <Typography.Text style={{ fontWeight: 'bold', display: 'block' }}>{item.artist.name}</Typography.Text>
                             <Typography.Text>
                                 {getRoles(item.role)}

@@ -1,43 +1,42 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import api from '../../api';
-import { message, Spin, Typography, Avatar, Row, Col, Button, Tooltip, Popconfirm } from "antd";
+import { message, Grid, Spin, Typography, Avatar, Row, Col, Button, Tooltip, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
 import MovieCrewModal from "./MovieCrewModal";
 
+const { useBreakpoint } = Grid
 const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 function MovieUpdateCrew (props) {
+    const screens = useBreakpoint()
+    const [members, setMembers] = useState()
     const [crew, setCrew] = useState()
     const [loading, setLoading] = useState()
     const [modal, setModal] = useState()
     const [member, setMember] = useState()
-    const [tempid, setTempid] = useState(-1)
 
     useEffect(() => {       
-        getMovie()     
+        getCrew()        
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    function getMovie() {        
+    function getCrew() {
         setLoading(true)
-        const id = props.movieID
-        const url = api.films + "/" + id + "/";  
+        var url = api.members + "?film=" + props.movieID           
         axios({
             method: 'GET',
-            url: url,
-            headers: {
-                'Content-Type': 'application/json'                
-            }
-        })
-        .then(res => {
-            let target = res.data              
-            setCrew(target.movie.members)            
+            url: url
+        }).then(res => {                      
+            let data = res.data.results                                     
+            setCrew(data)       
+            let clone = JSON.parse(JSON.stringify(data))
+            setMembers(clone)
             setLoading(false)
-        })
-        .catch(err => {
-            message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
-        })
-    } 
+        }).catch(err => {
+            console.log(err.message)
+            setLoading(false)
+        });        
+    }
 
     function onAdd() {
         setMember(undefined)
@@ -45,69 +44,122 @@ function MovieUpdateCrew (props) {
     }
 
     function onEdit (id) {
-        let data = crew.find(x => x.id === id)
+        let data = crew.find(x => x.artist.id === id)
         setMember(data)
         setModal(true)
     }
 
     function onDelete (id) {                
-        let arr = crew.filter(x => x.id !== id)        
+        let arr = crew.filter(x => x.artist.id !== id)        
         setCrew(arr)
     }
 
     function onReturn (values) {        
         setLoading(true)        
         let arr = crew
-        if (values.id === 0) {
-            values.id = tempid
-            setTempid(tempid - 1)
-            arr.push(values)
+        let data = arr.find(x => x.artist.id === values.artist.id)
+        if (data) {
+            data.role = values.role
         } else {
-            arr.forEach(data => {
-                if (data.id === parseInt(values.id)) {
-                    data.artist = values.artist
-                    data.role = values.role
-                }
-            })                        
+            data = {
+                artist: values.artist,
+                role: values.role
+            }
+            arr.push(data)
         }
-        setCrew(arr)
+        setCrew(arr)        
         setModal(false)
         setLoading(false)        
     }
 
     function onSave () {
-        console.log(crew)
-        let data = {
-            'crew': crew,
-            'token': props.token,
-            'filmid': props.movieID
-        }            
-        axios({
-            method: 'POST',
-            url: `${api.tempfilms}/`,
-            data: data,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.token}`            
+        setLoading(true) 
+        members.forEach(item => {
+            let target = crew.find(x => x.artist.id === item.artist.id) 
+            if (target === undefined) {
+                // DELETE
+                let data = {
+                    'artist': item.artist.id, 
+                    'film': props.movieID,
+                    'role': item.role,
+                    'delete': true,
+                    'token': props.token
+                } 
+                axios({
+                    method: 'POST',
+                    url: `${api.tempmembers}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                })
+            } else if (!compareRole(target.role, item.role)) {
+                // UPDATE
+                let data = {
+                    'artist': item.artist.id, 
+                    'film': props.movieID,
+                    'role': target.role,
+                    'token': props.token
+                }
+                axios({
+                    method: 'POST',
+                    url: `${api.tempmembers}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                })
             }
-        }).then(res => {                        
-            if (res.status === 201) {                          
-                message.info("Хүсэлтийг хүлээж авлаа.")                    
-                setLoading(false)                                                              
-            }             
-        }).catch(err => {   
-            message.error("Амжилтгүй боллоо.")
-            console.log(err)            
-            setLoading(false)          
-        })                    
+        })
+        crew.forEach(item => {
+            let target = members.find(x => x.artist.id === item.artist.id)
+            if (target === undefined) {
+                // CREATE
+                let data = {
+                    'artist': item.artist.id, 
+                    'film': props.movieID,
+                    'role': item.role,
+                    'token': props.token
+                }
+                axios({
+                    method: 'POST',
+                    url: `${api.tempmembers}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                })
+            }            
+        })    
+        message.info("Хүсэлтийг хүлээж авлаа.")              
+        setLoading(false)                                   
     }
 
-    function getRoles(role) {
-        let result = []
-        role.forEach(element => {
-            result.push(element.name)    
-        });
-        return result.toString()
+    function compareRole (role1, role2) {
+        if (role1.length === role2.length) {
+            let count = 0
+            let i = 0
+            for (i = 0; i < role1.length; i++) {
+                if (role1[i].id === role2[i].id) {
+                    count++
+                }
+            }
+            if (count === role1.length) {
+                return true
+            }
+        }
+        return false
+    }
+
+    function getRoles (roles) {
+        let arr = []
+        roles.forEach(role => {
+            arr.push(role.name)
+        })
+        return arr.toString()
     }
 
     return (
@@ -121,38 +173,47 @@ function MovieUpdateCrew (props) {
                     <Button type="primary" icon={<PlusOutlined />} style={{ marginBottom: '16px' }} onClick={() => onAdd()}>Уран бүтээлч нэмэх</Button>
                     { modal ? <MovieCrewModal item={member ? member : undefined} hide={() => setModal(false)} return={(values) => onReturn(values)} /> : <></> }
                     <Row gutter={[8, 8]} style={{ marginBottom: '16px' }}>
-                        <Col span={6}>
+                        <Col xs={10} sm={10} md={5}>
                             <Typography.Title level={5}>Уран бүтээлч</Typography.Title>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={10} sm={10} md={5}>
                             <Typography.Title level={5}>Үүрэг</Typography.Title>
                         </Col>
-                        <Col span={6}>
-                            <Typography.Title level={5}>Уран бүтээлч</Typography.Title>
-                        </Col>
-                        <Col span={6}>
-                            <Typography.Title level={5}>Үүрэг</Typography.Title>
-                        </Col>                        
+                        <Col xs={4} sm={4} md={2}>
+                            <Typography.Title level={5}>Засах / Устгах</Typography.Title>
+                        </Col>  
+                        { screens.md ? (
+                            <>
+                                <Col xs={10} sm={10} md={5}>
+                                    <Typography.Title level={5}>Уран бүтээлч</Typography.Title>
+                                </Col>
+                                <Col xs={10} sm={10} md={5}>
+                                    <Typography.Title level={5}>Үүрэг</Typography.Title>
+                                </Col>
+                                <Col xs={4} sm={4} md={2}>
+                                    <Typography.Title level={5}>Засах / Устгах</Typography.Title>
+                                </Col>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                                               
                         {crew.map(item => {
                             return (
                                 <>
-                                    <Col span={6} style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-                                        <Avatar src={item.artist.avatar} size={64} shape="square" style={{ marginRight: '16px' }} />
-                                        <Typography.Text style={{ fontSize: '16px' }}>{item.artist.name}</Typography.Text>
+                                    <Col xs={10} sm={10} md={5} style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>      
+                                        <Avatar shape="square" size={50} src={item.artist.avatar} style={{ marginRight: '8px' }} />                                                                          
+                                        <Typography.Text>{item.artist.name}</Typography.Text>
                                     </Col>    
-                                    <Col span={4} style={{ display: 'flex', alignItems: 'center' }}>       
-                                        <div style={{ textAlign: 'center' }}>
-                                            <Typography.Text>
-                                                {getRoles(item.role)}
-                                            </Typography.Text>                                        
-                                        </div>                                 
+                                    <Col xs={10} sm={10} md={5} style={{ display: 'flex', alignItems: 'center' }}>
+                                        <Typography.Text>{getRoles(item.role)}</Typography.Text>
                                     </Col>
-                                    <Col span={2} style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Col xs={4} sm={4} md={2} style={{ display: 'flex', alignItems: 'center' }}>
                                         <Tooltip title="Засах">
-                                            <Button type="primary" icon={<EditOutlined />} style={{ marginRight: '8px' }} onClick={() => onEdit(item.id)} />
+                                            <Button type="primary" icon={<EditOutlined />} style={{ marginRight: '8px' }} onClick={() => onEdit(item.artist.id)} />
                                         </Tooltip>                                        
                                         <Tooltip title="Устгах">
-                                            <Button danger type="primary" icon={<DeleteOutlined />} onClick={() => onDelete(item.id)} />
+                                            <Button danger type="primary" icon={<DeleteOutlined />} onClick={() => onDelete(item.artist.id)} />
                                         </Tooltip>
                                     </Col>
                                 </>
@@ -161,7 +222,7 @@ function MovieUpdateCrew (props) {
                     </Row> 
                     <Popconfirm title="Хадгалах уу？" okText="Тийм" cancelText="Үгүй" onConfirm={onSave}>
                         <Button type="primary" icon={<SaveOutlined />} style={{ marginTop: '16px' }}>Хадгалах</Button>    
-                    </Popconfirm>                                 
+                    </Popconfirm>                                                               
                 </>
             ) : (
                 <></>

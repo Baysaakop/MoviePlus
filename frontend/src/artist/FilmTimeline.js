@@ -1,23 +1,8 @@
 import { Col, Popover, Row, Timeline, Typography } from "antd"
-import axios from 'axios';
-import api from '../api';
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 function FilmTimeline (props) {
-
-    function getFilmId (movie) {
-        let id = 0
-        axios({
-            method: 'GET',
-            url: `${api.films}?movie=${movie}`
-        }).then(res => {
-            id = res.data.results[0].id
-        }).catch(err => {
-            console.log(err)
-        })
-        return id
-    }
 
     function getRoles (roles) {
         let arr = []

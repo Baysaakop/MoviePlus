@@ -1,6 +1,6 @@
-const baseUrl = "http://localhost:8000/"
+// const baseUrl = "http://localhost:8000/"
 // const baseUrl = "http://192.168.0.113:8000/"
-// const baseUrl = "https://movieplusback.herokuapp.com/"
+const baseUrl = "https://movieplusback.herokuapp.com/"
 
 const api = {
     movies: baseUrl + 'api/movies/movies',

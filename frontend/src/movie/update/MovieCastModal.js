@@ -35,8 +35,7 @@ function MovieCastModal (props) {
 
     function onFinish (values) {        
         let artist = artists.find(x => x.id === parseInt(values.actor))
-        let data = {
-            id: props.item ? props.item.id : 0,
+        let data = {            
             artist: artist,
             role_name: values.role_name ? values.role_name : ""
         }            
@@ -66,7 +65,8 @@ function MovieCastModal (props) {
                             onSearch={onSearch}
                             placeholder="Жүжигчин сонгоно уу"                                                
                             optionFilterProp="children"       
-                            style={{ width: '100%' }}                         
+                            style={{ width: '100%' }}             
+                            disabled={props.item !== undefined}            
                         >
                             { artists ? (
                                 <>

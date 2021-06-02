@@ -43,7 +43,7 @@ function MovieDetail (props) {
                 setUser(res.data)                
             }).catch(err => {                
                 console.log(err) 
-                message.error("Алдаа гарлаа. Хуудсыг дахин ачааллана уу.")           
+                //message.error("Алдаа гарлаа. Хуудсыг дахин ачааллана уу.")           
             })                    
         }
     }
@@ -313,7 +313,7 @@ function MovieDetail (props) {
                                         <div style={{ width: '25%', marginRight: '8px', textAlign: 'center' }}>
                                             {user && getValue(user, movie.scores) > 0 ? (
                                                 <Button className="score" size="large" type="primary" onClick={() => setRateVisible(!rateVisible)}>
-                                                    <Typography.Text>{getValue(user, movie.scores)}</Typography.Text>
+                                                    {getValue(user, movie.scores)}
                                                 </Button>
                                             ) : (
                                                 <Button className="score" size="large" type="ghost" icon={<StarOutlined />} onClick={() => setRateVisible(!rateVisible)} />
@@ -339,7 +339,7 @@ function MovieDetail (props) {
                                     <div className="genre">
                                         {movie.genre.map(g => {
                                             return (                                                                                                
-                                                <span style={{ marginRight: '8px', color: 'white', padding: '8px', border: '1px solid white', borderRadius: '4px', fontSize: '16px' }}>{g.name}</span>
+                                                <Typography.Text style={{ marginRight: '8px', color: 'white', padding: '8px', border: '1px solid white', borderRadius: '4px', fontSize: '16px' }}>{g.name}</Typography.Text>
                                             )                                            
                                         })}
                                     </div>                                    
@@ -359,7 +359,7 @@ function MovieDetail (props) {
                                                     type="circle" 
                                                     percent={movie.score}
                                                     width={96} 
-                                                    strokeColor="#fadb14" 
+                                                    strokeColor="#f39c12" 
                                                     trailColor="#1b262c" 
                                                     strokeWidth={6} 
                                                     format={p => <span style={{ fontSize: '24px', fontWeight: 'bold' }}>{`${p}%`}</span> } 

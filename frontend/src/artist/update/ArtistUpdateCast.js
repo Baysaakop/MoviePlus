@@ -74,13 +74,16 @@ function ArtistUpdateCast (props) {
 
     function onSave () {
         setLoading(true) 
-        cast.forEach(item => {
-            let hit = actors.find(x => x.film.id === item.film.id && x.role_name === item.role_name)
-            if (hit === undefined) {
+        actors.forEach(item => {
+            let target = cast.find(x => x.film.id === item.film.id) 
+            if (target === undefined) {
+                // DELETE
                 let data = {
                     'artist': props.artistID,
                     'film': item.film.id,
-                    'role_name': item.role_name
+                    'role_name': item.role_name,
+                    'delete': true,
+                    'token': props.token
                 }
                 axios({
                     method: 'POST',
@@ -90,13 +93,49 @@ function ArtistUpdateCast (props) {
                         'Content-Type': 'application/json',
                         'Authorization': `Token ${props.token}`
                     }
-                }).then(res => {
-                    console.log(res)
-                }).catch(err => {
-                    console.log(err)
                 })
-            }            
-        })    
+            } else if (target.role_name !== item.role_name) {
+                // UPDATE
+                let data = {
+                    'artist': props.artistID,
+                    'film': item.film.id,
+                    'role_name': target.role_name,
+                    'token': props.token
+                }
+                axios({
+                    method: 'POST',
+                    url: `${api.tempactors}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                })
+            } else {                
+                // NOTHING
+            }
+        })
+        cast.forEach(item => {
+            let target = actors.find(x => x.film.id === item.film.id)
+            if (target === undefined) {                
+                // CREATE
+                let data = {
+                    'artist': props.artistID,
+                    'film': item.film.id,
+                    'role_name': item.role_name,
+                    'token': props.token
+                }
+                axios({
+                    method: 'POST',
+                    url: `${api.tempactors}/`,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${props.token}`
+                    }
+                })
+            }
+        })
         message.info("Хүсэлтийг хүлээж авлаа.")              
         setLoading(false)        
     }

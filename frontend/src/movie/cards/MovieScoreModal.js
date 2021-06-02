@@ -30,7 +30,7 @@ function MovieScoreModal (props) {
                 title={`"${props.movie.name}"-д үнэлгээ өгөх`}
                 visible={true}           
                 onOk={onOk}      
-                onCancel={onClose}
+                onCancel={onClose}                
             >
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <div style={{ textAlign: 'center' }}>

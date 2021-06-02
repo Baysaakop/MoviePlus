@@ -167,6 +167,11 @@ class Actor(models.Model):
     film = models.ForeignKey(Film, on_delete=models.CASCADE, null=True, blank=True)
     series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
     role_name = models.CharField(max_length=100, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='actor_created_by')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)            
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='actor_updated_by')
+    updated_at = models.DateTimeField(auto_now=True, null=True)            
+
 
     def __str__(self):
         if self.film is not None:
@@ -179,6 +184,11 @@ class TempActor(models.Model):
     film = models.ForeignKey(Film, on_delete=models.CASCADE, null=True, blank=True)
     series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
     role_name = models.CharField(max_length=100, null=True, blank=True)
+    is_delete = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='tempactor_created_by')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)            
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='tempactor_updated_by')
+    updated_at = models.DateTimeField(auto_now=True, null=True) 
 
     def __str__(self):
         if self.film is not None:
@@ -191,6 +201,10 @@ class Member(models.Model):
     film = models.ForeignKey(Film, on_delete=models.CASCADE, null=True, blank=True)
     series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ManyToManyField(Occupation, null=True)        
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='member_created_by')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)            
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='member_updated_by')
+    updated_at = models.DateTimeField(auto_now=True, null=True)      
 
     def __str__(self):
         if self.film is not None:
@@ -203,6 +217,11 @@ class TempMember(models.Model):
     film = models.ForeignKey(Film, on_delete=models.CASCADE, null=True, blank=True)
     series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
     role = models.ManyToManyField(Occupation, null=True)        
+    is_delete = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='tempmember_created_by')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)            
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='tempmember_updated_by')
+    updated_at = models.DateTimeField(auto_now=True, null=True)    
 
     def __str__(self):
         if self.film is not None:

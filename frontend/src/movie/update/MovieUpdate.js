@@ -7,9 +7,7 @@ import { Link } from 'react-router-dom';
 import MovieUpdateInfo from './MovieUpdateInfo';
 import MovieUpdateCast from './MovieUpdateCast';
 import MovieUpdateCrew from './MovieUpdateCrew';
-import SubMenu from 'antd/lib/menu/SubMenu';
-import { DesktopOutlined, SettingOutlined, LoadingOutlined } from '@ant-design/icons';
-import MovieIcon from '../../icons/MovieIcon';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const loadingIcon  = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 const { useBreakpoint } = Grid;
@@ -17,7 +15,6 @@ const { useBreakpoint } = Grid;
 function MovieUpdate (props) {
     const screens = useBreakpoint()
     const [key, setKey] = useState("1")
-    const [sub, setSub] = useState(["sub1"])
     const [movie, setMovie] = useState()
     const [loading, setLoading] = useState()
 
@@ -66,11 +63,6 @@ function MovieUpdate (props) {
         setKey(e.key)
     }
 
-    function onSelectSub (keys) {
-        setSub(keys)
-    }
-
-
     return (
         <div style={{ marginTop: '80px', minHeight: '80vh' }}>
             { loading ? (
@@ -90,7 +82,7 @@ function MovieUpdate (props) {
                                         <Link to="/movies">Кино</Link>
                                     </Breadcrumb.Item>
                                     <Breadcrumb.Item>
-                                        <Link to={`/movies/${movie.id}`}>{movie.name}</Link>
+                                        <Link to={`/movies/${movie.id}`}>{movie.movie.name}</Link>
                                     </Breadcrumb.Item>
                                     <Breadcrumb.Item>
                                         Засварлах
@@ -102,35 +94,20 @@ function MovieUpdate (props) {
                                     <Typography.Title level={3}>Кино Засварлах</Typography.Title>
                                     <Row gutter={[16 ,16]}>
                                         <Col xs={24} sm={24} md={4}>
-                                            <Menu mode="inline" theme="dark" style={{ width: '100%', backgroundColor: '#161b22' }} openKeys={sub} selectedKeys={key} onClick={onSelect} onOpenChange={onSelectSub}>
-                                                <SubMenu key="sub1" icon={<SettingOutlined />} title="Ерөнхий">
-                                                    <Menu.Item key="1">Мэдээлэл</Menu.Item>
-                                                    <Menu.Item key="2">Төрөл</Menu.Item>
-                                                </SubMenu>
-                                                <SubMenu key="sub2" icon={<MovieIcon />} title="Кино">
-                                                    <Menu.Item key="3">Бүрэлдэхүүн</Menu.Item>
-                                                    <Menu.Item key="4">Жүжигчин</Menu.Item>
-                                                </SubMenu>
-                                                <SubMenu key="sub3" icon={<DesktopOutlined />} title="ТВ Цуврал">
-                                                    <Menu.Item key="5">Бүрэлдэхүүн</Menu.Item>
-                                                    <Menu.Item key="6">Жүжигчин</Menu.Item>
-                                                </SubMenu>
+                                            <Menu mode="inline" theme="dark" style={{ width: '100%', backgroundColor: '#161b22' }} selectedKeys={key} onClick={onSelect}>
+                                                <Menu.Item key="1">Ерөнхий</Menu.Item>
+                                                <Menu.Item key="2">Бүрэлдэхүүн</Menu.Item>
+                                                <Menu.Item key="3">Жүжигчин</Menu.Item>
                                             </Menu>  
                                         </Col>
                                         <Col xs={24} sm={24} md={20}>
                                             { 
                                             key === "1" ?
-                                                <MovieUpdateInfo movieID={props.match.params.movieID} token={props.token} />
+                                                <MovieUpdateInfo movieID={movie.id} token={props.token} />
                                             : key === "2" ?
-                                                <></>
+                                                <MovieUpdateCrew movieID={movie.id} token={props.token} />
                                             : key === "3" ?
-                                                <></>
-                                            : key === "4" ?
-                                                <></>
-                                            : key === "5" ?
-                                                <></>
-                                            : key === "6" ?
-                                                <></>
+                                                <MovieUpdateCast movieID={movie.id} token={props.token} />
                                             : 
                                                 <></> 
                                             }

@@ -1,5 +1,5 @@
 import { CheckOutlined, CloseOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Grid, Spin, Typography, message, Button, Row, Col, Result, Avatar } from "antd";
+import { Grid, Spin, Typography, message, Button, Row, Col, Result, Avatar, Pagination, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';  
 import api from '../api';
@@ -14,13 +14,16 @@ function CrewRequests (props) {
     const [user, setUser] = useState()
     const [loading, setLoading] = useState()
     const [crew, setCrew] = useState() 
+    const [page, setPage] = useState(1)
+    const [total, setTotal] = useState()
+    
 
     useEffect(() => {
         if (!user) {
             getUser()
         }        
         getCrew()
-    }, [])   // eslint-disable-line react-hooks/exhaustive-deps
+    }, [page])   // eslint-disable-line react-hooks/exhaustive-deps
 
     function getUser () {
         if (props.token) {
@@ -42,18 +45,28 @@ function CrewRequests (props) {
 
     function getCrew() {
         setLoading(true)
-        var url = `${api.tempmembers}/`          
+        var url = `${api.tempmembers}?page=${page}`          
         axios({
             method: 'GET',
             url: url
         }).then(res => {                                                     
             setCrew(res.data.results)
+            setTotal(res.data.count)
             setLoading(false)
         }).catch(err => {
             message.error("Алдаа гарлаа. Та хуудсаа дахин ачааллуулна уу.")
             console.log(err.message)
             setLoading(false)
         });        
+    }
+
+    function onPageChange (pageNum, pageSize) {        
+        setPage(1)
+        setPage(pageNum)
+    }
+
+    function showTotal(total) {
+        return `Нийт ${total}:`;
     }
 
     function getPadding() {
@@ -80,7 +93,7 @@ function CrewRequests (props) {
                 accept: true
             }
         }).then(res => {
-            if (res.status === 200) {
+            if (res.status === 200 || res.status === 202) {
                 getCrew()            
             }            
         }).catch(err => {
@@ -96,7 +109,7 @@ function CrewRequests (props) {
                 decline: true
             }
         }).then(res => {
-            if (res.status === 200) {
+            if (res.status === 200 || res.status === 202) {
                 getCrew()            
             }            
         }).catch(err => {
@@ -147,7 +160,11 @@ function CrewRequests (props) {
                                             <Typography.Text>{element.artist.name}</Typography.Text>
                                         </Col>
                                         <Col xs={12} sm={6} style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-                                            <Typography.Text>{getRoles(element.role)}</Typography.Text>
+                                            {element.is_delete ?                                                 
+                                                <Tag color="#c0392b">DELETE</Tag>
+                                            :
+                                                <Typography.Text>{getRoles(element.role)}</Typography.Text>
+                                            }                                            
                                         </Col>
                                         <Col xs={12} sm={4} style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
                                             <Button type="primary" icon={<CheckOutlined />} style={{ marginRight: '8px' }} onClick={() => onAccept(element.id)} />
@@ -157,6 +174,17 @@ function CrewRequests (props) {
                                 )                               
                             })}                            
                         </Row>
+                        <Pagination
+                            style={{ marginTop: '16px' }}
+                            current={page}
+                            total={total}
+                            pageSize={20}                            
+                            showSizeChanger={false}
+                            showTotal={showTotal}
+                            onChange={onPageChange}
+                            hideOnSinglePage={true}
+                            size="small"
+                        />
                     </>
                 ) : (
                     <Result

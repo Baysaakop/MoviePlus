@@ -55,11 +55,9 @@ function MovieCrewModal (props) {
             role.push(occupation)
         });        
         let data = {
-            id: props.item ? props.item.id : 0,
             artist: artist,
             role: role
         }            
-        console.log(data)
         props.return(data)
         form.resetFields()
     }
@@ -67,6 +65,14 @@ function MovieCrewModal (props) {
     function onClose () {
         form.resetFields()
         props.hide()
+    }
+
+    function getRoleIDs () {
+        let arr = []
+        props.item.role.forEach(x => {
+            arr.push(x.id.toString())
+        })
+        return arr
     }
 
     return (
@@ -79,14 +85,15 @@ function MovieCrewModal (props) {
                 okText={ props.item ? "Өөрчлөх" : "Нэмэх" }
                 cancelText="Болих"
             >
-                <Form form={form} layout="vertical" onFinish={onFinish} initialValues={ props.item ? { actor: props.item.artist.id.toString(), role_name: props.item.role_name } : undefined}>
+                <Form form={form} layout="vertical" onFinish={onFinish} initialValues={ props.item ? { actor: props.item.artist.id.toString(), role: getRoleIDs() } : undefined}>
                     <Form.Item name="actor" label="Уран бүтээлч" rules={[{ required: true, message: 'Уран бүтээлч сонгоно уу!' }]}>
                         <Select                                  
                             showSearch                                
                             onSearch={onSearch}
                             placeholder="Уран бүтээлч сонгоно уу"                                                
                             optionFilterProp="children"       
-                            style={{ width: '100%' }}                         
+                            style={{ width: '100%' }}              
+                            disabled={props.item !== undefined}                    
                         >
                             { artists ? (
                                 <>

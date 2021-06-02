@@ -92,7 +92,7 @@ function ArtistCrewModal (props) {
                 okText={ props.item ? "Өөрчлөх" : "Нэмэх" }
                 cancelText="Болих"
             >
-                <Form form={form} layout="vertical" onFinish={onFinish} initialValues={ props.item ? { movie: props.item.film.id.toString(), role: getRoleIDs } : undefined}>
+                <Form form={form} layout="vertical" onFinish={onFinish} initialValues={ props.item ? { movie: props.item.film.id.toString(), role: getRoleIDs()} : undefined}>
                     <Form.Item name="movie" label="Кино" rules={[{ required: true, message: 'Кино сонгоно уу!' }]}>
                         <Select                                  
                             showSearch                                

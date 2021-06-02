@@ -43,7 +43,9 @@
 }
 
 .detail .actions .ant-btn-primary.score {
-    background: #F79F1F;
+    background: #fadb14;
+    color: #000;
+    font-weight: bold;
 }
 
 .detail .actions .ant-btn-ghost.like:hover {
@@ -59,7 +61,7 @@
 }
 
 .detail .actions .ant-btn-ghost.score:hover {
-    background: #F79F1F;
+    background: #fadb14;
 }
 
 .detail .ant-rate-star {

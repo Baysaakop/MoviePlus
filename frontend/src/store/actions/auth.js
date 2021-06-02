@@ -165,8 +165,11 @@ export const authGoogle = (access_token) => {
             localStorage.setItem('token', token);            
             dispatch(authSuccess(token));       
         })
-        .catch(err => {
-            console.log(err)                    
+        .catch(err => {            
+            console.log(err.response)     
+            if (err.response.data.non_field_errors[0] === "User is already registered with this e-mail address.") {
+                message.error("Өөр сошиал хаяг ашиглан бүртгүүлсэн байна. Та хуудсаа дахин ачааллуулж өөрийн бүртгэлтэй хаягийг сонгон нэвтэрнэ үү.")                                   
+            }            
         })
     }
 }
@@ -187,19 +190,10 @@ export const authFacebook = (access_token) => {
             dispatch(authSuccess(token));       
         })
         .catch(err => {
-            console.log(err)                    
+            console.log(err.response)                      
+            if (err.response.data.non_field_errors[0] === "User is already registered with this e-mail address.") {
+                message.error("Өөр сошиал хаяг ашиглан бүртгүүлсэн байна. Та хуудсаа дахин ачааллуулж өөрийн бүртгэлтэй хаягийг сонгон нэвтэрнэ үү.")                                   
+            }     
         })                  
-        // let res = axios.post(api.authFacebook, {
-        //     access_token: access_token,            
-        // }) 
-        // .then(res => {            
-        //     console.log(res)           
-        //     const token = res.data.key;            
-        //     localStorage.setItem('token', token);            
-        //     dispatch(authSuccess(token));       
-        // })
-        // .catch(err => {
-        //     console.log(err)                    
-        // })
     }
 }

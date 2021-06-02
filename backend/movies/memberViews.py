@@ -41,23 +41,26 @@ class TempMemberViewSet(viewsets.ModelViewSet):
             queryset = TempMember.objects.filter(artist__id=int(artist)).order_by('artist__id')          
         return queryset
 
-    def create(self, request, *args, **kwargs):                      
+    def create(self, request, *args, **kwargs):          
+        user = Token.objects.get(key=request.data['token']).user                          
         artist = Artist.objects.get(pk=int(request.data['artist']))
         roles = request.data['role']
         tempmember = TempMember.objects.create(
-            artist=artist
+            artist=artist,
+            created_by=user,
+            updated_by=user
         )     
         if 'film' in request.data:
             film = Film.objects.get(pk=int(request.data['film']))
             tempmember.film = film
-            tempmember.save()
         elif 'series' in request.data:
             series = Series.objects.get(pk=int(request.data['series']))
             tempmember.series = series
-            tempmember.save()
         for role in roles:   
             role_id = role['id']
             tempmember.role.add(Occupation.objects.get(pk=int(role_id)))
+        if 'delete' in request.data:
+            tempmember.is_delete = True       
         tempmember.save()
         serializer = TempMemberSerializer(tempmember)
         headers = self.get_success_headers(serializer.data)
@@ -68,13 +71,39 @@ class TempMemberViewSet(viewsets.ModelViewSet):
         if 'accept' in request.data:
             member = None
             if tempmember.film is not None:
-                member, created = Member.objects.get_or_create(artist=tempmember.artist, film=tempmember.film)
+                if tempmember.is_delete == True:
+                    Member.objects.filter(artist=tempmember.artist, film=tempmember.film).delete()
+                    TempMember.objects.filter(pk=tempmember.id).delete()                  
+                    return Response(status=status.HTTP_202_ACCEPTED)        
+                else:
+                    member, created = Member.objects.get_or_create(artist=tempmember.artist, film=tempmember.film)
+                    if created:
+                        member.created_by = tempmember.created_by
+                        member.created_at = member.created_at
+                    else:
+                        member.updated_by = tempmember.updated_by
+                        member.updated_at = member.updated_at
+                    member.role.clear()
+                    for role in tempmember.role.all():
+                        member.role.add(Occupation.objects.get(pk=role.id))
+                    member.save()
             elif tempmember.series is not None:
-                member, created = Member.objects.get_or_create(artist=tempmember.artist, series=tempmember.series)
-            member.role.clear()
-            for role in tempmember.role.all():
-                member.role.add(Occupation.objects.get(pk=role.id))
-            member.save()
+                if tempmember.is_delete == True:
+                    Member.objects.filter(artist=tempmember.artist, series=tempmember.series).delete()
+                    TempMember.objects.filter(pk=tempmember.id).delete()                  
+                    return Response(status=status.HTTP_202_ACCEPTED)        
+                else:
+                    member, created = Member.objects.get_or_create(artist=tempmember.artist, series=tempmember.series)
+                    if created:
+                        member.created_by = tempmember.created_by
+                        member.created_at = member.created_at
+                    else:
+                        member.updated_by = tempmember.updated_by
+                        member.updated_at = member.updated_at
+                    member.role.clear()
+                    for role in tempmember.role.all():
+                        member.role.add(Occupation.objects.get(pk=role.id))
+                    member.save()
             TempMember.objects.filter(pk=tempmember.id).delete()                  
             return Response(status=status.HTTP_200_OK)      
         elif 'decline' in request.data:

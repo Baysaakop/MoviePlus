@@ -41,35 +41,63 @@ class TempActorViewSet(viewsets.ModelViewSet):
             queryset = TempActor.objects.filter(artist__id=int(artist)).order_by('artist__id')          
         return queryset
 
-    def create(self, request, *args, **kwargs):                                      
+    def create(self, request, *args, **kwargs):             
+        user = Token.objects.get(key=request.data['token']).user                                            
         artist = Artist.objects.get(pk=int(request.data['artist']))
         role_name = str(request.data['role_name'])
         tempactor = TempActor.objects.create(
             artist=artist,
-            role_name=role_name
+            role_name=role_name,
+            created_by=user,
+            updated_by=user
         )        
         if 'film' in request.data:
             film = Film.objects.get(pk=int(request.data['film']))
             tempactor.film = film
-            tempactor.save()
         elif 'series' in request.data:
             series = Series.objects.get(pk=int(request.data['series']))
-            tempactor.series = series
-            tempactor.save()
+            tempactor.series = series            
+        if 'delete' in request.data:
+            tempactor.is_delete = True       
+        tempactor.save()
         serializer = TempActorSerializer(tempactor)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):                         
-        tempactor = self.get_object()                 
+        tempactor = self.get_object()                         
         if 'accept' in request.data:
             actor = None
             if tempactor.film is not None:
-                actor, created = Actor.objects.get_or_create(artist=tempactor.artist, film=tempactor.film) 
+                if tempactor.is_delete == True:
+                    Actor.objects.filter(artist=tempactor.artist, film=tempactor.film).delete()
+                    TempActor.objects.filter(pk=tempactor.id).delete()                  
+                    return Response(status=status.HTTP_202_ACCEPTED)        
+                else:                    
+                    actor, created = Actor.objects.get_or_create(artist=tempactor.artist, film=tempactor.film) 
+                    if created:
+                        actor.created_by = tempactor.created_by
+                        actor.created_at = tempactor.created_at
+                    else:
+                        actor.updated_by = tempactor.updated_by
+                        actor.updated_at = tempactor.updated_at
+                    actor.role_name = tempactor.role_name                               
+                    actor.save()
             elif tempactor.series is not None:   
-                actor, created = Actor.objects.get_or_create(artist=tempactor.artist, series=tempactor.series)
-            actor.role_name = tempactor.role_name       
-            actor.save()
+                if tempactor.is_delete == True:
+                    Actor.objects.filter(artist=tempactor.artist, series=tempactor.series).delete()
+                    TempActor.objects.filter(pk=tempactor.id).delete()                  
+                    return Response(status=status.HTTP_202_ACCEPTED)  
+                else:                    
+                    actor, created = Actor.objects.get_or_create(artist=tempactor.artist, series=tempactor.series)
+                    if created:
+                        actor.created_by = tempactor.created_by
+                        actor.created_at = tempactor.created_at
+                    else:
+                        actor.updated_by = tempactor.updated_by
+                        actor.updated_at = tempactor.updated_at      
+                    actor.role_name = tempactor.role_name                               
+                    actor.save()                      
             TempActor.objects.filter(pk=tempactor.id).delete()                  
             return Response(status=status.HTTP_200_OK)                
         elif 'decline' in request.data:
