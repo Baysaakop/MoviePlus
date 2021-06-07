@@ -23,6 +23,7 @@ import ArtistUpdateRequests from './artist/update/ArtistUpdateRequests';
 import SeriesList from './series/SeriesList';
 import ReviewList from './reviews/ReviewList';
 import ReviewDetail from './reviews/ReviewDetail';
+import ReviewAdd from './reviews/ReviewAdd';
 import Page404 from './components/Page404';
 import Add from './containers/Add';
 import CastRequests from './account/CastRequests';
@@ -54,7 +55,7 @@ function BaseRouter () {
             {/* Reviews urls */}
             <Route exact path="/reviews" component={ReviewList} />
             <Route exact path="/reviews/:reviewID" component={ReviewDetail} />    
-            {/* <Route exact path="/newreview" component={ReviewAdd} /> */}
+            <Route exact path="/newreview" component={ReviewAdd} />
             {/* User urls */}
             <Route exact path="/login" component={Login} />
             {/* <Route exact path="/logout" component={Logout} />

@@ -42,10 +42,18 @@ function Filmography (props) {
     
     return (
         <div>        
-            <Typography.Title level={4}>Filmography</Typography.Title>                    
-            <FilmTimeline list={members ? members : undefined} />      
-            <Typography.Title level={4}>Filmography (as actor)</Typography.Title>                    
-            <FilmTimeline list={actors ? actors : undefined} />                  
+            { members && members.length > 0 ? (
+                <>
+                    <Typography.Title level={4}>Уран бүтээл</Typography.Title>                    
+                    <FilmTimeline list={members ? members : undefined} />      
+                </>
+            ) : (<></>)}            
+            { actors && actors.length > 0 ? (
+                <>
+                    <Typography.Title level={4}>Уран бүтээл (жүжигчин)</Typography.Title>                    
+                    <FilmTimeline list={actors ? actors : undefined} />                  
+                </>
+            ) : (<></>)}            
         </div>
     )
 }

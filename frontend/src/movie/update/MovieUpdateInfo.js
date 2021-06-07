@@ -165,7 +165,7 @@ function MovieUpdateInfo (props) {
         if (screens.xxl) {
             return window.screen.availWidth * 0.69
         } else if (screens.xl) {
-            return window.screen.availWidth * 0.79
+            return window.screen.availWidth * 0.65
         } else if (screens.lg) {
             return window.screen.availWidth * 0.83
         } else if (screens.md) {

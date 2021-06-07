@@ -358,8 +358,19 @@ function MovieDetail (props) {
                                                 <Progress 
                                                     type="circle" 
                                                     percent={movie.score}
-                                                    width={96} 
-                                                    strokeColor="#f39c12" 
+                                                    width={96}                                                     
+                                                    // strokeColor={{
+                                                    //     '0%': '#c23616',
+                                                    //     '20%': '#e84118',
+                                                    //     '40%': '#e1b12c',     
+                                                    //     '60%': '#fbc531',     
+                                                    //     '80%': '#4cd137',   
+                                                    //     '100%': '#44bd32',                                                                                                           
+                                                    // }}
+                                                    strokeColor={{
+                                                        '0%': '#c23616',
+                                                        '100%': '#44bd32',
+                                                    }}
                                                     trailColor="#1b262c" 
                                                     strokeWidth={6} 
                                                     format={p => <span style={{ fontSize: '24px', fontWeight: 'bold' }}>{`${p}%`}</span> } 

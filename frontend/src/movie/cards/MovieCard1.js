@@ -226,7 +226,11 @@ function MovieCard1 (props) {
                                     type="circle" 
                                     percent={rating} 
                                     width={44} 
-                                    strokeColor="#fadb14" 
+                                    strokeColor={{
+                                        '0%': '#c23616',
+                                        '50%': '#fadb14',
+                                        '100%': '#44bd32',
+                                    }}
                                     trailColor="#1b262c" 
                                     strokeWidth={4} 
                                     //format={p => <span style={{ fontSize: '16px' }}>{`${p / 10}`}</span> } 
