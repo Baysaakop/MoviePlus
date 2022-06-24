@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',
     # local
     'users',
+    'movies',
+    'artists',
 ]
 
 SITE_ID = 1
@@ -197,7 +199,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # S3 BUCKET
 
