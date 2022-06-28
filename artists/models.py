@@ -48,7 +48,7 @@ class MovieCrewMember(models.Model):
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
     movie = models.ForeignKey(
         Movie, on_delete=models.CASCADE, null=True, blank=True)
-    roles = models.ManyToManyField(Occupation, null=True)
+    roles = models.ManyToManyField(Occupation, blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='movie_crew_member_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)

@@ -96,25 +96,25 @@ def updateArtist(artist, request):
 
 
 class MemberPagination(pagination.PageNumberPagination):
-    page_size = 24
+    page_size = 50
 
 
 class MovieCastMemberViewSet(viewsets.ModelViewSet):
     serializer_class = MovieCastMemberSerializer
-    queryset = MovieCastMember.objects.all().order_by('movie__id')
+    queryset = MovieCastMember.objects.all().order_by('movie__releasedate')
     pagination_class = MemberPagination
 
     def get_queryset(self):
-        queryset = MovieCastMember.objects.all().order_by('movie__id')
+        queryset = MovieCastMember.objects.all().order_by('movie__releasedate')
         movie = self.request.query_params.get('movie', None)
         artist = self.request.query_params.get('artist', None)
         is_lead = self.request.query_params.get('is_lead', None)
         if movie is not None:
             queryset = queryset.filter(
-                movie__id=int(movie))
+                movie__id=int(movie)).order_by('is_lead')
         if artist is not None:
             queryset = queryset.filter(
-                artist__id=int(artist))
+                artist__id=int(artist)).order_by('movie__releasedate')
         if is_lead is not None:
             if is_lead == 'true':
                 queryset = queryset.filter(is_lead=True)
@@ -157,19 +157,23 @@ class MovieCastMemberViewSet(viewsets.ModelViewSet):
 
 class MovieCrewMemberViewSet(viewsets.ModelViewSet):
     serializer_class = MovieCrewMemberSerializer
-    queryset = MovieCrewMember.objects.all().order_by('movie__id')
+    queryset = MovieCrewMember.objects.all().order_by('movie__releasedate')
     pagination_class = MemberPagination
 
     def get_queryset(self):
-        queryset = MovieCrewMember.objects.all().order_by('movie__id')
+        queryset = MovieCrewMember.objects.all().order_by('movie__releasedate')
         movie = self.request.query_params.get('movie', None)
         artist = self.request.query_params.get('artist', None)
+        role = self.request.query_params.get('role', None)
         if movie is not None:
             queryset = queryset.filter(
-                movie__id=int(movie))
+                movie__id=int(movie)).order_by('roles__id')
         if artist is not None:
             queryset = queryset.filter(
-                artist__id=int(artist))
+                artist__id=int(artist)).order_by('movie__releasedate')
+        if role is not None:
+            queryset = queryset.filter(
+                roles=int(role))
         return queryset
 
     def create(self, request, *args, **kwargs):

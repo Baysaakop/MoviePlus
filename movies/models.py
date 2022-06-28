@@ -67,9 +67,9 @@ class Movie(models.Model):
     releasedate = models.DateField(auto_now=False, null=True, blank=True)
     rating = models.ForeignKey(
         Rating, on_delete=models.SET_NULL, null=True, blank=True)
-    genres = models.ManyToManyField(Genre, null=True, blank=True)
-    tags = models.ManyToManyField(Tag, null=True, blank=True)
-    productions = models.ManyToManyField(Production, null=True, blank=True)
+    genres = models.ManyToManyField(Genre, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    productions = models.ManyToManyField(Production, blank=True)
     poster = models.ImageField(
         upload_to='movies/posters/%Y/%m/', null=True, blank=True)
     background = models.ImageField(
@@ -83,7 +83,7 @@ class Movie(models.Model):
     avg_score = models.IntegerField(default=0)
     is_released = models.BooleanField(default=True)
     in_theater = models.BooleanField(default=False)
-    platforms = models.ManyToManyField(PlatformUrl, null=True, blank=True)
+    platforms = models.ManyToManyField(PlatformUrl, blank=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='movie_created_by')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
