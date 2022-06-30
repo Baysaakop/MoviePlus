@@ -111,7 +111,7 @@ class MovieCastMemberViewSet(viewsets.ModelViewSet):
         is_lead = self.request.query_params.get('is_lead', None)
         if movie is not None:
             queryset = queryset.filter(
-                movie__id=int(movie)).order_by('is_lead')
+                movie__id=int(movie)).order_by('-is_lead')
         if artist is not None:
             queryset = queryset.filter(
                 artist__id=int(artist)).order_by('movie__releasedate')

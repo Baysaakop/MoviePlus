@@ -29,7 +29,7 @@ class PlatformViewSet(viewsets.ModelViewSet):
 
 
 class MovieListPagination(pagination.PageNumberPagination):
-    page_size = 20
+    page_size = 40
 
 
 class MovieListViewSet(viewsets.ModelViewSet):
@@ -92,8 +92,6 @@ class MovieDetailViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         movie = self.get_object()
-        user = Token.objects.get(key=request.data['token']).user
-        movie.updated_by = user
         updateMovie(movie, request)
         serializer = MovieDetailSerializer(movie)
         headers = self.get_success_headers(serializer.data)
@@ -113,8 +111,8 @@ def updateMovie(movie, request):
         movie.trailer = request.data['trailer']
     if 'poster' in request.data:
         movie.poster = request.data['poster']
-    if 'landscape' in request.data:
-        movie.landscape = request.data['landscape']
+    if 'background' in request.data:
+        movie.background = request.data['background']
     if 'is_released' in request.data:
         if request.data['is_released'] == "true":
             movie.is_released = True
@@ -145,14 +143,21 @@ def updateMovie(movie, request):
             movie.tags.add(int(item))
     if 'platform' in request.data:
         platform = Platform.objects.get(id=int(request.data['platform']))
-        if 'delete' in request.data:
-            platformurl = movie.platforms.filter(platform=platform)[0]
-            movie.platforms.remove(platformurl)
+        url = request.data['url']
+        platformurl = movie.platforms.filter(platform=platform)
+        if not platformurl:
+            if url != "":
+                platformurl = PlatformUrl.objects.create(
+                    platform=platform,
+                    url=url
+                )
+                movie.platforms.add(platformurl)
         else:
-            platformurl = PlatformUrl.objects.create(
-                platform=platform,
-                url=request.data['url']
-            )
-            movie.platforms.add(platformurl)
+            if url != "":
+                platformurl[0].url = url
+                platformurl[0].save()
+            else:
+                movie.platforms.remove(platformurl[0])
+                PlatformUrl.objects.filter(id=platformurl[0].id).delete()
     movie.save()
     return movie

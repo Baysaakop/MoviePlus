@@ -28,7 +28,7 @@ if os.path.isfile(dotenv_file):
 SECRET_KEY = '=v8l2#*%0bsan9c4!z61z4zf-5yuvxz4t@_a8@j3ok8(3vdbh%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['movieplusmn.herokuapp.com', 'localhost', '127.0.0.1']
 
@@ -168,7 +168,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 24,
+    'PAGE_SIZE': 48,
 }
 
 # AUTH
