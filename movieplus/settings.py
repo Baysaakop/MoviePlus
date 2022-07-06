@@ -28,10 +28,9 @@ if os.path.isfile(dotenv_file):
 SECRET_KEY = '=v8l2#*%0bsan9c4!z61z4zf-5yuvxz4t@_a8@j3ok8(3vdbh%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['movieplusmn.herokuapp.com', 'localhost', '127.0.0.1']
-
 
 # Application definition
 

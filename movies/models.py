@@ -66,7 +66,7 @@ class Movie(models.Model):
     duration = models.IntegerField(default=90)
     releasedate = models.DateField(auto_now=False, null=True, blank=True)
     rating = models.ForeignKey(
-        Rating, on_delete=models.SET_NULL, null=True, blank=True)
+        Rating, on_delete=models.CASCADE, null=True, blank=True)
     genres = models.ManyToManyField(Genre, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
     productions = models.ManyToManyField(Production, blank=True)

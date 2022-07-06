@@ -1,5 +1,7 @@
-from rest_framework import viewsets, status
+from urllib import response
+from rest_framework import viewsets, status, pagination
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
@@ -7,8 +9,8 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 from movies.models import Movie
 
-from .serializers import CustomUserSerializer, MovieScoreSerializer, CustomUserDetailSerializer
-from .models import CustomUser, MovieScore
+from .serializers import CustomUserSerializer, MovieCommentSerializer, CustomUserDetailSerializer
+from .models import CustomUser, MovieScore, MovieComment
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -99,6 +101,56 @@ class CustomUserDetailViewSet(viewsets.ModelViewSet):
                 calculateMovieScore(movie)
         customuser.save()
         serializer = CustomUserDetailSerializer(customuser)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+
+class MovieCommentPagination(pagination.PageNumberPagination):
+    page_size = 40
+
+
+class MovieCommentViewSet(viewsets.ModelViewSet):
+    serializer_class = MovieCommentSerializer
+    queryset = MovieComment.objects.all().order_by('-like_count', '-created_at')
+    pagination_class = MovieCommentPagination
+
+    def get_queryset(self):
+        queryset = MovieComment.objects.all().order_by('-like_count', '-created_at')
+        movie = self.request.query_params.get('movie', None)
+        order = self.request.query_params.get('order', None)
+        if movie is not None:
+            queryset = queryset.filter(
+                movie__id=int(movie)).distinct()
+        if order is not None:
+            queryset = queryset.order_by(order).distinct()
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        user = Token.objects.get(key=request.data['token']).user
+        movie = Movie.objects.get(id=int(request.data['movie']))
+        spoiler_alert = False
+        if 'spoiler_alert' in request.data:
+            spoiler_alert = True
+        score = 0
+        score_obj = user.movies_rated.filter(movie=movie)
+        if score_obj:
+            score = score_obj[0].score
+        movieComment = MovieComment.objects.create(
+            movie=movie,
+            user=user,
+            comment=request.data['comment'],
+            spoiler_alert=spoiler_alert,
+            score=score
+        )
+        serializer = MovieCommentSerializer(movieComment)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        movieComment = self.get_object()
+        movieComment.comment = response.data['comment']
+        movieComment.save()
+        serializer = MovieCommentSerializer(movieComment)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
