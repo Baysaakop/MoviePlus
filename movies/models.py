@@ -35,13 +35,6 @@ class Production(models.Model):
         return self.name
 
 
-class Tag(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
 class Platform(models.Model):
     name = models.CharField(max_length=100)
     logo = models.ImageField(
@@ -67,8 +60,7 @@ class Movie(models.Model):
     releasedate = models.DateField(auto_now=False, null=True, blank=True)
     rating = models.ForeignKey(
         Rating, on_delete=models.CASCADE, null=True, blank=True)
-    genres = models.ManyToManyField(Genre, blank=True)
-    tags = models.ManyToManyField(Tag, blank=True)
+    genres = models.ManyToManyField(Genre, blank=True)    
     productions = models.ManyToManyField(Production, blank=True)
     poster = models.ImageField(
         upload_to='movies/posters/%Y/%m/', null=True, blank=True)

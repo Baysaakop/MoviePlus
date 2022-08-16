@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.sites',
     'storages',
+    'ckeditor',
     # auth
     'dj_rest_auth',
     'dj_rest_auth.registration',
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'users',
     'movies',
     'artists',
+    'articles',
 ]
 
 SITE_ID = 1

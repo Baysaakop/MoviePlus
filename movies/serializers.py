@@ -1,17 +1,11 @@
 from rest_framework import serializers
-from .models import Genre, PlatformUrl, Tag, Platform, Rating, Production, Movie
+from .models import Genre, PlatformUrl, Platform, Rating, Production, Movie
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = ('id', 'name', 'description')
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ('id', 'name')
 
 
 class PlatformSerializer(serializers.ModelSerializer):

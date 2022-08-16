@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/movies/', include('movies.urls')),
     path('api/artists/', include('artists.urls')),
+    path('api/articles/', include('articles.urls')),
     # path('accounts/', include('allauth.urls'), name='socialaccount_signup'),
     path('rest-auth/', include('dj_rest_auth.urls')),
     path('rest-auth/registration', include('dj_rest_auth.registration.urls')),

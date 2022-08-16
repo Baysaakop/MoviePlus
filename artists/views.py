@@ -1,6 +1,6 @@
 import string
 from django.db.models import Q
-from rest_framework import status, pagination
+from rest_framework import status, pagination, viewsets
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
@@ -8,7 +8,6 @@ from .models import Occupation, Artist, MovieCastMember, MovieCrewMember
 from .serializers import OccupationSerializer, ArtistListSerializer, ArtistDetailSerializer, MovieCastMemberSerializer, MovieCrewMemberSerializer
 
 from movies.models import Movie
-from rest_framework import viewsets
 
 
 class OccupationViewSet(viewsets.ModelViewSet):
