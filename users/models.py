@@ -1,4 +1,3 @@
-from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.utils.translation import gettext_lazy as _
@@ -79,7 +78,8 @@ class MovieComment(models.Model):
     spoiler_alert = models.BooleanField(default=False)
     score = models.IntegerField(default=0)
     like_count = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    reply_count = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
     # Reply
     parent = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')

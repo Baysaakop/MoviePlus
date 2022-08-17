@@ -106,16 +106,16 @@ class CustomUserDetailViewSet(viewsets.ModelViewSet):
 
 
 class MovieCommentPagination(pagination.PageNumberPagination):
-    page_size = 40
+    page_size = 80
 
 
 class MovieCommentViewSet(viewsets.ModelViewSet):
     serializer_class = MovieCommentSerializer
-    queryset = MovieComment.objects.all().order_by('-like_count', '-created_at')
+    queryset = MovieComment.objects.all().order_by('-like_count', '-timestamp')
     pagination_class = MovieCommentPagination
 
     def get_queryset(self):
-        queryset = MovieComment.objects.all().order_by('-like_count', '-created_at')
+        queryset = MovieComment.objects.all().order_by('-like_count', '-timestamp')
         movie = self.request.query_params.get('movie', None)
         order = self.request.query_params.get('order', None)
         if movie is not None:
@@ -128,20 +128,21 @@ class MovieCommentViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         user = Token.objects.get(key=request.data['token']).user
         movie = Movie.objects.get(id=int(request.data['movie']))
-        spoiler_alert = False
-        if 'spoiler_alert' in request.data:
-            spoiler_alert = True
-        score = 0
-        score_obj = user.movies_rated.filter(movie=movie)
-        if score_obj:
-            score = score_obj[0].score
         movieComment = MovieComment.objects.create(
             movie=movie,
             user=user,
-            comment=request.data['comment'],
-            spoiler_alert=spoiler_alert,
-            score=score
+            comment=request.data['comment']
         )
+        if 'parent' in request.data:
+            parent = MovieComment.objects.get(id=(int(request.data['parent'])))
+            parent.reply_count += 1
+            movieComment.parent = parent
+        if 'spoiler_alert' in request.data:
+            movieComment.spoiler_alert = True
+        score_obj = user.movies_rated.filter(movie=movie)
+        if score_obj:
+            movieComment.score = score_obj[0].score
+        movieComment.save()
         serializer = MovieCommentSerializer(movieComment)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

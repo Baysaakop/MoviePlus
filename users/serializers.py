@@ -72,5 +72,5 @@ class MovieCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = MovieComment
         fields = (
-            'id', 'movie', 'user', 'comment', 'spoiler_alert', 'score', 'like_count', 'created_at', 'parent'
+            'id', 'movie', 'user', 'comment', 'spoiler_alert', 'score', 'like_count', 'reply_count', 'timestamp', 'parent'
         )

@@ -52,7 +52,7 @@ class MovieDetailSerializer(serializers.ModelSerializer):
         model = Movie
         fields = (
             'id', 'title', 'description', 'duration', 'releasedate',
-            'rating', 'genres', 'tags', 'productions', 'poster', 'background',
+            'rating', 'genres', 'productions', 'poster', 'background',
             'view_count', 'like_count', 'watched_count', 'watchlist_count',
             'score_count', 'avg_score', 'trailer', 'is_released', 'in_theater', 'platforms'
         )
