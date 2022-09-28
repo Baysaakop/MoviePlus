@@ -28,9 +28,9 @@ if os.path.isfile(dotenv_file):
 SECRET_KEY = '=v8l2#*%0bsan9c4!z61z4zf-5yuvxz4t@_a8@j3ok8(3vdbh%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['movieplusmn.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['movieplus-mn.herokuapp.com', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -108,6 +108,17 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'movieplus-mn',
+#         'USER': 'postgres',
+#         'PASSWORD': os.environ['DB_PASSWORD'],
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
 
 
 # Password validation
@@ -205,9 +216,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # S3 BUCKET
 
-AWS_ACCESS_KEY_ID = 'AKIA3IGK2KCXL5DLG46K'
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-AWS_STORAGE_BUCKET_NAME = 'movieplusmn'
-
 AWS_QUERYSTRING_AUTH = False
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+
+AWS_STORAGE_BUCKET_NAME = 'movieplus-mn'
+

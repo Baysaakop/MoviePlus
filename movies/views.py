@@ -91,7 +91,7 @@ class MovieDetailViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
-        movie = self.get_object()
+        movie = self.get_object()        
         updateMovie(movie, request)
         serializer = MovieDetailSerializer(movie)
         headers = self.get_success_headers(serializer.data)
