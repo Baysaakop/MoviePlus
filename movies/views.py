@@ -29,7 +29,7 @@ class PlatformViewSet(viewsets.ModelViewSet):
 
 
 class MovieListPagination(pagination.PageNumberPagination):
-    page_size = 40
+    page_size = 30
 
 
 class MovieListViewSet(viewsets.ModelViewSet):
@@ -38,7 +38,7 @@ class MovieListViewSet(viewsets.ModelViewSet):
     pagination_class = MovieListPagination
 
     def get_queryset(self):
-        queryset = Movie.objects.all().order_by('-created_at')
+        queryset = Movie.objects.all().order_by('-view_count')
         search = self.request.query_params.get('search', None)
         genre = self.request.query_params.get('genre', None)
         decade = self.request.query_params.get('decade', None)
@@ -48,9 +48,12 @@ class MovieListViewSet(viewsets.ModelViewSet):
         if search is not None:
             queryset = queryset.filter(
                 Q(title__icontains=search) |
-                Q(title__icontains=string.capwords(search)) |
-                Q(tags__name__icontains=search) |
-                Q(tags__name__icontains=string.capwords(search))).distinct()
+                Q(title__icontains=string.capwords(search))).distinct()
+            # queryset = queryset.filter(
+            #     Q(title__icontains=search) |
+            #     Q(title__icontains=string.capwords(search)) |
+            #     Q(tags__name__icontains=search) |
+            #     Q(tags__name__icontains=string.capwords(search))).distinct()
         if genre is not None:
             queryset = queryset.filter(genres__id=genre).distinct()
         if decade is not None:
@@ -64,7 +67,7 @@ class MovieListViewSet(viewsets.ModelViewSet):
                 Q(avg_score__gte=int(scoreto)-20) &
                 Q(avg_score__lt=int(scoreto))).distinct()
         if order is not None:
-            queryset = queryset.order_by(order).distinct()
+            queryset = queryset.order_by(order).distinct()        
         return queryset
 
 

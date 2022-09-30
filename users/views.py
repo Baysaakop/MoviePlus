@@ -37,16 +37,15 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 
 def calculateMovieScore(movie):
     score_list = MovieScore.objects.filter(movie=movie)
-    if (score_list.count() == 0):
-        movie.avg_score = 0
-        movie.score_count = 0
+    if (score_list.count() < 10):
+        movie.avg_score = 0        
     else:
         sum = 0
         for item in score_list:
             sum += item.score
         avg = round((sum / score_list.count()) * 10)
         movie.avg_score = avg
-        movie.score_count = score_list.count()
+    movie.score_count = score_list.count()
     movie.save()
 
 

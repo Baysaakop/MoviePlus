@@ -103,23 +103,23 @@ WSGI_APPLICATION = 'movieplus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd2qrgms141n9bi',
-        'USER': 'ielktdhlxatysu',
-        'PASSWORD': os.environ['DB_PASSWORD'],
-        'HOST': 'ec2-3-214-2-141.compute-1.amazonaws.com',
-        'PORT': '5432'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'dff6iliasoeb4f',
+#         'USER': 'rsgiqfaafwkcbm',
+#         'PASSWORD': os.environ['DB_PASSWORD'],
+#         'HOST': 'ec2-23-20-140-229.compute-1.amazonaws.com',
+#         'PORT': '5432'
+#     }
+# }
 
 # db_from_env = dj_database_url.config(conn_max_age=600)
 # DATABASES['default'].update(db_from_env)
@@ -220,11 +220,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # S3 BUCKET
 
-# AWS_QUERYSTRING_AUTH = False
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_QUERYSTRING_AUTH = False
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-# AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 
-# AWS_STORAGE_BUCKET_NAME = 'movieplus-mn'
+AWS_STORAGE_BUCKET_NAME = 'movieplus-mn'
 
