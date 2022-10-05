@@ -25,6 +25,16 @@ class CustomUserViewSet(viewsets.ModelViewSet):
             customuser.biography = request.data['biography']
         if 'website' in request.data:
             customuser.website = request.data['website']
+        if 'facebook' in request.data:
+            customuser.facebook = request.data['facebook']
+        if 'instagram' in request.data:
+            customuser.instagram = request.data['instagram']
+        if 'youtube' in request.data:
+            customuser.youtube = request.data['youtube']
+        if 'twitter' in request.data:
+            customuser.twitter = request.data['twitter']
+        if 'medium' in request.data:
+            customuser.medium = request.data['medium']
         if 'avatar' in request.data:
             customuser.avatar = request.data['avatar']
         if 'role' in request.data:
@@ -64,6 +74,10 @@ class CustomUserDetailViewSet(viewsets.ModelViewSet):
                 else:
                     customuser.movies_like.add(movie)
                     movie.like_count += 1
+                    ## add to watched
+                    # if movie not in customuser.movies_watched.all():
+                    #     customuser.movies_watched.add(movie)
+                    #     movie.watched_count += 1
             if 'watched' in request.data:
                 if movie in customuser.movies_watched.all():
                     customuser.movies_watched.remove(movie)
@@ -71,6 +85,10 @@ class CustomUserDetailViewSet(viewsets.ModelViewSet):
                 else:
                     customuser.movies_watched.add(movie)
                     movie.watched_count += 1
+                    ## remove from watchlist
+                    # if movie in customuser.movies_watchlist.all():
+                    #     customuser.movies_watchlist.remove(movie)
+                    #     movie.watchlist_count -= 1
             if 'watchlist' in request.data:
                 if movie in customuser.movies_watchlist.all():
                     customuser.movies_watchlist.remove(movie)
@@ -96,6 +114,10 @@ class CustomUserDetailViewSet(viewsets.ModelViewSet):
                     # Create
                     item = MovieScore.objects.create(movie=movie, score=score)
                     customuser.movies_rated.add(item)
+                    ## add to watched
+                    # if movie not in customuser.movies_watched.all():
+                    #     customuser.movies_watched.add(movie)
+                    #     movie.watched_count += 1
                 # Calculate Score
                 calculateMovieScore(movie)
         customuser.save()

@@ -22,6 +22,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'biography',
+                  'facebook', 'instagram', 'youtube', 'twitter', 'medium',
                   'website', 'avatar', 'role', 'created_at',
                   ]
 
@@ -36,6 +37,7 @@ class CustomUserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'biography',
+                  'facebook', 'instagram', 'youtube', 'twitter', 'medium',
                   'website', 'avatar', 'role', 'created_at',
                   'movies_like', 'movies_watched', 'movies_watchlist', 'movies_rated'
                   ]

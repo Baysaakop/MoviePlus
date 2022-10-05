@@ -52,6 +52,11 @@ class CustomUser(AbstractUser):
 
     biography = models.TextField(blank=True, null=True)
     website = models.URLField(max_length=255, blank=True, null=True)
+    facebook = models.URLField(max_length=255, blank=True, null=True)
+    instagram = models.URLField(max_length=255, blank=True, null=True)
+    youtube = models.URLField(max_length=255, blank=True, null=True)
+    twitter = models.URLField(max_length=255, blank=True, null=True)
+    medium = models.URLField(max_length=255, blank=True, null=True)
     avatar = models.ImageField(
         upload_to='users/%Y/%m/%d', null=True, blank=True)
     role = models.IntegerField(default=0)
