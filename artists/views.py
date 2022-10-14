@@ -26,12 +26,12 @@ class ArtistListViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Artist.objects.all().order_by('-created_at')
-        name = self.request.query_params.get('name', None)
+        search = self.request.query_params.get('search', None)
         occupation = self.request.query_params.get('occupation', None)
         order = self.request.query_params.get('order', None)
-        if name is not None:
-            queryset = queryset.filter(Q(name__icontains=name) | Q(
-                name__icontains=string.capwords(name))).distinct()
+        if search is not None:
+            queryset = queryset.filter(Q(name__icontains=search) | Q(
+                name__icontains=string.capwords(search))).distinct()
         if occupation is not None:
             queryset = queryset.filter(occupations__id=occupation)
         if order is not None:
