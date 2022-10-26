@@ -45,6 +45,7 @@ class MovieListViewSet(viewsets.ModelViewSet):
         year = self.request.query_params.get('year', None)
         scoreto = self.request.query_params.get('scoreto', None)
         order = self.request.query_params.get('order', None)
+        # list = self.request.query_params.get('list', None)        
         if search is not None:
             queryset = queryset.filter(
                 Q(title__icontains=search) |
@@ -68,6 +69,9 @@ class MovieListViewSet(viewsets.ModelViewSet):
                 Q(avg_score__lt=int(scoreto))).distinct()
         if order is not None:
             queryset = queryset.order_by(order).distinct()        
+        # if list is not None:
+        #     if list == 'top100':
+        #         queryset = queryset.order_by('-avg_score').distinct()[:100]
         return queryset
 
 

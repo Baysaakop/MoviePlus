@@ -65,6 +65,14 @@ class CustomUserDetailViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         customuser = self.get_object()
+        if 'member' in request.data:
+            member = CustomUser.objects.get(id=int(request.data['member']))
+            if member in customuser.following.all():
+                customuser.following.remove(member)
+                member.followers.remove(customuser)
+            else:
+                customuser.following.add(member)
+                member.followers.add(customuser)
         if 'movie' in request.data:
             movie = Movie.objects.get(id=int(request.data['movie']))
             if 'like' in request.data:

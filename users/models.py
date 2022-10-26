@@ -70,9 +70,30 @@ class CustomUser(AbstractUser):
         Movie, blank=True, related_name="movies_watchlist")
     movies_rated = models.ManyToManyField(
         MovieScore, blank=True, related_name="movies_rated")
+    # Member List
+    following = models.ManyToManyField(
+        'self', blank=True, symmetrical=False, related_name="user_following")
+    followers = models.ManyToManyField(
+        'self', blank=True, symmetrical=False, related_name="user_followers")
 
     def __str__(self):
         return self.email
+
+
+# class Followers(models.Model):
+#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="user_followers")
+#     followers = models.ManyToManyField(CustomUser, blank=True, related_name="followers")
+
+#     def __str__(self):
+#         return self.user.username
+
+
+# class Following(models.Model):
+#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="user_following")
+#     following = models.ManyToManyField(CustomUser, blank=True, related_name="following")
+
+#     def __str__(self):
+#         return self.user.username
 
 
 class MovieComment(models.Model):

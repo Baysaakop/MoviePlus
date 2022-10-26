@@ -33,14 +33,17 @@ class CustomUserDetailSerializer(serializers.ModelSerializer):
     movies_watched = MovieListSerializer(read_only=True, many=True)
     movies_watchlist = MovieListSerializer(read_only=True, many=True)
     movies_rated = MovieScoreSerializer(read_only=True, many=True)
+    following = CustomUserSerializer(read_only=True, many=True)
+    followers = CustomUserSerializer(read_only=True, many=True)
 
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'biography',
                   'facebook', 'instagram', 'youtube', 'twitter', 'medium',
                   'website', 'avatar', 'role', 'created_at',
-                  'movies_like', 'movies_watched', 'movies_watchlist', 'movies_rated'
-                  ]
+                  'movies_like', 'movies_watched', 'movies_watchlist', 'movies_rated',
+                  'following', 'followers'
+                ]
 
 
 class CustomTokenSerializer(serializers.ModelSerializer):
