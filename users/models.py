@@ -80,20 +80,23 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-# class Followers(models.Model):
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="user_followers")
-#     followers = models.ManyToManyField(CustomUser, blank=True, related_name="followers")
+# class MovieLog(models.Model):
+#     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+#     user = models.ForeignKey(
+#         CustomUser, on_delete=models.CASCADE, related_name='movielog_user')
+#     logdate = models.DateField()
+#     comment = models.TextField()
+#     spoiler_alert = models.BooleanField(default=False)
+#     score = models.IntegerField(default=0)
+#     like_count = models.IntegerField(default=0)
+#     reply_count = models.IntegerField(default=0)
+#     timestamp = models.DateTimeField(auto_now_add=True, null=True)
+#     # Reply
+#     parent = models.ForeignKey(
+#         'self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
 
 #     def __str__(self):
-#         return self.user.username
-
-
-# class Following(models.Model):
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="user_following")
-#     following = models.ManyToManyField(CustomUser, blank=True, related_name="following")
-
-#     def __str__(self):
-#         return self.user.username
+#         return self.user.username + ": " + self.movie.title
 
 
 class MovieComment(models.Model):
