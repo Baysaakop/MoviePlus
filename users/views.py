@@ -207,36 +207,18 @@ def updateMovieScore(movie) :
     movie.save()
 
 def updateLog(movieLog, request):
-    if 'watched' in request.data:
-        if request.data['watched'] == "true":
-            movieLog.watched = True
-            movieLog.movie.watched_count += 1
-            if movieLog.watchlist == True:
-                movieLog.watchlist = False
-            else:
-                movieLog.watched = False
-                movieLog.movie.watched_count -= 1        
-    if 'like' in request.data:
-        if request.data['like'] == "true":
-            movieLog.like = True
-            movieLog.movie.like_count += 1                
-        else:
-            movieLog.like = False
-            movieLog.movie.like_count -= 1
+    if 'watched' in request.data:        
+        movieLog.watched = request.data['watched']
+        if movieLog.watched == True and movieLog.watchlist == True:
+            movieLog.watchlist = False        
+    if 'like' in request.data:        
+        movieLog.like = request.data['like']                    
     if 'watchlist' in request.data:
-        if request.data['watchlist'] == "true":
-            movieLog.watchlist = True
-            movieLog.movie.watchlist_count += 1
-        else:
-            movieLog.watchlist = False
-            movieLog.movie.watchlist_count -= 1
+        movieLog.watchlist = request.data['watchlist']                
     if 'score' in request.data:
-        if request.data['score'] == "0":
-            movieLog.score = 0
-        else:
-            movieLog.score = int(request.data['score'])
-            if movieLog.watched == False:
-                movieLog.watched = True
+        movieLog.score = int(request.data['score'])
+        if movieLog.score > 0 and movieLog.watched == False:
+            movieLog.watched = True        
         updateMovieScore(movieLog.movie)
     if 'watched_at' in request.data:
         movieLog.watched_at = request.data['watched_at']
