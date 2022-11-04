@@ -6,7 +6,7 @@ from movies.models import Movie
 
 class MovieScore(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    score = models.IntegerField(default=0)
+    score = models.IntegerField(default=0) 
 
 
 class CustomUserManager(BaseUserManager):
@@ -80,23 +80,24 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-# class MovieLog(models.Model):
-#     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-#     user = models.ForeignKey(
-#         CustomUser, on_delete=models.CASCADE, related_name='movielog_user')
-#     logdate = models.DateField()
-#     comment = models.TextField()
-#     spoiler_alert = models.BooleanField(default=False)
-#     score = models.IntegerField(default=0)
-#     like_count = models.IntegerField(default=0)
-#     reply_count = models.IntegerField(default=0)
-#     timestamp = models.DateTimeField(auto_now_add=True, null=True)
-#     # Reply
-#     parent = models.ForeignKey(
-#         'self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+class MovieLog(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name='movielog_user')       
+    watched = models.BooleanField(default=False)    
+    like = models.BooleanField(default=False)    
+    watchlist = models.BooleanField(default=False)        
+    score = models.IntegerField(default=0)
+    watched_at = models.DateField(blank=True, null=True)    
+    comment = models.TextField(blank=True, null=True)
+    spoiler_alert = models.BooleanField(default=False)
+    like_count = models.IntegerField(default=0)
+    view_count = models.IntegerField(default=0)
+    comment_count = models.IntegerField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
 
-#     def __str__(self):
-#         return self.user.username + ": " + self.movie.title
+    def __str__(self):
+        return self.user.username + ": " + self.movie.title
 
 
 class MovieComment(models.Model):

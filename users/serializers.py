@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.models import TokenModel
 
-from .models import CustomUser, MovieScore, MovieComment
+from .models import CustomUser, MovieScore, MovieComment, MovieLog
 from movies.serializers import MovieListSerializer
 
 
@@ -68,6 +68,18 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.save()
         return user
 
+class MovieLogSerializer(serializers.ModelSerializer):
+
+    movie = MovieListSerializer(read_only=True)
+    user = CustomUserSerializer(read_only=True)
+
+    class Meta:
+        model = MovieLog
+        fields = [
+            'id', 'movie', 'user', 'watched_at', 'comment', 'spoiler_alert', 
+            'like', 'watched', 'watchlist', 'score', 
+            'like_count', 'view_count', 'comment_count', 'timestamp'
+        ]
 
 class MovieCommentSerializer(serializers.ModelSerializer):
 

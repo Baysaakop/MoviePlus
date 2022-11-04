@@ -9,8 +9,8 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 from movies.models import Movie
 
-from .serializers import CustomUserSerializer, MovieCommentSerializer, CustomUserDetailSerializer
-from .models import CustomUser, MovieScore, MovieComment
+from .serializers import CustomUserSerializer, MovieCommentSerializer, MovieLogSerializer, CustomUserDetailSerializer
+from .models import CustomUser, MovieScore, MovieComment, MovieLog
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -133,6 +133,123 @@ class CustomUserDetailViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
+
+class MovieLogViewSet(viewsets.ModelViewSet):
+    serializer_class = MovieLogSerializer
+    queryset = MovieLog.objects.all().order_by('-timestamp')    
+
+    def get_queryset(self):
+        queryset = MovieLog.objects.all().order_by('-like_count', '-timestamp')
+        movie = self.request.query_params.get('movie', None)
+        user = self.request.query_params.get('user', None)
+        like = self.request.query_params.get('like', None)
+        watched = self.request.query_params.get('watched', None)
+        watchlist = self.request.query_params.get('watchlist', None)
+        score = self.request.query_params.get('score', None)
+        order = self.request.query_params.get('order', None)
+        if movie is not None:
+            queryset = queryset.filter(
+                movie__id=int(movie)).distinct()
+        if user is not None:
+            print(user)
+            queryset = queryset.filter(
+                user__id=int(user)).distinct()
+        if like is not None:
+            queryset = queryset.filter(like=True).distinct()       
+        if watched is not None:
+            queryset = queryset.filter(watched=True).distinct()
+        if watchlist is not None:
+            queryset = queryset.filter(watchlist=True).distinct()
+        if score is not None:
+            queryset = queryset.filter(score=int(score)).distinct()
+        if order is not None:
+            queryset = queryset.order_by(order).distinct()
+        return queryset
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.view_count = instance.view_count + 1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        user = Token.objects.get(key=request.data['token']).user
+        movie = Movie.objects.get(id=int(request.data['movie']))
+        movieLog = MovieLog.objects.create(
+            movie=movie,
+            user=user            
+        )
+        movieLog = updateLog(movieLog, request)
+        serializer = MovieLogSerializer(movieLog)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        movieLog = self.get_object()        
+        movieLog = updateLog(movieLog, request)
+        serializer = MovieLogSerializer(movieLog)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+
+def updateMovieScore(movie) :
+    score_list = MovieLog.object.filter(movie=movie)
+    if (score_list.count() < 10):
+        movie.avg_score = 0
+    else:
+        sum = 0 
+        for item in score_list:
+            sum += item.score
+        avg = round((sum / score_list.count()) * 10)
+        movie.avg_score = avg
+    movie.score_count = score_list.count()
+    movie.save()
+
+def updateLog(movieLog, request):
+    if 'watched' in request.data:
+        if request.data['watched'] == "true":
+            movieLog.watched = True
+            movieLog.movie.watched_count += 1
+            if movieLog.watchlist == True:
+                movieLog.watchlist = False
+            else:
+                movieLog.watched = False
+                movieLog.movie.watched_count -= 1        
+    if 'like' in request.data:
+        if request.data['like'] == "true":
+            movieLog.like = True
+            movieLog.movie.like_count += 1                
+        else:
+            movieLog.like = False
+            movieLog.movie.like_count -= 1
+    if 'watchlist' in request.data:
+        if request.data['watchlist'] == "true":
+            movieLog.watchlist = True
+            movieLog.movie.watchlist_count += 1
+        else:
+            movieLog.watchlist = False
+            movieLog.movie.watchlist_count -= 1
+    if 'score' in request.data:
+        if request.data['score'] == "0":
+            movieLog.score = 0
+        else:
+            movieLog.score = int(request.data['score'])
+            if movieLog.watched == False:
+                movieLog.watched = True
+        updateMovieScore(movieLog.movie)
+    if 'watched_at' in request.data:
+        movieLog.watched_at = request.data['watched_at']
+    if 'comment' in request.data:
+        movieLog.comment = request.data['comment']
+    if 'spoiler_alert' in request.data:
+        if request.data['spoiler_alert'] == "true":
+            movieLog.spoiler_alert = True
+        else:
+            movieLog.spoiler_alert = False
+
+    movieLog.save()
+    return movieLog
 
 class MovieCommentPagination(pagination.PageNumberPagination):
     page_size = 80
