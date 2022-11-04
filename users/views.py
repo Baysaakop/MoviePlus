@@ -151,7 +151,6 @@ class MovieLogViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 movie__id=int(movie)).distinct()
         if user is not None:
-            print(user)
             queryset = queryset.filter(
                 user__id=int(user)).distinct()
         if like is not None:
@@ -194,7 +193,7 @@ class MovieLogViewSet(viewsets.ModelViewSet):
 
 
 def updateMovieScore(movie) :
-    score_list = MovieLog.object.filter(movie=movie)
+    score_list = MovieLog.objects.filter(movie=movie)
     if (score_list.count() < 10):
         movie.avg_score = 0
     else:
@@ -215,7 +214,7 @@ def updateLog(movieLog, request):
         movieLog.like = request.data['like']                    
     if 'watchlist' in request.data:
         movieLog.watchlist = request.data['watchlist']                
-    if 'score' in request.data:
+    if 'score' in request.data:        
         movieLog.score = int(request.data['score'])
         if movieLog.score > 0 and movieLog.watched == False:
             movieLog.watched = True        
