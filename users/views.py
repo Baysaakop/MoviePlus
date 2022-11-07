@@ -173,7 +173,7 @@ class MovieLogViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        user = Token.objects.get(key=request.data['token']).user
+        user = CustomUser.objects.get(id=int(request.data['user']))
         movie = Movie.objects.get(id=int(request.data['movie']))
         movieLog = MovieLog.objects.create(
             movie=movie,
