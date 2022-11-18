@@ -4,11 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from movies.models import Movie
 
 
-class MovieScore(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    score = models.IntegerField(default=0) 
-
-
 class CustomUserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifiers
@@ -61,15 +56,12 @@ class CustomUser(AbstractUser):
         upload_to='users/%Y/%m/%d', null=True, blank=True)
     role = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    # Movie List
-    movies_like = models.ManyToManyField(
-        Movie, blank=True, related_name="movies_like")
-    movies_watched = models.ManyToManyField(
-        Movie, blank=True, related_name="movies_watched")
-    movies_watchlist = models.ManyToManyField(
-        Movie, blank=True, related_name="movies_watchlist")
-    movies_rated = models.ManyToManyField(
-        MovieScore, blank=True, related_name="movies_rated")
+    # Movie Stats
+    movies_watched_count = models.IntegerField(default=0)
+    movies_watchlist_count = models.IntegerField(default=0)
+    movies_like_count = models.IntegerField(default=0)
+    movies_score_count = models.IntegerField(default=0)
+    movies_average_score = models.IntegerField(default=0)
     # Member List
     following = models.ManyToManyField(
         'self', blank=True, symmetrical=False, related_name="user_following")
@@ -95,24 +87,6 @@ class MovieLog(models.Model):
     view_count = models.IntegerField(default=0)
     comment_count = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
-
-    def __str__(self):
-        return self.user.username + ": " + self.movie.title
-
-
-class MovieComment(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name='comment_user')
-    comment = models.TextField()
-    spoiler_alert = models.BooleanField(default=False)
-    score = models.IntegerField(default=0)
-    like_count = models.IntegerField(default=0)
-    reply_count = models.IntegerField(default=0)
-    timestamp = models.DateTimeField(auto_now_add=True, null=True)
-    # Reply
-    parent = models.ForeignKey(
-        'self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
 
     def __str__(self):
         return self.user.username + ": " + self.movie.title

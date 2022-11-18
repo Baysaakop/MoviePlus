@@ -108,6 +108,7 @@ class MovieCastMemberViewSet(viewsets.ModelViewSet):
         movie = self.request.query_params.get('movie', None)
         artist = self.request.query_params.get('artist', None)
         is_lead = self.request.query_params.get('is_lead', None)
+        first = self.request.query_params.get('first', None)
         if movie is not None:
             queryset = queryset.filter(
                 movie__id=int(movie)).order_by('-is_lead')
@@ -119,6 +120,8 @@ class MovieCastMemberViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(is_lead=True)
             else:
                 queryset = queryset.filter(is_lead=False)
+        if first is not None:
+            queryset = queryset[:int(first)]
         return queryset
 
     def create(self, request, *args, **kwargs):
@@ -164,6 +167,7 @@ class MovieCrewMemberViewSet(viewsets.ModelViewSet):
         movie = self.request.query_params.get('movie', None)
         artist = self.request.query_params.get('artist', None)
         role = self.request.query_params.get('role', None)
+        first = self.request.query_params.get('first', None)
         if movie is not None:
             queryset = queryset.filter(
                 movie__id=int(movie)).order_by('roles__id')
@@ -173,6 +177,8 @@ class MovieCrewMemberViewSet(viewsets.ModelViewSet):
         if role is not None:
             queryset = queryset.filter(
                 roles=int(role))
+        if first is not None:
+            queryset = queryset[:int(first)]
         return queryset
 
     def create(self, request, *args, **kwargs):

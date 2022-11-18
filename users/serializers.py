@@ -4,17 +4,8 @@ from django.utils.translation import gettext as _
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.models import TokenModel
 
-from .models import CustomUser, MovieScore, MovieComment, MovieLog
+from .models import CustomUser, MovieLog
 from movies.serializers import MovieListSerializer
-
-
-class MovieScoreSerializer(serializers.ModelSerializer):
-
-    movie = MovieListSerializer(read_only=True)
-
-    class Meta:
-        model = MovieScore
-        fields = ['id', 'movie', 'score']
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -23,16 +14,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'username', 'email', 'biography',
                   'facebook', 'instagram', 'youtube', 'twitter', 'medium',
-                  'website', 'avatar', 'role', 'created_at',
+                  'movies_watched_count', 'movies_watchlist_count', 'movies_like_count', 'movies_score_count', 'movies_average_score',
+                  'website', 'avatar', 'role', 'created_at'      
                   ]
 
 
 class CustomUserDetailSerializer(serializers.ModelSerializer):
 
-    movies_like = MovieListSerializer(read_only=True, many=True)
-    movies_watched = MovieListSerializer(read_only=True, many=True)
-    movies_watchlist = MovieListSerializer(read_only=True, many=True)
-    movies_rated = MovieScoreSerializer(read_only=True, many=True)
     following = CustomUserSerializer(read_only=True, many=True)
     followers = CustomUserSerializer(read_only=True, many=True)
 
@@ -40,8 +28,8 @@ class CustomUserDetailSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'username', 'email', 'biography',
                   'facebook', 'instagram', 'youtube', 'twitter', 'medium',
+                  'movies_watched_count', 'movies_watchlist_count', 'movies_like_count', 'movies_score_count', 'movies_average_score',
                   'website', 'avatar', 'role', 'created_at',
-                  'movies_like', 'movies_watched', 'movies_watchlist', 'movies_rated',
                   'following', 'followers'
                 ]
 
@@ -80,14 +68,3 @@ class MovieLogSerializer(serializers.ModelSerializer):
             'like', 'watched', 'watchlist', 'score', 
             'like_count', 'view_count', 'comment_count', 'timestamp'
         ]
-
-class MovieCommentSerializer(serializers.ModelSerializer):
-
-    movie = MovieListSerializer(read_only=True)
-    user = CustomUserSerializer(read_only=True)
-
-    class Meta:
-        model = MovieComment
-        fields = (
-            'id', 'movie', 'user', 'comment', 'spoiler_alert', 'score', 'like_count', 'reply_count', 'timestamp', 'parent'
-        )

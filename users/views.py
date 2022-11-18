@@ -1,7 +1,6 @@
 from urllib import response
-from rest_framework import viewsets, status, pagination
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
@@ -9,8 +8,8 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 from movies.models import Movie
 
-from .serializers import CustomUserSerializer, MovieCommentSerializer, MovieLogSerializer, CustomUserDetailSerializer
-from .models import CustomUser, MovieScore, MovieComment, MovieLog
+from .serializers import CustomUserSerializer, MovieLogSerializer, CustomUserDetailSerializer
+from .models import CustomUser, MovieLog
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -45,20 +44,6 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 
-def calculateMovieScore(movie):
-    score_list = MovieScore.objects.filter(movie=movie)
-    if (score_list.count() < 10):
-        movie.avg_score = 0        
-    else:
-        sum = 0
-        for item in score_list:
-            sum += item.score
-        avg = round((sum / score_list.count()) * 10)
-        movie.avg_score = avg
-    movie.score_count = score_list.count()
-    movie.save()
-
-
 class CustomUserDetailViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserDetailSerializer
     queryset = CustomUser.objects.all().order_by('id')
@@ -73,61 +58,6 @@ class CustomUserDetailViewSet(viewsets.ModelViewSet):
             else:
                 customuser.following.add(member)
                 member.followers.add(customuser)
-        if 'movie' in request.data:
-            movie = Movie.objects.get(id=int(request.data['movie']))
-            if 'like' in request.data:
-                if movie in customuser.movies_like.all():
-                    customuser.movies_like.remove(movie)
-                    movie.like_count -= 1
-                else:
-                    customuser.movies_like.add(movie)
-                    movie.like_count += 1
-                    ## add to watched
-                    # if movie not in customuser.movies_watched.all():
-                    #     customuser.movies_watched.add(movie)
-                    #     movie.watched_count += 1
-            if 'watched' in request.data:
-                if movie in customuser.movies_watched.all():
-                    customuser.movies_watched.remove(movie)
-                    movie.watched_count -= 1
-                else:
-                    customuser.movies_watched.add(movie)
-                    movie.watched_count += 1
-                    ## remove from watchlist
-                    # if movie in customuser.movies_watchlist.all():
-                    #     customuser.movies_watchlist.remove(movie)
-                    #     movie.watchlist_count -= 1
-            if 'watchlist' in request.data:
-                if movie in customuser.movies_watchlist.all():
-                    customuser.movies_watchlist.remove(movie)
-                    movie.watchlist_count -= 1
-                else:
-                    customuser.movies_watchlist.add(movie)
-                    movie.watchlist_count += 1
-            if 'score' in request.data:
-                score = int(request.data['score'])
-                exists = False
-                for item in customuser.movies_rated.all():
-                    if item.movie == movie:
-                        exists = True
-                        if score > 0:
-                            # Update
-                            item.score = score
-                            item.save()
-                        else:
-                            # Delete
-                            customuser.movies_rated.remove(item)
-                            MovieScore.objects.filter(id=item.id).delete()
-                if exists is False:
-                    # Create
-                    item = MovieScore.objects.create(movie=movie, score=score)
-                    customuser.movies_rated.add(item)
-                    ## add to watched
-                    # if movie not in customuser.movies_watched.all():
-                    #     customuser.movies_watched.add(movie)
-                    #     movie.watched_count += 1
-                # Calculate Score
-                calculateMovieScore(movie)
         customuser.save()
         serializer = CustomUserDetailSerializer(customuser)
         headers = self.get_success_headers(serializer.data)
@@ -139,9 +69,11 @@ class MovieLogViewSet(viewsets.ModelViewSet):
     queryset = MovieLog.objects.all().order_by('-timestamp')    
 
     def get_queryset(self):
-        queryset = MovieLog.objects.all().order_by('-like_count', '-timestamp')
+        queryset = MovieLog.objects.all().order_by('-timestamp')
         movie = self.request.query_params.get('movie', None)
         user = self.request.query_params.get('user', None)
+        following = self.request.query_params.get('following', None)
+        comment = self.request.query_params.get('comment', None)
         like = self.request.query_params.get('like', None)
         watched = self.request.query_params.get('watched', None)
         watchlist = self.request.query_params.get('watchlist', None)
@@ -149,10 +81,16 @@ class MovieLogViewSet(viewsets.ModelViewSet):
         order = self.request.query_params.get('order', None)
         if movie is not None:
             queryset = queryset.filter(
-                movie__id=int(movie)).distinct()
+                movie__id=int(movie)).distinct()            
         if user is not None:
             queryset = queryset.filter(
                 user__id=int(user)).distinct()
+        if following is not None:                        
+            user = CustomUser.objects.get(id=int(following))
+            queryset = queryset.filter(
+                user__in=user.following.all()).distinct()
+        if comment is not None: 
+            queryset = queryset.exclude(comment__isnull=True).exclude(comment__exact='').distinct()
         if like is not None:
             queryset = queryset.filter(like=True).distinct()       
         if watched is not None:
@@ -186,13 +124,13 @@ class MovieLogViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         movieLog = self.get_object()        
-        movieLog = updateLog(movieLog, request)
+        movieLog = updateLog(movieLog, request)        
         serializer = MovieLogSerializer(movieLog)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 
-def updateMovieScore(movie) :
+def updateMovieScore(movie):
     score_list = MovieLog.objects.filter(movie=movie)
     if (score_list.count() < 10):
         movie.avg_score = 0
@@ -202,85 +140,64 @@ def updateMovieScore(movie) :
             sum += item.score
         avg = round((sum / score_list.count()) * 10)
         movie.avg_score = avg
-    movie.score_count = score_list.count()
     movie.save()
+    
+def updateMoviesWatched(movieLog):
+    movieLog.user.movies_watched_count = MovieLog.objects.filter(user=movieLog.user, watched=True).count()
+    movieLog.movie.watched_count = MovieLog.objects.filter(movie=movieLog.movie, watched=True).count()   
+    movieLog.user.save()
+    movieLog.movie.save()
+
+def updateMoviesLike(movieLog):
+    movieLog.user.movies_like_count = MovieLog.objects.filter(user=movieLog.user, like=True).count()
+    movieLog.movie.like_count = MovieLog.objects.filter(movie=movieLog.movie, like=True).count()   
+    movieLog.user.save()
+    movieLog.movie.save()
+
+def updateMoviesWatchlist(movieLog):
+    movieLog.user.movies_watchlist_count = MovieLog.objects.filter(user=movieLog.user, watchlist=True).count()
+    movieLog.movie.watchlist_count = MovieLog.objects.filter(movie=movieLog.movie, watchlist=True).count()   
+    movieLog.user.save()
+    movieLog.movie.save()
+
+def updateMoviesScore(movieLog):
+    movieLog.user.movies_score_count = MovieLog.objects.filter(user=movieLog.user, score_gt=0).count()
+    movieLog.movie.score_count = MovieLog.objects.filter(movie=movieLog.movie, score_gt=0).count()   
+    movieLog.user.save()
+    movieLog.movie.save()
 
 def updateLog(movieLog, request):
     if 'watched' in request.data:        
-        movieLog.watched = request.data['watched']
+        movieLog.watched = request.data['watched']                
+        updateMoviesWatched(movieLog)
         if movieLog.watched == True and movieLog.watchlist == True:
-            movieLog.watchlist = False        
+            movieLog.watchlist = False       
+            updateMoviesWatchlist(movieLog)                           
     if 'like' in request.data:        
         movieLog.like = request.data['like']                    
+        updateMoviesLike(movieLog)
     if 'watchlist' in request.data:
-        movieLog.watchlist = request.data['watchlist']                
+        movieLog.watchlist = request.data['watchlist']          
+        updateMoviesWatchlist(movieLog)              
     if 'score' in request.data:        
         movieLog.score = int(request.data['score'])
+        updateMoviesScore(movieLog)
         if movieLog.score > 0 and movieLog.watched == False:
-            movieLog.watched = True        
+            movieLog.watched = True
+            updateMoviesWatched(movieLog)                    
         updateMovieScore(movieLog.movie)
     if 'watched_at' in request.data:
         movieLog.watched_at = request.data['watched_at']
     if 'comment' in request.data:
         movieLog.comment = request.data['comment']
     if 'spoiler_alert' in request.data:
-        if request.data['spoiler_alert'] == "true":
-            movieLog.spoiler_alert = True
-        else:
-            movieLog.spoiler_alert = False
+        movieLog.spoiler_alert = request.data['spoiler_alert']    
 
+    movieLog.user.movies_watchlist_count = MovieLog.objects.filter(user=movieLog.user) 
+    
+    movieLog.user.save()
     movieLog.save()
     return movieLog
-
-class MovieCommentPagination(pagination.PageNumberPagination):
-    page_size = 80
-
-
-class MovieCommentViewSet(viewsets.ModelViewSet):
-    serializer_class = MovieCommentSerializer
-    queryset = MovieComment.objects.all().order_by('-like_count', '-timestamp')
-    pagination_class = MovieCommentPagination
-
-    def get_queryset(self):
-        queryset = MovieComment.objects.all().order_by('-like_count', '-timestamp')
-        movie = self.request.query_params.get('movie', None)
-        order = self.request.query_params.get('order', None)
-        if movie is not None:
-            queryset = queryset.filter(
-                movie__id=int(movie)).distinct()
-        if order is not None:
-            queryset = queryset.order_by(order).distinct()
-        return queryset
-
-    def create(self, request, *args, **kwargs):
-        user = Token.objects.get(key=request.data['token']).user
-        movie = Movie.objects.get(id=int(request.data['movie']))
-        movieComment = MovieComment.objects.create(
-            movie=movie,
-            user=user,
-            comment=request.data['comment']
-        )
-        if 'parent' in request.data:
-            parent = MovieComment.objects.get(id=(int(request.data['parent'])))
-            parent.reply_count += 1
-            movieComment.parent = parent
-        if 'spoiler_alert' in request.data:
-            movieComment.spoiler_alert = True
-        score_obj = user.movies_rated.filter(movie=movie)
-        if score_obj:
-            movieComment.score = score_obj[0].score
-        movieComment.save()
-        serializer = MovieCommentSerializer(movieComment)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    def update(self, request, *args, **kwargs):
-        movieComment = self.get_object()
-        movieComment.comment = response.data['comment']
-        movieComment.save()
-        serializer = MovieCommentSerializer(movieComment)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 
 class FacebookLogin(SocialLoginView):
