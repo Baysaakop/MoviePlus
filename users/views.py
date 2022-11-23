@@ -139,62 +139,86 @@ def updateMovieScore(movie):
         for item in score_list:
             sum += item.score
         avg = round((sum / score_list.count()) * 10)
-        movie.avg_score = avg
+        movie.avg_score = avg    
     movie.save()
     
-def updateMoviesWatched(movieLog):
-    movieLog.user.movies_watched_count = MovieLog.objects.filter(user=movieLog.user, watched=True).count()
-    movieLog.movie.watched_count = MovieLog.objects.filter(movie=movieLog.movie, watched=True).count()   
-    movieLog.user.save()
-    movieLog.movie.save()
+# def updateMoviesWatched(movieLog):
+#     movieLog.user.movies_watched_count = MovieLog.objects.filter(user=movieLog.user, watched=True).count()
+#     movieLog.movie.watched_count = MovieLog.objects.filter(movie=movieLog.movie, watched=True).count()   
+#     movieLog.user.save()
+#     movieLog.movie.save()
 
-def updateMoviesLike(movieLog):
-    movieLog.user.movies_like_count = MovieLog.objects.filter(user=movieLog.user, like=True).count()
-    movieLog.movie.like_count = MovieLog.objects.filter(movie=movieLog.movie, like=True).count()   
-    movieLog.user.save()
-    movieLog.movie.save()
+# def updateMoviesLike(movieLog):
+#     movieLog.user.movies_like_count = MovieLog.objects.filter(user=movieLog.user, like=True).count()
+#     movieLog.movie.like_count = MovieLog.objects.filter(movie=movieLog.movie, like=True).count()   
+#     movieLog.user.save()
+#     movieLog.movie.save()
 
-def updateMoviesWatchlist(movieLog):
-    movieLog.user.movies_watchlist_count = MovieLog.objects.filter(user=movieLog.user, watchlist=True).count()
-    movieLog.movie.watchlist_count = MovieLog.objects.filter(movie=movieLog.movie, watchlist=True).count()   
-    movieLog.user.save()
-    movieLog.movie.save()
+# def updateMoviesWatchlist(movieLog):
+#     movieLog.user.movies_watchlist_count = MovieLog.objects.filter(user=movieLog.user, watchlist=True).count()
+#     movieLog.movie.watchlist_count = MovieLog.objects.filter(movie=movieLog.movie, watchlist=True).count()   
+#     movieLog.user.save()
+#     movieLog.movie.save()
 
-def updateMoviesScore(movieLog):
-    movieLog.user.movies_score_count = MovieLog.objects.filter(user=movieLog.user, score_gt=0).count()
-    movieLog.movie.score_count = MovieLog.objects.filter(movie=movieLog.movie, score_gt=0).count()   
-    movieLog.user.save()
-    movieLog.movie.save()
+# def updateMoviesScore(movieLog):
+#     movieLog.user.movies_score_count = MovieLog.objects.filter(user=movieLog.user, score__gt=0).count()
+#     movieLog.movie.score_count = MovieLog.objects.filter(movie=movieLog.movie, score__gt=0).count()   
+#     movieLog.user.save()
+#     movieLog.movie.save()
 
 def updateLog(movieLog, request):
     if 'watched' in request.data:        
-        movieLog.watched = request.data['watched']                
-        updateMoviesWatched(movieLog)
-        if movieLog.watched == True and movieLog.watchlist == True:
-            movieLog.watchlist = False       
-            updateMoviesWatchlist(movieLog)                           
-    if 'like' in request.data:        
-        movieLog.like = request.data['like']                    
-        updateMoviesLike(movieLog)
-    if 'watchlist' in request.data:
-        movieLog.watchlist = request.data['watchlist']          
-        updateMoviesWatchlist(movieLog)              
-    if 'score' in request.data:        
-        movieLog.score = int(request.data['score'])
-        updateMoviesScore(movieLog)
-        if movieLog.score > 0 and movieLog.watched == False:
+        if request.data['watched'] == True:
             movieLog.watched = True
-            updateMoviesWatched(movieLog)                    
+            movieLog.movie.watched_count += 1
+            movieLog.user.movies_watched_count += 1
+            if movieLog.watchlist == True:
+                movieLog.watchlist = False       
+                movieLog.movie.watchlist_count -= 1
+                movieLog.user.movies_watchlist_count -= 1                   
+        else:
+            movieLog.watched = False
+            movieLog.movie.watched_count -= 1
+            movieLog.user.movies_watched_count -= 1               
+    if 'like' in request.data:        
+        if request.data['like'] == True:
+            movieLog.like = True
+            movieLog.movie.like_count += 1
+            movieLog.user.movies_like_count += 1
+        else:
+            movieLog.like = False
+            movieLog.movie.like_count -= 1
+            movieLog.user.movies_like_count -= 1
+    if 'watchlist' in request.data:
+        if request.data['watchlist'] == True:
+            movieLog.watchlist = True
+            movieLog.movie.watchlist_count += 1
+            movieLog.user.movies_watchlist_count += 1
+        else:
+            movieLog.watchlist = False
+            movieLog.movie.watchlist_count -= 1
+            movieLog.user.movies_watchlist_count -= 1 
+    if 'score' in request.data:        
+        score = int(request.data['score'])
+        if movieLog.score == 0 and score > 0:
+            movieLog.movie.score_count += 1
+            movieLog.user.movies_score_count += 1
+            if movieLog.watched == False:
+                movieLog.watched = True
+                movieLog.movie.watched_count += 1
+                movieLog.user.movies_watched_count += 1
+        elif movieLog.score > 0 and score == 0:
+            movieLog.movie.score_count -= 1
+            movieLog.user.movies_score_count -= 1                        
+        movieLog.score = score                
         updateMovieScore(movieLog.movie)
     if 'watched_at' in request.data:
         movieLog.watched_at = request.data['watched_at']
     if 'comment' in request.data:
         movieLog.comment = request.data['comment']
     if 'spoiler_alert' in request.data:
-        movieLog.spoiler_alert = request.data['spoiler_alert']    
-
-    movieLog.user.movies_watchlist_count = MovieLog.objects.filter(user=movieLog.user) 
-    
+        movieLog.spoiler_alert = request.data['spoiler_alert']        
+    movieLog.movie.save()
     movieLog.user.save()
     movieLog.save()
     return movieLog
