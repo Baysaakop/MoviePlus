@@ -77,6 +77,7 @@ class MovieLogViewSet(viewsets.ModelViewSet):
         like = self.request.query_params.get('like', None)
         watched = self.request.query_params.get('watched', None)
         watchlist = self.request.query_params.get('watchlist', None)
+        rated = self.request.query_params.get('rated', None)
         score = self.request.query_params.get('score', None)
         order = self.request.query_params.get('order', None)
         if movie is not None:
@@ -97,6 +98,8 @@ class MovieLogViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(watched=True).distinct()
         if watchlist is not None:
             queryset = queryset.filter(watchlist=True).distinct()
+        if rated is not None:
+            queryset = queryset.filter(score__gt=0).distinct()
         if score is not None:
             queryset = queryset.filter(score=int(score)).distinct()
         if order is not None:
@@ -131,40 +134,30 @@ class MovieLogViewSet(viewsets.ModelViewSet):
 
 
 def updateMovieScore(movie):
-    score_list = MovieLog.objects.filter(movie=movie)
+    score_list = MovieLog.objects.filter(movie=movie, score__gt=0)
+    avg = 0
     if (score_list.count() < 10):
         movie.avg_score = 0
     else:
         sum = 0 
         for item in score_list:
-            sum += item.score
-        avg = round((sum / score_list.count()) * 10)
-        movie.avg_score = avg    
+            sum += item.score * 10
+        avg = round(sum / score_list.count())
+    movie.avg_score = avg    
     movie.save()
-    
-# def updateMoviesWatched(movieLog):
-#     movieLog.user.movies_watched_count = MovieLog.objects.filter(user=movieLog.user, watched=True).count()
-#     movieLog.movie.watched_count = MovieLog.objects.filter(movie=movieLog.movie, watched=True).count()   
-#     movieLog.user.save()
-#     movieLog.movie.save()
 
-# def updateMoviesLike(movieLog):
-#     movieLog.user.movies_like_count = MovieLog.objects.filter(user=movieLog.user, like=True).count()
-#     movieLog.movie.like_count = MovieLog.objects.filter(movie=movieLog.movie, like=True).count()   
-#     movieLog.user.save()
-#     movieLog.movie.save()
 
-# def updateMoviesWatchlist(movieLog):
-#     movieLog.user.movies_watchlist_count = MovieLog.objects.filter(user=movieLog.user, watchlist=True).count()
-#     movieLog.movie.watchlist_count = MovieLog.objects.filter(movie=movieLog.movie, watchlist=True).count()   
-#     movieLog.user.save()
-#     movieLog.movie.save()
+def updateUserAvgScore(user):
+    score_list = MovieLog.objects.filter(user=user, score__gt=0)
+    sum = 0
+    avg = 0
+    if score_list.count() > 0:
+        for item in score_list:
+            sum += item.score * 10
+        avg = round(sum / score_list.count())   
+    user.movies_average_score = avg
+    user.save()
 
-# def updateMoviesScore(movieLog):
-#     movieLog.user.movies_score_count = MovieLog.objects.filter(user=movieLog.user, score__gt=0).count()
-#     movieLog.movie.score_count = MovieLog.objects.filter(movie=movieLog.movie, score__gt=0).count()   
-#     movieLog.user.save()
-#     movieLog.movie.save()
 
 def updateLog(movieLog, request):
     if 'watched' in request.data:        
@@ -207,11 +200,17 @@ def updateLog(movieLog, request):
                 movieLog.watched = True
                 movieLog.movie.watched_count += 1
                 movieLog.user.movies_watched_count += 1
+            if movieLog.watchlist == True:
+                movieLog.watchlist = False       
+                movieLog.movie.watchlist_count -= 1
+                movieLog.user.movies_watchlist_count -= 1               
         elif movieLog.score > 0 and score == 0:
             movieLog.movie.score_count -= 1
             movieLog.user.movies_score_count -= 1                        
-        movieLog.score = score                
+        movieLog.score = score           
+        movieLog.save()     
         updateMovieScore(movieLog.movie)
+        updateUserAvgScore(movieLog.user)
     if 'watched_at' in request.data:
         movieLog.watched_at = request.data['watched_at']
     if 'comment' in request.data:
