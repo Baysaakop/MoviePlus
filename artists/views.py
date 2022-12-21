@@ -1,5 +1,5 @@
 import string
-from django.db.models import Q
+from django.db.models import Q, Min
 from rest_framework import status, pagination, viewsets
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -137,6 +137,10 @@ class MovieCastMemberViewSet(viewsets.ModelViewSet):
             member.is_lead = True
         if 'role_name' in request.data:
             member.role_name = request.data['role_name']
+        role = Occupation.objects.get(id=1)
+        if role not in member.artist.occupations.all():
+            member.artist.occupations.add(role)
+            member.artist.save()
         member.save()
         serializer = MovieCastMemberSerializer(member)
         headers = self.get_success_headers(serializer.data)
@@ -170,18 +174,18 @@ class MovieCrewMemberViewSet(viewsets.ModelViewSet):
         first = self.request.query_params.get('first', None)
         if movie is not None:
             queryset = queryset.filter(
-                movie__id=int(movie)).order_by('roles__id')
+                movie__id=int(movie)).annotate(m_role=Min('roles__id')).order_by('m_role')
         if artist is not None:
             queryset = queryset.filter(
                 artist__id=int(artist)).order_by('movie__releasedate')
         if role is not None:
             queryset = queryset.filter(
-                roles=int(role))
+                roles=int(role)).distinct()
         if first is not None:
             queryset = queryset[:int(first)]
         return queryset
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):        
         user = Token.objects.get(key=request.data['token']).user
         artist = Artist.objects.get(id=int(request.data['artist']))
         movie = Movie.objects.get(id=int(request.data['movie']))
@@ -191,9 +195,13 @@ class MovieCrewMemberViewSet(viewsets.ModelViewSet):
             created_by=user
         )
         if 'roles' in request.data:
-            arr = str(request.data['roles']).split(',')
-            for item in arr:
+            arr = str(request.data['roles']).split(',')            
+            for item in arr:                
                 member.roles.add(int(item))
+                role = Occupation.objects.get(id=int(item))
+                if role not in artist.occupations.all():
+                    artist.occupations.add(role)
+                    artist.save()
         member.save()
         serializer = MovieCrewMemberSerializer(member)
         headers = self.get_success_headers(serializer.data)
@@ -210,6 +218,10 @@ class MovieCrewMemberViewSet(viewsets.ModelViewSet):
             arr = str(request.data['roles']).split(',')
             for item in arr:
                 member.roles.add(int(item))
+                role = Occupation.objects.get(id=int(item))
+                if role not in member.artist.occupations.all():
+                    member.artist.occupations.add(role)
+                    member.artist.save()
         member.save()
         serializer = MovieCrewMemberSerializer(member)
         headers = self.get_success_headers(serializer.data)
